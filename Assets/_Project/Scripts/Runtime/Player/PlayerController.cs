@@ -214,5 +214,19 @@ namespace CarTrickRush.Player
         }
 
         #endregion
+
+
+        #region ------------------ Private Methods ------------------
+
+        private void OnDrawGizmosSelected()
+        {
+            if (_groundCheckPoint == null) return;
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(
+                _groundCheckPoint.position,
+                _groundCheckPoint.position + Vector3.down * _groundCheckDistance);
+        }
+        #endregion
+        }
     }
-}
