@@ -4,7 +4,6 @@ using CarTrickRush.Definitions;
 using CarTrickRush.Player.Interfaces;
 using CarTrickRush.Player.States;
 
-
 namespace CarTrickRush.Player
 {
     /// =========================================================================================
@@ -220,6 +219,7 @@ namespace CarTrickRush.Player
 
         private void OnDrawGizmosSelected()
         {
+#if UNITY_EDITOR
             if (_groundCheckPoint == null) return;
 
             Gizmos.color = Color.yellow;
@@ -227,6 +227,7 @@ namespace CarTrickRush.Player
                 _groundCheckPoint.position,
                 _groundCheckPoint.position + Vector3.down * _groundCheckDistance);
         }
+#endif
         #endregion
         }
     }
