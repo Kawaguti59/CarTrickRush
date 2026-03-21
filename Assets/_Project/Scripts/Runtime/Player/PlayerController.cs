@@ -204,7 +204,6 @@ namespace CarTrickRush.Player
 
         #endregion
 
-
         #region ------------------ Private Methods ------------------
 
         /// <summary>
@@ -228,9 +227,9 @@ namespace CarTrickRush.Player
             Gizmos.DrawLine(
                 _groundCheckPoint.position,
                 _groundCheckPoint.position + Vector3.down * _groundCheckDistance);
-        }
 #endif
+        }
 
         #endregion
-        }
+    }
     }
