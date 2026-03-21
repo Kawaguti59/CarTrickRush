@@ -10,8 +10,14 @@ namespace CarTrickRush.DebugMenu
     /// </summary>
     public sealed class DebugMenuButton : MonoBehaviour
     {
+        /// <summary>
+        /// 動作の種類.
+        /// </summary>
         public enum ActionType
         {
+            /// <summary>
+            /// シーンをロードする.
+            /// </summary>
             LoadScene,
         }
 

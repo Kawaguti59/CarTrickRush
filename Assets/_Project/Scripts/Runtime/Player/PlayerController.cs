@@ -142,7 +142,7 @@ namespace CarTrickRush.Player
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// 状態切り替え処理.
+        /// 状態切り替え処理を行う.
         /// </summary>
         public void ChangeState(IPlayerState nextState)
         {
@@ -168,18 +168,7 @@ namespace CarTrickRush.Player
         }
 
         /// <summary>
-        /// ジャンプ処理.
-        /// </summary>
-        public void Jump()
-        {
-            Vector3 velocity = _rigidbody.linearVelocity;
-            velocity.y = 0f;
-            _rigidbody.linearVelocity = velocity;
-            _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.VelocityChange);
-        }
-
-        /// <summary>
-        /// 接地判定.
+        /// 接地判定を行う.
         /// </summary>
         public bool IsGrounded()
         {
@@ -193,14 +182,15 @@ namespace CarTrickRush.Player
         /// <summary>
         /// ジャンプ台接触通知.
         /// </summary>
-        public void OnJumpPadTriggered()
+        /// <param name="jumpPower">ジャンプ力.</param>
+        public void OnJumpPadTriggered(float jumpPower)
         {
             if (CurrentStateType != PlayerStateType.Ground)
             {
                 return;
             }
 
-            Jump();
+            Jump(jumpPower);
             ChangeState(_airState);
         }
 
@@ -216,6 +206,18 @@ namespace CarTrickRush.Player
 
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// ジャンプ処理.
+        /// </summary>
+        /// <param name="jumpPower">ジャンプ力.</param>
+        private void Jump(float jumpPower)
+        {
+            Vector3 velocity = _rigidbody.linearVelocity;
+            velocity.y = 0f;
+            _rigidbody.linearVelocity = velocity;
+            _rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+        }
 
         private void OnDrawGizmosSelected()
         {

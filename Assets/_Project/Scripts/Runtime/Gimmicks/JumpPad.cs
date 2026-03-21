@@ -1,0 +1,89 @@
+using UnityEngine;
+
+using CarTrickRush.Gimmicks.Interfaces;
+using CarTrickRush.Player;
+
+namespace CarTrickRush.Gimmicks
+{
+    /// =========================================================================================
+    /// <summary>
+    /// ƒWƒƒƒ“ƒv‘äƒNƒ‰ƒX.
+    /// </summary>
+    /// =========================================================================================
+    public sealed class JumpPad : MonoBehaviour, IGimmick
+    {
+        #region ------------------ Fields ------------------
+
+        /// <summary>
+        /// ƒWƒƒƒ“ƒv—Í.
+        /// </summary>
+        [SerializeField] private float _jumpPower = 10.0f;
+
+        #endregion
+
+
+        #region ------------------ Properties ------------------
+
+        private float JumpPower => _jumpPower;
+
+        #endregion
+
+
+        #region ------------------ MonoBehaviour Methods ------------------
+
+        private void OnTriggerEnter(Collider other)
+        {
+            OnPlayerEnter(other);
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            OnPlayerStay(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            OnPlayerExit(other);
+        }
+
+        #endregion
+
+        #region ------------------ Interface Methods ------------------
+
+        /// <summary>
+        /// ÚGŠJn‚Ìˆ—.
+        /// </summary>
+        /// <param name="other">ÚG‘ŠèCollider.</param>
+        public void OnPlayerEnter(Collider other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+
+            if (other.TryGetComponent<PlayerController>(out var playerController))
+            {
+                playerController.OnJumpPadTriggered(JumpPower);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// ÚG’†‚Ìˆ—.
+        /// </summary>
+        /// <param name="other">ÚG‘ŠèCollider.</param>
+        public void OnPlayerStay(Collider other)
+        {
+        }
+
+        /// <summary>
+        /// ÚGI—¹‚Ìˆ—.
+        /// </summary>
+        /// <param name="other">ÚG‘ŠèCollider.</param>
+        public void OnPlayerExit(Collider other)
+        {
+        }
+
+        #endregion
+    }
+}
