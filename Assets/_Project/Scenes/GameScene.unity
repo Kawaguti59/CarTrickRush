@@ -209,7 +209,7 @@ Transform:
   m_GameObject: {fileID: 305803974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.6, y: 3.54, z: 4.5}
+  m_LocalPosition: {x: -7.01, y: 6.2, z: 4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -244,7 +244,7 @@ MonoBehaviour:
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
-    ModeOverride: 1
+    ModeOverride: 0
     PhysicalProperties:
       GateFit: 2
       SensorSize: {x: 21.946, y: 16.002}
@@ -292,7 +292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &529988833
 Transform:
   m_ObjectHideFlags: 0
@@ -1262,7 +1262,7 @@ Transform:
   m_GameObject: {fileID: 2063202148}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.834311, y: 3.54, z: -7.8743696}
+  m_LocalPosition: {x: -8.24431, y: 6.2, z: -7.8743696}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1341,6 +1341,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 27843817}
     m_Modifications:
+    - target: {fileID: 1145464237705894841, guid: 41dfcfa2c39eab744af1e731513581ae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1509934415941281121, guid: 41dfcfa2c39eab744af1e731513581ae, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.6
