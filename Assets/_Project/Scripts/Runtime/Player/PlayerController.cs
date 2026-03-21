@@ -228,6 +228,7 @@ namespace CarTrickRush.Player
                 _groundCheckPoint.position + Vector3.down * _groundCheckDistance);
         }
 #endif
+
         #endregion
         }
     }

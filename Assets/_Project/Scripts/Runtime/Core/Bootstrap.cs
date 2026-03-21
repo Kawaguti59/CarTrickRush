@@ -1,11 +1,10 @@
-using CarTrickRush.Managers;
 using UnityEngine;
 
 namespace CarTrickRush.Core
 {
     /// =========================================================================================
     /// <summary>
-    /// ゲーム起動時に各Managerを初期化し最初のシーンへ遷移するエントリーポイント.
+    /// 通常起動用のBoot処理を行うクラス.
     /// </summary>
     /// =========================================================================================
     public sealed class Bootstrap : MonoBehaviour
@@ -13,15 +12,9 @@ namespace CarTrickRush.Core
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// 最初の背にするタイトル名.
+        /// 最初に遷移するシーン名.
         /// </summary>
         [SerializeField] private string _firstSceneName = "TitleScene";
-
-        #endregion
-
-        #region ------------------ Properties ------------------
-
-
 
         #endregion
 
@@ -29,56 +22,12 @@ namespace CarTrickRush.Core
 
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);
-            InitializeManagers();
+            BootstrapUtility.InitializeManagers();
         }
 
         private void Start()
         {
-            SceneLoadManager.LoadScene(_firstSceneName);
-        }
-
-        #endregion
-
-        #region ------------------ Interface Methods ------------------
-
-
-
-        #endregion
-
-        #region ------------------ Public Methods ------------------
-
-
-
-        #endregion
-
-        #region ------------------ Private Methods ------------------
-
-        /// <summary>
-        /// 必要なManagerを生成する.
-        /// </summary>
-        private void InitializeManagers()
-        {
-            CreateManager<GameManager>("GameManager");
-            CreateManager<SceneLoadManager>("SceneLoadManager");
-            CreateManager<InputManager>("InputManager");
-            CreateManager<TimeManager>("TimeManager");
-        }
-
-        /// <summary>
-        /// 指定したManagerが存在しない場合のみ生成する.
-        /// </summary>
-        /// <typeparam name="T">生成するManagerの型</typeparam>
-        /// <param name="objectName">生成するGameObject名</param>
-        private void CreateManager<T>(string objectName) where T : Component
-        {
-            if (FindFirstObjectByType<T>() != null)
-            {
-                return;
-            }
-
-            GameObject managerObject = new GameObject(objectName);
-            managerObject.AddComponent<T>();
+            CarTrickRush.Managers.SceneLoadManager.LoadScene(_firstSceneName);
         }
 
         #endregion
