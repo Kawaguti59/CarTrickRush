@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using CarTrickRush.Data;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 using CarTrickRush.Player.Interfaces;
@@ -24,7 +25,7 @@ namespace CarTrickRush.Player
         [SerializeField] private Rigidbody _rigidbody;
 
         /// <summary>
-        /// 接地判定位置.
+        /// 着地判定位置.
         /// </summary>
         [SerializeField] private Transform _groundCheckPoint;
 
@@ -34,17 +35,12 @@ namespace CarTrickRush.Player
         [SerializeField] private float _autoMoveSpeed = 8.0f;
 
         /// <summary>
-        /// ジャンプ力.
-        /// </summary>
-        [SerializeField] private float _jumpForce = 10.0f;
-
-        /// <summary>
-        /// 接地判定レイヤー.
+        /// 着地判定レイヤー.
         /// </summary>
         [SerializeField] private LayerMask _groundLayer;
 
         /// <summary>
-        /// 接地判定距離.
+        /// 着地判定距離.
         /// </summary>
         [SerializeField] private float _groundCheckDistance = 0.6f;
 
@@ -57,6 +53,11 @@ namespace CarTrickRush.Player
         /// 回転速度.
         /// </summary>
         [SerializeField] private float _rotationSpeed = 360f;
+
+        /// <summary>
+        /// トリックボーナスマスタ.
+        /// </summary>
+        [SerializeField] private TrickBonusMaster _bonusMaster;
 
         /// <summary>
         /// 現在状態.
@@ -170,6 +171,15 @@ namespace CarTrickRush.Player
         #region ------------------ Public Methods ------------------
 
         /// <summary>
+        /// 着地処理.
+        /// </summary>
+        public void OnLanding()
+        {
+            EvaluateTrick();
+            _trickInputs.Clear();
+        }
+
+        /// <summary>
         /// 状態切り替え処理を行う.
         /// </summary>
         public void ChangeState(IPlayerState nextState)
@@ -207,25 +217,16 @@ namespace CarTrickRush.Player
         }
 
         /// <summary>
-        /// 接地判定を行う.
+        /// 着地判定を行う.
         /// </summary>
         public bool IsGrounded()
         {
-            bool isGrounded = Physics.Raycast(
+            return Physics.Raycast(
                 _groundCheckPoint.position,
                 Vector3.down,
                 _groundCheckDistance,
-                _groundLayer);
-
-#if UNITY_EDITOR
-            Color rayColor = isGrounded ? Color.green : Color.red;
-            Debug.DrawRay(
-                _groundCheckPoint.position,
-                Vector3.down * _groundCheckDistance,
-                rayColor);
-#endif
-
-            return isGrounded;
+                _groundLayer
+            );
         }
 
         /// <summary>
@@ -239,7 +240,9 @@ namespace CarTrickRush.Player
                 return;
             }
 
+            // ジャンプ処理.
             Jump(jumpPower);
+            // 空中状態に遷移.
             ChangeState(_airState);
         }
 
@@ -248,6 +251,7 @@ namespace CarTrickRush.Player
         /// </summary>
         public void EnterPenalty()
         {
+            // ペナルティ状態に遷移.
             ChangeState(_penaltyState);
         }
 
@@ -256,36 +260,36 @@ namespace CarTrickRush.Player
         #region ------------------ Private Methods ------------------
 
         /// <summary>
+        /// ジャンプ処理.
+        /// </summary>
+        /// <param name="jumpPower">ジャンプ力.</param>
+        private void Jump(float jumpPower)
+        {
+            Vector3 velocity = _rigidbody.linearVelocity;
+            velocity.y = 0f;
+            _rigidbody.linearVelocity = velocity;
+            _rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+        }
+
+        /// <summary>
         /// 右回転入力通知.
         /// </summary>
-        private void OnRotateRight()
-        {
-            RequestTrick(TrickInputType.RotateRight);
-        }
+        private void OnRotateRight() => RequestTrick(TrickInputType.RotateRight);
 
         /// <summary>
         /// 左回転入力通知.
         /// </summary>
-        private void OnRotateLeft()
-        {
-            RequestTrick(TrickInputType.RotateLeft);
-        }
+        private void OnRotateLeft() => RequestTrick(TrickInputType.RotateLeft);   
 
         /// <summary>
         /// 上回転入力通知.
         /// </summary>
-        private void OnRotateUp()
-        {
-            RequestTrick(TrickInputType.RotateUp);
-        }
+        private void OnRotateUp() => RequestTrick(TrickInputType.RotateUp);
 
         /// <summary>
         /// 下回転入力通知.
         /// </summary>
-        private void OnRotateDown()
-        {
-            RequestTrick(TrickInputType.RotateDown);
-        }
+        private void OnRotateDown() => RequestTrick(TrickInputType.RotateDown);
 
         /// <summary>
         /// トリック入力リクエスト.
@@ -311,31 +315,72 @@ namespace CarTrickRush.Player
         {
             switch (input)
             {
+                // 右回転.
                 case TrickInputType.RotateRight:
                     transform.Rotate(Vector3.forward, -_rotationSpeed * Time.deltaTime);
                     break;
+                // 左回転.
                 case TrickInputType.RotateLeft:
                     transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
                     break;
+                // 上回転.
                 case TrickInputType.RotateUp:
                     transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime);
                     break;
+                // 下回転.
                 case TrickInputType.RotateDown:
                     transform.Rotate(Vector3.right, -_rotationSpeed * Time.deltaTime);
+                    break;
+                // 未定義.
+                default:
+#if UNITY_EDITOR
+                    Debug.LogError($"Invalid input: {input}");
+#endif
                     break;
             }
         }
 
         /// <summary>
-        /// ジャンプ処理.
+        /// トリック評価.
         /// </summary>
-        /// <param name="jumpPower">ジャンプ力.</param>
-        private void Jump(float jumpPower)
+        private void EvaluateTrick()
         {
-            Vector3 velocity = _rigidbody.linearVelocity;
-            velocity.y = 0f;
-            _rigidbody.linearVelocity = velocity;
-            _rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+            if (_bonusMaster == null)
+            {
+                return;
+            }
+
+            foreach (var bonus in _bonusMaster.BonusList)
+            {
+                if (IsMatch(bonus.Sequence))
+                {
+                    Debug.Log($"BONUS! {bonus.BonusName} : {bonus.Score}");
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// トリック入力シーケンス一致判定.
+        /// </summary>
+        /// <param name="sequence">トリック入力シーケンス.</param>
+        /// <returns>一致した場合はtrue, 一致しない場合はfalse.</returns>
+        private bool IsMatch(IReadOnlyList<TrickInputType> sequence)
+        {
+            if (_trickInputs.Count != sequence.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < sequence.Count; i++)
+            {
+                if (_trickInputs[i] != sequence[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void OnDrawGizmosSelected()
