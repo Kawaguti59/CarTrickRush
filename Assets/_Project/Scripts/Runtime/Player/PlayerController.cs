@@ -1,6 +1,8 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 using CarTrickRush.Definitions;
+using CarTrickRush.Managers;
 using CarTrickRush.Player.Interfaces;
 using CarTrickRush.Player.States;
 
@@ -52,6 +54,11 @@ namespace CarTrickRush.Player
         [SerializeField] private float _penaltyDuration = 1.5f;
 
         /// <summary>
+        /// 回転速度.
+        /// </summary>
+        [SerializeField] private float _rotationSpeed = 360f;
+
+        /// <summary>
         /// 現在状態.
         /// </summary>
         private IPlayerState _currentState;
@@ -70,6 +77,11 @@ namespace CarTrickRush.Player
         /// ペナルティ状態インスタンス.
         /// </summary>
         private PenaltyState _penaltyState;
+
+        /// <summary>
+        /// トリック入力リスト.
+        /// </summary>
+        private readonly List<TrickInputType> _trickInputs = new();
 
         #endregion
 
@@ -137,6 +149,22 @@ namespace CarTrickRush.Player
             _currentState?.FixedUpdate();
         }
 
+        private void OnEnable()
+        {
+            InputManager.Instance.RotateRightPerformed += OnRotateRight;
+            InputManager.Instance.RotateLeftPerformed += OnRotateLeft;
+            InputManager.Instance.RotateUpPerformed += OnRotateUp;
+            InputManager.Instance.RotateDownPerformed += OnRotateDown;
+        }
+
+        private void OnDisable()
+        {
+            InputManager.Instance.RotateRightPerformed -= OnRotateRight;
+            InputManager.Instance.RotateLeftPerformed -= OnRotateLeft;
+            InputManager.Instance.RotateUpPerformed -= OnRotateUp;
+            InputManager.Instance.RotateDownPerformed -= OnRotateDown;
+        }
+
         #endregion
 
         #region ------------------ Public Methods ------------------
@@ -183,11 +211,21 @@ namespace CarTrickRush.Player
         /// </summary>
         public bool IsGrounded()
         {
-            return Physics.Raycast(
+            bool isGrounded = Physics.Raycast(
                 _groundCheckPoint.position,
                 Vector3.down,
                 _groundCheckDistance,
                 _groundLayer);
+
+#if UNITY_EDITOR
+            Color rayColor = isGrounded ? Color.green : Color.red;
+            Debug.DrawRay(
+                _groundCheckPoint.position,
+                Vector3.down * _groundCheckDistance,
+                rayColor);
+#endif
+
+            return isGrounded;
         }
 
         /// <summary>
@@ -216,6 +254,77 @@ namespace CarTrickRush.Player
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// 右回転入力通知.
+        /// </summary>
+        private void OnRotateRight()
+        {
+            RequestTrick(TrickInputType.RotateRight);
+        }
+
+        /// <summary>
+        /// 左回転入力通知.
+        /// </summary>
+        private void OnRotateLeft()
+        {
+            RequestTrick(TrickInputType.RotateLeft);
+        }
+
+        /// <summary>
+        /// 上回転入力通知.
+        /// </summary>
+        private void OnRotateUp()
+        {
+            RequestTrick(TrickInputType.RotateUp);
+        }
+
+        /// <summary>
+        /// 下回転入力通知.
+        /// </summary>
+        private void OnRotateDown()
+        {
+            RequestTrick(TrickInputType.RotateDown);
+        }
+
+        /// <summary>
+        /// トリック入力リクエスト.
+        /// </summary>
+        /// <param name="input">トリック入力種別.</param>
+        private void RequestTrick(TrickInputType input)
+        {
+            if (CurrentStateType != PlayerStateType.Air)
+            {
+                return;
+            }
+
+            _trickInputs.Add(input);
+
+            ApplyRotation(input);
+        }
+
+        /// <summary>
+        /// 回転処理.
+        /// </summary>
+        /// <param name="input">トリック入力種別.</param>
+        private void ApplyRotation(TrickInputType input)
+        {
+            switch (input)
+            {
+                case TrickInputType.RotateRight:
+                    transform.Rotate(Vector3.forward, -_rotationSpeed * Time.deltaTime);
+                    break;
+                case TrickInputType.RotateLeft:
+                    transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
+                    break;
+                case TrickInputType.RotateUp:
+                    transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime);
+                    break;
+                case TrickInputType.RotateDown:
+                    transform.Rotate(Vector3.right, -_rotationSpeed * Time.deltaTime);
+                    break;
+            }
+        }
 
         /// <summary>
         /// ジャンプ処理.

@@ -1412,13 +1412,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: JumpPad
       objectReference: {fileID: 0}
+    - target: {fileID: 1298267446693702723, guid: 0839217431166d342b47014c2189500f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3537898924650815940, guid: 0839217431166d342b47014c2189500f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.38
+      objectReference: {fileID: 0}
     - target: {fileID: 3537898924650815940, guid: 0839217431166d342b47014c2189500f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3537898924650815940, guid: 0839217431166d342b47014c2189500f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.6
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3537898924650815940, guid: 0839217431166d342b47014c2189500f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1450,6 +1458,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3537898924650815940, guid: 0839217431166d342b47014c2189500f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886825872218292914, guid: 0839217431166d342b47014c2189500f, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

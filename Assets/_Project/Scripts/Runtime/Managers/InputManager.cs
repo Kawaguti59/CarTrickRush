@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
 
 namespace CarTrickRush.Managers
 {
@@ -43,21 +45,32 @@ namespace CarTrickRush.Managers
 
         #endregion
 
-        #region ------------------ Interface Methods ------------------
+        #region ------------------ Events ------------------
 
+        public event Action RotateRightPerformed;
+        public event Action RotateLeftPerformed;
+        public event Action RotateUpPerformed;
+        public event Action RotateDownPerformed;
 
+        public event Action PausePerformed;
 
         #endregion
 
         #region ------------------ Public Methods ------------------
 
+        public void InvokeRotateRight() => RotateRightPerformed?.Invoke();
+        public void InvokeRotateLeft() => RotateLeftPerformed?.Invoke();
+        public void InvokeRotateUp() => RotateUpPerformed?.Invoke();
+        public void InvokeRotateDown() => RotateDownPerformed?.Invoke();
 
-
-        #endregion
-
-        #region ------------------ Private Methods ------------------
-
-
+        public void InvokePause() => PausePerformed?.Invoke();
+        public void OnRotateRight(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                InputManager.Instance.InvokeRotateRight();
+            }
+        }
 
         #endregion
     }

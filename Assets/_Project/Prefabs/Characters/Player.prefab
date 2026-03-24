@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 756008471202993458}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.28, z: 0}
-  m_LocalScale: {x: 1, y: 0.27, z: 1}
+  m_LocalPosition: {x: 0, y: 0.23, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1509934415941281121}
@@ -162,7 +162,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &5931138649947814439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,8 +181,8 @@ MonoBehaviour:
   _jumpForce: 10
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  _groundCheckDistance: 0.6
+    m_Bits: 64
+  _groundCheckDistance: 0.2
   _penaltyDuration: 1.5
 --- !u!65 &5695945034185517499
 BoxCollider:

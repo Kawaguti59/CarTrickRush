@@ -1,5 +1,8 @@
-﻿using CarTrickRush.Definitions;
+﻿using UnityEngine;
+
+using CarTrickRush.Definitions;
 using CarTrickRush.Player.Interfaces;
+using TMPro;
 
 namespace CarTrickRush.Player.States
 {
@@ -30,6 +33,11 @@ namespace CarTrickRush.Player.States
         /// 状態種別.
         /// </summary>
         public PlayerStateType StateType => PlayerStateType.Air;
+
+        /// <summary>
+        /// 接地判定.
+        /// </summary>
+        public bool IsGrounded => _playerController.IsGrounded();
 
         #endregion
 
@@ -62,14 +70,15 @@ namespace CarTrickRush.Player.States
         /// </summary>
         public void Update()
         {
-            if (_hasLeftGround == false && _playerController.IsGrounded() == false)
+            if (_hasLeftGround == false &&  !IsGrounded)
             {
                 _hasLeftGround = true;
                 return;
             }
 
-            if (_hasLeftGround && _playerController.IsGrounded())
+            if (_hasLeftGround && IsGrounded)
             {
+                _playerController.IsGrounded();
                 _playerController.ChangeState(_playerController.GroundState);
             }
         }
