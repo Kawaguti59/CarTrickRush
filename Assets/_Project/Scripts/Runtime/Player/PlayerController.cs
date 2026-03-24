@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using CarTrickRush.Definitions;
 using CarTrickRush.Player.Interfaces;
@@ -155,6 +155,17 @@ namespace CarTrickRush.Player
             _currentState?.Exit();
             _currentState = nextState;
             _currentState.Enter();
+
+#if UNITY_EDITOR
+            if (_currentState.StateType == PlayerStateType.Ground)
+            {
+                Debug.Log("[PlayerController] State changed to Ground.");
+            }
+            else if (_currentState.StateType == PlayerStateType.Air)
+            {
+                Debug.Log("[PlayerController] State changed to Air.");
+            }
+#endif
         }
 
         /// <summary>

@@ -60,12 +60,23 @@
         "*.asset": "yaml",
         "*.meta": "yaml",
         "*.prefab": "yaml",
-        "*.unity": "yaml",
+        "*.unity": "yaml"
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "CarTrickRush.slnx"
+    {
+        "explorer.excludeGitIgnore": true, // .gitignoreの設定をfiles.excludeにも反映する
+        "files.exclude": {
+            "**/*.meta": true
+            // その他、IDEに表示したくないファイルを記述
+        },
+            "search.exclude": {
+            // 検索から除外したいファイルを記述。たまに開くけど検索結果には要らないもの
+            // "search.useIgnoreFiles": true（デフォルト）と .gitignoreも同時に参照するから、細かく制御したいときはここで上書き
+        }
+    }
+    "dotnet.defaultSolution": "CarTrickRush.sln"
 }
