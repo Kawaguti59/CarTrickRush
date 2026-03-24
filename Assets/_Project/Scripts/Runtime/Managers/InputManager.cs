@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace CarTrickRush.Managers
 {
     /// =========================================================================================
     /// <summary>
-    /// “ü—ÍŠÇ—Manager.
+    /// å…¥åŠ›ç®¡ç†Manager.
     /// </summary>
     /// =========================================================================================
     public sealed class InputManager : MonoBehaviour
@@ -12,7 +12,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// ƒCƒ“ƒXƒ^ƒ“ƒX.
+        /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
         /// </summary>
         private static InputManager _instance;
 
@@ -21,7 +21,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// ƒCƒ“ƒXƒ^ƒ“ƒX.
+        /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
         /// </summary>
         public static InputManager Instance => _instance;
 

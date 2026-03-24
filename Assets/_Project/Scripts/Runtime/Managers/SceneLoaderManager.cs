@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace CarTrickRush.Managers
 {
     /// =========================================================================================
     /// <summary>
-    /// ƒV[ƒ“‘JˆÚŠÇ—Manager.
+    /// ã‚·ãƒ¼ãƒ³é·ç§»ç®¡ç†Manager.
     /// </summary>
     /// =========================================================================================
     public sealed class SceneLoadManager : MonoBehaviour
@@ -13,7 +13,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// ƒCƒ“ƒXƒ^ƒ“ƒX.
+        /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
         /// </summary>
         private static SceneLoadManager _instance;
 
@@ -22,7 +22,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// ƒCƒ“ƒXƒ^ƒ“ƒX.
+        /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
         /// </summary>
         private static SceneLoadManager Instance => _instance;
 
@@ -53,9 +53,9 @@ namespace CarTrickRush.Managers
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// w’è‚µ‚½ƒV[ƒ“‚Ö‘JˆÚ‚·‚é.
+        /// æŒ‡å®šã—ãŸã‚·ãƒ¼ãƒ³ã¸é·ç§»ã™ã‚‹.
         /// </summary>
-        /// <param name="sceneName">‘JˆÚæƒV[ƒ“–¼</param>
+        /// <param name="sceneName">é·ç§»å…ˆã‚·ãƒ¼ãƒ³å</param>
         public static void LoadScene(string sceneName)
         {
             if (string.IsNullOrEmpty(sceneName))

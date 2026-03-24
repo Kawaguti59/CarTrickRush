@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace CarTrickRush.Managers
 {
     /// =========================================================================================
     /// <summary>
-    /// §ŒÀŠÔ‚âŠÔis‚ÌŠÇ—Manager.
+    /// åˆ¶é™æ™‚é–“ã‚„æ™‚é–“é€²è¡Œã®ç®¡ç†Manager.
     /// </summary>
     /// =========================================================================================
     public sealed class TimeManager : MonoBehaviour
@@ -12,7 +12,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// ƒCƒ“ƒXƒ^ƒ“ƒX.
+        /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
         /// </summary>
         private static TimeManager _instance;
 
@@ -21,7 +21,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// ƒCƒ“ƒXƒ^ƒ“ƒX.
+        /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
         /// </summary>
         public static TimeManager Instance => _instance;
 

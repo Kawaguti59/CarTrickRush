@@ -1,11 +1,11 @@
-using CarTrickRush.Definitions;
+ï»¿using CarTrickRush.Definitions;
 using CarTrickRush.Player.Interfaces;
 
 namespace CarTrickRush.Player.States
 {
     /// =========================================================================================
     /// <summary>
-    /// ’nãó‘ÔƒNƒ‰ƒX.
+    /// åœ°ä¸ŠçŠ¶æ…‹ã‚¯ãƒ©ã‚¹.
     /// </summary>
     /// =========================================================================================
     public sealed class GroundState : IPlayerState
@@ -13,7 +13,7 @@ namespace CarTrickRush.Player.States
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// ƒvƒŒƒCƒ„[QÆ.
+        /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‚ç…§.
         /// </summary>
         private readonly PlayerController _playerController;
 
@@ -22,7 +22,7 @@ namespace CarTrickRush.Player.States
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// ó‘Ôí•Ê.
+        /// çŠ¶æ…‹ç¨®åˆ¥.
         /// </summary>
         public PlayerStateType StateType => PlayerStateType.Ground;
 

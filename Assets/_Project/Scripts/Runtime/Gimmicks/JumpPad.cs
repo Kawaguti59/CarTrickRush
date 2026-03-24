@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 using CarTrickRush.Gimmicks.Interfaces;
 using CarTrickRush.Player;
@@ -7,7 +7,7 @@ namespace CarTrickRush.Gimmicks
 {
     /// =========================================================================================
     /// <summary>
-    /// ƒWƒƒƒ“ƒv‘äƒNƒ‰ƒX.
+    /// ã‚¸ãƒ£ãƒ³ãƒ—å°ã‚¯ãƒ©ã‚¹.
     /// </summary>
     /// =========================================================================================
     public sealed class JumpPad : MonoBehaviour, IGimmick
@@ -15,7 +15,7 @@ namespace CarTrickRush.Gimmicks
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// ƒWƒƒƒ“ƒv—Í.
+        /// ã‚¸ãƒ£ãƒ³ãƒ—åŠ›.
         /// </summary>
         [SerializeField] private float _jumpPower = 10.0f;
 
@@ -51,9 +51,9 @@ namespace CarTrickRush.Gimmicks
         #region ------------------ Interface Methods ------------------
 
         /// <summary>
-        /// ÚGŠJn‚Ìˆ—.
+        /// æ¥è§¦é–‹å§‹æ™‚ã®å‡¦ç†.
         /// </summary>
-        /// <param name="other">ÚG‘ŠèCollider.</param>
+        /// <param name="other">æ¥è§¦ç›¸æ‰‹Collider.</param>
         public void OnPlayerEnter(Collider other)
         {
             if (other == null)
@@ -69,17 +69,17 @@ namespace CarTrickRush.Gimmicks
         }
 
         /// <summary>
-        /// ÚG’†‚Ìˆ—.
+        /// æ¥è§¦ä¸­ã®å‡¦ç†.
         /// </summary>
-        /// <param name="other">ÚG‘ŠèCollider.</param>
+        /// <param name="other">æ¥è§¦ç›¸æ‰‹Collider.</param>
         public void OnPlayerStay(Collider other)
         {
         }
 
         /// <summary>
-        /// ÚGI—¹‚Ìˆ—.
+        /// æ¥è§¦çµ‚äº†æ™‚ã®å‡¦ç†.
         /// </summary>
-        /// <param name="other">ÚG‘ŠèCollider.</param>
+        /// <param name="other">æ¥è§¦ç›¸æ‰‹Collider.</param>
         public void OnPlayerExit(Collider other)
         {
         }
