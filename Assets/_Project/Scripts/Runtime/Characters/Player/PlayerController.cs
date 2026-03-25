@@ -13,6 +13,7 @@ namespace CarTrickRush.Characters.Player
     /// プレイヤー本体制御クラス.
     /// </summary>
     /// =========================================================================================
+    [RequireComponent(typeof(Rigidbody))]
     public sealed class PlayerController : MonoBehaviour
     {
         #region ------------------ Fields ------------------
@@ -196,7 +197,6 @@ namespace CarTrickRush.Characters.Player
                 Debug.Log($"[PlayerController] Bonus! {matchedBonus.BonusName} : {matchedBonus.Score}");
             }
 #endif
-
             _playerModel.ClearTrickInputs();
             _playerView?.PlayLand();
         }
