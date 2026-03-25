@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
@@ -43,6 +43,42 @@ namespace CarTrickRush.Managers
             DontDestroyOnLoad(gameObject);
         }
 
+        private void Update()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null)
+            {
+                return;
+            }
+
+            // Fallback polling for Input System keyboard.
+            // This keeps gameplay input working even if PlayerInput/UnityEvent wiring is missing.
+            if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
+            {
+                InvokeRotateRight();
+            }
+
+            if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
+            {
+                InvokeRotateLeft();
+            }
+
+            if (keyboard.wKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame)
+            {
+                InvokeRotateUp();
+            }
+
+            if (keyboard.sKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame)
+            {
+                InvokeRotateDown();
+            }
+
+            if (keyboard.escapeKey.wasPressedThisFrame)
+            {
+                InvokePause();
+            }
+        }
+
         #endregion
 
         #region ------------------ Events ------------------
@@ -69,6 +105,38 @@ namespace CarTrickRush.Managers
             if (context.performed)
             {
                 InputManager.Instance.InvokeRotateRight();
+            }
+        }
+
+        public void OnRotateLeft(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                InputManager.Instance.InvokeRotateLeft();
+            }
+        }
+
+        public void OnRotateUp(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                InputManager.Instance.InvokeRotateUp();
+            }
+        }
+
+        public void OnRotateDown(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                InputManager.Instance.InvokeRotateDown();
+            }
+        }
+
+        public void OnPause(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                InputManager.Instance.InvokePause();
             }
         }
 

@@ -304,6 +304,7 @@ namespace CarTrickRush.Player
 
             _trickInputs.Add(input);
 
+            _airState.LogRotationInput(input);
             ApplyRotation(input);
         }
 
@@ -317,19 +318,39 @@ namespace CarTrickRush.Player
             {
                 // 右回転.
                 case TrickInputType.RotateRight:
-                    transform.Rotate(Vector3.forward, -_rotationSpeed * Time.deltaTime);
+                    {
+                        Vector3 axis = Vector3.forward;
+                        float angle = -_rotationSpeed * Time.deltaTime;
+                        _airState.LogRotationApplied(input, axis, angle);
+                        transform.Rotate(axis, angle);
+                    }
                     break;
                 // 左回転.
                 case TrickInputType.RotateLeft:
-                    transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
+                    {
+                        Vector3 axis = Vector3.forward;
+                        float angle = _rotationSpeed * Time.deltaTime;
+                        _airState.LogRotationApplied(input, axis, angle);
+                        transform.Rotate(axis, angle);
+                    }
                     break;
                 // 上回転.
                 case TrickInputType.RotateUp:
-                    transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime);
+                    {
+                        Vector3 axis = Vector3.right;
+                        float angle = _rotationSpeed * Time.deltaTime;
+                        _airState.LogRotationApplied(input, axis, angle);
+                        transform.Rotate(axis, angle);
+                    }
                     break;
                 // 下回転.
                 case TrickInputType.RotateDown:
-                    transform.Rotate(Vector3.right, -_rotationSpeed * Time.deltaTime);
+                    {
+                        Vector3 axis = Vector3.right;
+                        float angle = -_rotationSpeed * Time.deltaTime;
+                        _airState.LogRotationApplied(input, axis, angle);
+                        transform.Rotate(axis, angle);
+                    }
                     break;
                 // 未定義.
                 default:

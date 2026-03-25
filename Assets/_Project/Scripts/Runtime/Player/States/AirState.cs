@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using CarTrickRush.Definitions;
 using CarTrickRush.Player.Interfaces;
@@ -63,6 +63,26 @@ namespace CarTrickRush.Player.States
         /// </summary>
         public void HandleInput()
         {
+        }
+
+        /// <summary>
+        /// 空中中に回転入力を受け取った際のログ出力.
+        /// </summary>
+        public void LogRotationInput(TrickInputType input)
+        {
+#if UNITY_EDITOR
+            Debug.Log($"[AirState] Rotation Input: {input}");
+#endif
+        }
+
+        /// <summary>
+        /// 空中中に回転が適用された際のログ出力.
+        /// </summary>
+        public void LogRotationApplied(TrickInputType input, Vector3 axis, float angleDegrees)
+        {
+#if UNITY_EDITOR
+            Debug.Log($"[AirState] Rotation Applied: {input}, axis={axis}, angle={angleDegrees}deg");
+#endif
         }
 
         /// <summary>
