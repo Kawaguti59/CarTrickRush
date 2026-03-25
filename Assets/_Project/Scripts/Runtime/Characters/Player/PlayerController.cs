@@ -1,13 +1,12 @@
 using UnityEngine;
-using System.Collections.Generic;
 
+using CarTrickRush.Character.Player.Interfaces;
 using CarTrickRush.Character.Player.Model;
+using CarTrickRush.Character.Player.States;
 using CarTrickRush.Character.Player.View;
 using CarTrickRush.Data;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
-using CarTrickRush.Character.Player.Interfaces;
-using CarTrickRush.Character.Player.States;
 
 namespace CarTrickRush.Character.Player
 {
@@ -51,19 +50,24 @@ namespace CarTrickRush.Character.Player
         [SerializeField] private float _penaltyDuration = 1.5f;
 
         /// <summary>
-        /// 回転速度.
-        /// </summary>
-        [SerializeField] private float _rotationSpeed = 360f;
-
-        /// <summary>
         /// トリックボーナスマスタ.
         /// </summary>
         [SerializeField] private TrickBonusMaster _bonusMaster;
 
         /// <summary>
+        /// プレイヤー見た目制御.
+        /// </summary>
+        [SerializeField] private PlayerView _playerView;
+
+        /// <summary>
         /// 現在状態.
         /// </summary>
         private IPlayerState _currentState;
+
+        /// <summary>
+        /// プレイヤーモデル.
+        /// </summary>
+        private PlayerModel _playerModel;
 
         /// <summary>
         /// 地上状態インスタンス.
@@ -79,16 +83,6 @@ namespace CarTrickRush.Character.Player
         /// ペナルティ状態インスタンス.
         /// </summary>
         private PenaltyState _penaltyState;
-
-        /// <summary>
-        /// トリック入力リスト.
-        /// </summary>
-        private readonly List<TrickInputType> _trickInputs = new();
-
-        /// <summary>
-        /// トリック入力キュー最大件数.
-        /// </summary>
-        private const int MaxTrickQueueSize = 5;
 
         #endregion
 
@@ -134,6 +128,19 @@ namespace CarTrickRush.Character.Player
             {
                 _rigidbody = GetComponent<Rigidbody>();
             }
+
+            _playerModel = new PlayerModel();
+            _playerModel.Initialize();
+
+            if (_playerView == null)
+            {
+                _playerView = GetComponent<PlayerView>();
+            }
+            if (_playerView == null)
+            {
+                _playerView = GetComponentInChildren<PlayerView>(true);
+            }
+            _playerView?.Initialize();
 
             _groundState = new GroundState(this);
             _airState = new AirState(this);
@@ -181,8 +188,19 @@ namespace CarTrickRush.Character.Player
         /// </summary>
         public void OnLanding()
         {
-            EvaluateTrick();
-            _trickInputs.Clear();
+            var matchedBonus = _playerModel.EvaluateTrick(
+                _bonusMaster != null ? _bonusMaster.BonusList : null
+            );
+
+#if UNITY_EDITOR
+            if (matchedBonus != null)
+            {
+                Debug.Log($"[PlayerController] Bonus! {matchedBonus.BonusName} : {matchedBonus.Score}");
+            }
+#endif
+
+            _playerModel.ClearTrickInputs();
+            _playerView?.PlayLand();
         }
 
         /// <summary>
@@ -196,9 +214,45 @@ namespace CarTrickRush.Character.Player
                 return;
             }
 
+            var prevStateType = CurrentStateType;
+
             _currentState?.Exit();
             _currentState = nextState;
             _currentState.Enter();
+
+            _playerModel.ChangeState(nextState.StateType);
+
+            // 演出は「状態遷移」タイミングで呼び出す（Landing/Jump/Penalty は別箇所でも呼ぶため上書きに注意）
+            if (_playerView != null)
+            {
+                if (nextState.StateType == PlayerStateType.Ground)
+                {
+                    // 空中→地上の遷移は OnLanding() で Land を再生するので、ここでは Run を抑制する。
+                    if (prevStateType != PlayerStateType.Air)
+                    {
+                        _playerView.PlayRun();
+                    }
+
+                    // ペナルティ終了時の点滅を止める。
+                    if (prevStateType == PlayerStateType.Penalty)
+                    {
+                        _playerView.StopBlink();
+                    }
+                }
+                else if (nextState.StateType == PlayerStateType.Penalty)
+                {
+                    _playerView.PlayPenalty();
+                    _playerView.StartBlink();
+                }
+                else if (nextState.StateType == PlayerStateType.Air)
+                {
+                    // ペナルティ中→空中の遷移は点滅を止める。
+                    if (prevStateType == PlayerStateType.Penalty)
+                    {
+                        _playerView.StopBlink();
+                    }
+                }
+            }
 
 #if UNITY_EDITOR
             if (_currentState.StateType == PlayerStateType.Ground)
@@ -248,6 +302,7 @@ namespace CarTrickRush.Character.Player
 
             // ジャンプ処理.
             Jump(jumpPower);
+            _playerView?.PlayJump();
             // 空中状態に遷移.
             ChangeState(_airState);
         }
@@ -308,133 +363,12 @@ namespace CarTrickRush.Character.Player
                 return;
             }
 
-            // キュー方式: 最大5件を超えたら古い入力から破棄する.
-            if (_trickInputs.Count >= MaxTrickQueueSize)
-            {
-                _trickInputs.RemoveAt(0);
-            }
-
-            _trickInputs.Add(input);
+            _playerModel.EnqueueTrickInput(input);
 
 #if UNITY_EDITOR
             Debug.Log($"[PlayerController] Rotation Input: {input}");
 #endif
-            ApplyRotation(input);
-        }
-
-        /// <summary>
-        /// 回転処理.
-        /// </summary>
-        /// <param name="input">トリック入力種別.</param>
-        private void ApplyRotation(TrickInputType input)
-        {
-            switch (input)
-            {
-                // 右回転.
-                case TrickInputType.RotateRight:
-                    {
-                        Vector3 axis = Vector3.forward;
-                        float angle = -_rotationSpeed * Time.deltaTime;
-                        LogRotationApplied(input, axis, angle);
-                        transform.Rotate(axis, angle);
-                    }
-                    break;
-                // 左回転.
-                case TrickInputType.RotateLeft:
-                    {
-                        Vector3 axis = Vector3.forward;
-                        float angle = _rotationSpeed * Time.deltaTime;
-                        LogRotationApplied(input, axis, angle);
-                        transform.Rotate(axis, angle);
-                    }
-                    break;
-                // 上回転.
-                case TrickInputType.RotateUp:
-                    {
-                        Vector3 axis = Vector3.right;
-                        float angle = _rotationSpeed * Time.deltaTime;
-                        LogRotationApplied(input, axis, angle);
-                        transform.Rotate(axis, angle);
-                    }
-                    break;
-                // 下回転.
-                case TrickInputType.RotateDown:
-                    {
-                        Vector3 axis = Vector3.right;
-                        float angle = -_rotationSpeed * Time.deltaTime;
-                        LogRotationApplied(input, axis, angle);
-                        transform.Rotate(axis, angle);
-                    }
-                    break;
-                // 未定義.
-                default:
-#if UNITY_EDITOR
-                    Debug.LogError($"Invalid input: {input}");
-#endif
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// 空中中に回転が適用された際のログ出力.
-        /// </summary>
-        private void LogRotationApplied(TrickInputType input, Vector3 axis, float angleDegrees)
-        {
-#if UNITY_EDITOR
-            //Debug.Log($"[PlayerController] Rotation Applied: {input}, axis={axis}, angle={angleDegrees}deg");
-#endif
-        }
-
-        /// <summary>
-        /// トリック評価.
-        /// </summary>
-        private void EvaluateTrick()
-        {
-            if (_bonusMaster == null)
-            {
-                return;
-            }
-
-            foreach (var bonus in _bonusMaster.BonusList)
-            {
-                if (IsMatch(bonus.Sequence))
-                {
-#if UNITY_EDITOR
-                    Debug.Log($"[PlayerController] Bonus! {bonus.BonusName} : {bonus.Score}");
-#endif
-                    // 一致したらキューを空にする.
-                    _trickInputs.Clear();
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// トリック入力シーケンス一致判定.
-        /// </summary>
-        /// <param name="sequence">トリック入力シーケンス.</param>
-        /// <returns>一致した場合はtrue, 一致しない場合はfalse.</returns>
-        private bool IsMatch(IReadOnlyList<TrickInputType> sequence)
-        {
-            // キュー末尾と一致するか（suffix一致）.
-            int requiredLength = sequence.Count;
-
-            if (_trickInputs.Count < requiredLength)
-            {
-                return false;
-            }
-
-            int startIndex = _trickInputs.Count - requiredLength;
-
-            for (int i = 0; i < requiredLength; i++)
-            {
-                if (_trickInputs[startIndex + i] != sequence[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            _playerView?.ApplyTrickRotation(input);
         }
 
         private void OnDrawGizmosSelected()

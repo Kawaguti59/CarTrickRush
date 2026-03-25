@@ -1,10 +1,12 @@
-using CarTrickRush.Core.View;
+using CarTrickRush.Definitions;
 
-namespace CarTrickRush.Character.Player.View
+namespace CarTrickRush.Core.View
 {
+    /// =========================================================================================
     /// <summary>
     /// プレイヤーViewの共通インターフェース.
     /// </summary>
+    /// =========================================================================================
     public interface IPlayerView : IView
     {
         /// <summary>
@@ -42,5 +44,10 @@ namespace CarTrickRush.Character.Player.View
         /// </summary>
         /// <param name="rotationZ">Z回転値.</param>
         void SetRotation(float rotationZ);
+
+        /// <summary>
+        /// トリック入力に応じた演出を再生する.
+        /// </summary>
+        void ApplyTrickRotation(TrickInputType input);
     }
 }
