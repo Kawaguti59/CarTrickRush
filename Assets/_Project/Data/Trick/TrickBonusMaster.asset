@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e75d19186c3724bb922784b6ec2adc, type: 3}
   m_Name: TrickBonusMaster
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Data.TrickBonusMaster
-  _bonuses:
+  _bonusList:
   - _bonusName: Test
     _score: 1000
     _sequence: 0100000002000000

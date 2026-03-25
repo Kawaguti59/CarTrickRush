@@ -1,6 +1,6 @@
 ﻿using CarTrickRush.Definitions;
 
-namespace CarTrickRush.Player.Interfaces
+namespace CarTrickRush.Character.Player.Interfaces
 {
     /// =========================================================================================
     /// <summary>

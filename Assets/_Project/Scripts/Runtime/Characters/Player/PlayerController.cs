@@ -1,20 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using CarTrickRush.Character.Player.Model;
+using CarTrickRush.Character.Player.View;
 using CarTrickRush.Data;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
-using CarTrickRush.Player.Interfaces;
-using CarTrickRush.Player.States;
+using CarTrickRush.Character.Player.Interfaces;
+using CarTrickRush.Character.Player.States;
 
-namespace CarTrickRush.Player
+namespace CarTrickRush.Character.Player
 {
     /// =========================================================================================
     /// <summary>
     /// プレイヤー本体制御クラス.
     /// </summary>
     /// =========================================================================================
-    [RequireComponent(typeof(Rigidbody))]
     public sealed class PlayerController : MonoBehaviour
     {
         #region ------------------ Fields ------------------
@@ -83,6 +84,11 @@ namespace CarTrickRush.Player
         /// トリック入力リスト.
         /// </summary>
         private readonly List<TrickInputType> _trickInputs = new();
+
+        /// <summary>
+        /// トリック入力キュー最大件数.
+        /// </summary>
+        private const int MaxTrickQueueSize = 5;
 
         #endregion
 
@@ -302,6 +308,12 @@ namespace CarTrickRush.Player
                 return;
             }
 
+            // キュー方式: 最大5件を超えたら古い入力から破棄する.
+            if (_trickInputs.Count >= MaxTrickQueueSize)
+            {
+                _trickInputs.RemoveAt(0);
+            }
+
             _trickInputs.Add(input);
 
 #if UNITY_EDITOR
@@ -369,7 +381,7 @@ namespace CarTrickRush.Player
         private void LogRotationApplied(TrickInputType input, Vector3 axis, float angleDegrees)
         {
 #if UNITY_EDITOR
-            Debug.Log($"[PlayerController] Rotation Applied: {input}, axis={axis}, angle={angleDegrees}deg");
+            //Debug.Log($"[PlayerController] Rotation Applied: {input}, axis={axis}, angle={angleDegrees}deg");
 #endif
         }
 
@@ -390,6 +402,8 @@ namespace CarTrickRush.Player
 #if UNITY_EDITOR
                     Debug.Log($"[PlayerController] Bonus! {bonus.BonusName} : {bonus.Score}");
 #endif
+                    // 一致したらキューを空にする.
+                    _trickInputs.Clear();
                     break;
                 }
             }
@@ -402,14 +416,19 @@ namespace CarTrickRush.Player
         /// <returns>一致した場合はtrue, 一致しない場合はfalse.</returns>
         private bool IsMatch(IReadOnlyList<TrickInputType> sequence)
         {
-            if (_trickInputs.Count != sequence.Count)
+            // キュー末尾と一致するか（suffix一致）.
+            int requiredLength = sequence.Count;
+
+            if (_trickInputs.Count < requiredLength)
             {
                 return false;
             }
 
-            for (int i = 0; i < sequence.Count; i++)
+            int startIndex = _trickInputs.Count - requiredLength;
+
+            for (int i = 0; i < requiredLength; i++)
             {
-                if (_trickInputs[i] != sequence[i])
+                if (_trickInputs[startIndex + i] != sequence[i])
                 {
                     return false;
                 }
@@ -432,4 +451,4 @@ namespace CarTrickRush.Player
 
         #endregion
     }
-    }
+}

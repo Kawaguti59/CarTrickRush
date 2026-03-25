@@ -1,17 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 using CarTrickRush.Definitions;
-using CarTrickRush.Player.Interfaces;
-using TMPro;
+using CarTrickRush.Character.Player.Interfaces;
 
-namespace CarTrickRush.Player.States
+namespace CarTrickRush.Character.Player.States
 {
     /// =========================================================================================
     /// <summary>
-    /// 空中状態クラス.
+    /// ペナルティ状態クラス.
     /// </summary>
     /// =========================================================================================
-    public sealed class AirState : IPlayerState
+    public sealed class PenaltyState : IPlayerState
     {
         #region ------------------ Fields ------------------
 
@@ -21,9 +20,9 @@ namespace CarTrickRush.Player.States
         private readonly PlayerController _playerController;
 
         /// <summary>
-        /// 地面離脱済みフラグ.
+        /// ペナルティ残り時間.
         /// </summary>
-        private bool _hasLeftGround;
+        private float _penaltyTimer;
 
         #endregion
 
@@ -32,12 +31,7 @@ namespace CarTrickRush.Player.States
         /// <summary>
         /// 状態種別.
         /// </summary>
-        public PlayerStateType StateType => PlayerStateType.Air;
-
-        /// <summary>
-        /// 接地判定.
-        /// </summary>
-        public bool IsGrounded => _playerController.IsGrounded();
+        public PlayerStateType StateType => PlayerStateType.Penalty;
 
         #endregion
 
@@ -48,7 +42,7 @@ namespace CarTrickRush.Player.States
         /// </summary>
         public void Enter()
         {
-            _hasLeftGround = false;
+            _penaltyTimer = _playerController.PenaltyDuration;
         }
 
         /// <summary>
@@ -66,31 +60,18 @@ namespace CarTrickRush.Player.States
         }
 
         /// <summary>
-        /// 空中中に回転入力を受け取った際のログ出力.
-        /// </summary>
-        public void LogRotationInput(TrickInputType input)
-        {
-#if UNITY_EDITOR
-            Debug.Log($"[AirState] Rotation Input: {input}");
-#endif
-        }
-
-        /// <summary>
         /// フレーム更新処理.
         /// </summary>
         public void Update()
         {
-            if (_hasLeftGround == false &&  !IsGrounded)
+            _penaltyTimer -= Time.deltaTime;
+
+            if (_penaltyTimer > 0f)
             {
-                _hasLeftGround = true;
                 return;
             }
 
-            if (_hasLeftGround && IsGrounded)
-            {
-                _playerController.OnLanding();
-                _playerController.ChangeState(_playerController.GroundState);
-            }
+            _playerController.ChangeState(_playerController.GroundState);
         }
 
         /// <summary>
@@ -98,7 +79,6 @@ namespace CarTrickRush.Player.States
         /// </summary>
         public void FixedUpdate()
         {
-            _playerController.MoveForward();
         }
 
         #endregion
@@ -106,10 +86,10 @@ namespace CarTrickRush.Player.States
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// 空中状態初期化.
+        /// ペナルティ状態初期化.
         /// </summary>
         /// <param name="playerController">プレイヤー本体参照.</param>
-        public AirState(PlayerController playerController)
+        public PenaltyState(PlayerController playerController)
         {
             _playerController = playerController;
         }
