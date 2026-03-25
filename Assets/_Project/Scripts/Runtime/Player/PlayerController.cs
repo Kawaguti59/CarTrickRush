@@ -304,7 +304,9 @@ namespace CarTrickRush.Player
 
             _trickInputs.Add(input);
 
-            _airState.LogRotationInput(input);
+#if UNITY_EDITOR
+            Debug.Log($"[PlayerController] Rotation Input: {input}");
+#endif
             ApplyRotation(input);
         }
 
@@ -321,7 +323,7 @@ namespace CarTrickRush.Player
                     {
                         Vector3 axis = Vector3.forward;
                         float angle = -_rotationSpeed * Time.deltaTime;
-                        _airState.LogRotationApplied(input, axis, angle);
+                        LogRotationApplied(input, axis, angle);
                         transform.Rotate(axis, angle);
                     }
                     break;
@@ -330,7 +332,7 @@ namespace CarTrickRush.Player
                     {
                         Vector3 axis = Vector3.forward;
                         float angle = _rotationSpeed * Time.deltaTime;
-                        _airState.LogRotationApplied(input, axis, angle);
+                        LogRotationApplied(input, axis, angle);
                         transform.Rotate(axis, angle);
                     }
                     break;
@@ -339,7 +341,7 @@ namespace CarTrickRush.Player
                     {
                         Vector3 axis = Vector3.right;
                         float angle = _rotationSpeed * Time.deltaTime;
-                        _airState.LogRotationApplied(input, axis, angle);
+                        LogRotationApplied(input, axis, angle);
                         transform.Rotate(axis, angle);
                     }
                     break;
@@ -348,7 +350,7 @@ namespace CarTrickRush.Player
                     {
                         Vector3 axis = Vector3.right;
                         float angle = -_rotationSpeed * Time.deltaTime;
-                        _airState.LogRotationApplied(input, axis, angle);
+                        LogRotationApplied(input, axis, angle);
                         transform.Rotate(axis, angle);
                     }
                     break;
@@ -359,6 +361,16 @@ namespace CarTrickRush.Player
 #endif
                     break;
             }
+        }
+
+        /// <summary>
+        /// 空中中に回転が適用された際のログ出力.
+        /// </summary>
+        private void LogRotationApplied(TrickInputType input, Vector3 axis, float angleDegrees)
+        {
+#if UNITY_EDITOR
+            Debug.Log($"[PlayerController] Rotation Applied: {input}, axis={axis}, angle={angleDegrees}deg");
+#endif
         }
 
         /// <summary>
@@ -375,7 +387,9 @@ namespace CarTrickRush.Player
             {
                 if (IsMatch(bonus.Sequence))
                 {
-                    Debug.Log($"BONUS! {bonus.BonusName} : {bonus.Score}");
+#if UNITY_EDITOR
+                    Debug.Log($"[PlayerController] Bonus! {bonus.BonusName} : {bonus.Score}");
+#endif
                     break;
                 }
             }

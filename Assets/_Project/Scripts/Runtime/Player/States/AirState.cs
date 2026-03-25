@@ -76,16 +76,6 @@ namespace CarTrickRush.Player.States
         }
 
         /// <summary>
-        /// 空中中に回転が適用された際のログ出力.
-        /// </summary>
-        public void LogRotationApplied(TrickInputType input, Vector3 axis, float angleDegrees)
-        {
-#if UNITY_EDITOR
-            Debug.Log($"[AirState] Rotation Applied: {input}, axis={axis}, angle={angleDegrees}deg");
-#endif
-        }
-
-        /// <summary>
         /// フレーム更新処理.
         /// </summary>
         public void Update()
