@@ -49,7 +49,7 @@ namespace CarTrickRush.Gimmicks
                 return;
             }
 
-            if (other.TryGetComponent<Character.Player.PlayerController>(out _) == false)
+            if (other.TryGetComponent<Characters.Player.PlayerController>(out _) == false)
             {
                 return;
             }

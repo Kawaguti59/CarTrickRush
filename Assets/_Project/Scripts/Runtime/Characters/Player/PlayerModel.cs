@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using CarTrickRush.Data;
 using CarTrickRush.Definitions;
 
-namespace CarTrickRush.Character.Player.Model
+namespace CarTrickRush.Characters.Player
 {
     /// =========================================================================================
     /// <summary>

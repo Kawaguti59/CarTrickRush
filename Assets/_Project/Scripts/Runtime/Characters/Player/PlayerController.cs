@@ -1,14 +1,12 @@
 using UnityEngine;
 
-using CarTrickRush.Character.Player.Interfaces;
-using CarTrickRush.Character.Player.Model;
-using CarTrickRush.Character.Player.States;
-using CarTrickRush.Character.Player.View;
+using CarTrickRush.Characters.Player.States;
+using CarTrickRush.Characters.Player.Interfaces;
 using CarTrickRush.Data;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 
-namespace CarTrickRush.Character.Player
+namespace CarTrickRush.Characters.Player
 {
     /// =========================================================================================
     /// <summary>

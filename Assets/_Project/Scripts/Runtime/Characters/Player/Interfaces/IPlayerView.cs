@@ -1,6 +1,7 @@
+using CarTrickRush.Core.View;
 using CarTrickRush.Definitions;
 
-namespace CarTrickRush.Core.View
+namespace CarTrickRush.Characters.Player.Interfaces
 {
     /// =========================================================================================
     /// <summary>

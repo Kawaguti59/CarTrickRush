@@ -1,7 +1,7 @@
 ﻿using CarTrickRush.Definitions;
-using CarTrickRush.Character.Player.Interfaces;
+using CarTrickRush.Characters.Player.Interfaces;
 
-namespace CarTrickRush.Character.Player.States
+namespace CarTrickRush.Characters.Player.States
 {
     /// =========================================================================================
     /// <summary>

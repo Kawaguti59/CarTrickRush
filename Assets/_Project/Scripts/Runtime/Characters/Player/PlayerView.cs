@@ -1,9 +1,9 @@
 using UnityEngine;
 
-using CarTrickRush.Core.View;
+using CarTrickRush.Characters.Player.Interfaces;
 using CarTrickRush.Definitions;
 
-namespace CarTrickRush.Character.Player.View
+namespace CarTrickRush.Characters.Player
 {
     /// =========================================================================================
     /// <summary>

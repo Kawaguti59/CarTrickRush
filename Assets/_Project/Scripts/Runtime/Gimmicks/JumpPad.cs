@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 using CarTrickRush.Gimmicks.Interfaces;
-using CarTrickRush.Character.Player;
+using CarTrickRush.Characters.Player;
 
 namespace CarTrickRush.Gimmicks
 {
