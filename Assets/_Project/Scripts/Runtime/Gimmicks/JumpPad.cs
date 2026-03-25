@@ -21,13 +21,11 @@ namespace CarTrickRush.Gimmicks
 
         #endregion
 
-
         #region ------------------ Properties ------------------
 
         private float JumpPower => _jumpPower;
 
         #endregion
-
 
         #region ------------------ MonoBehaviour Methods ------------------
 
