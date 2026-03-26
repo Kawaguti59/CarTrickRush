@@ -16,3 +16,6 @@ MonoBehaviour:
   - _bonusName: Test
     _score: 1000
     _sequence: 0100000002000000
+  - _bonusName: Test2
+    _score: 10000
+    _sequence: 030000000100000002000000

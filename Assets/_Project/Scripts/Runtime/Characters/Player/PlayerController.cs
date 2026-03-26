@@ -1,8 +1,10 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 using CarTrickRush.Characters.Player.States;
 using CarTrickRush.Characters.Player.Interfaces;
 using CarTrickRush.Data;
+using CarTrickRush.Debugging;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 
@@ -127,10 +129,6 @@ namespace CarTrickRush.Characters.Player
             {
                 _rigidbody = GetComponent<Rigidbody>();
             }
-
-            _playerModel = new PlayerModel();
-            _playerModel.Initialize();
-
             if (_playerView == null)
             {
                 _playerView = GetComponent<PlayerView>();
@@ -139,10 +137,18 @@ namespace CarTrickRush.Characters.Player
             {
                 _playerView = GetComponentInChildren<PlayerView>(true);
             }
+
+            // プレイヤーモデルを初期化.
+            _playerModel = new PlayerModel();
+            _playerModel.Initialize();
+            // プレイヤービューを初期化.
             _playerView?.Initialize();
 
+            // 地上状態インスタンスを初期化.
             _groundState = new GroundState(this);
+            // 空中状態インスタンスを初期化.
             _airState = new AirState(this);
+            // ペナルティ状態インスタンスを初期化.
             _penaltyState = new PenaltyState(this);
         }
 
@@ -187,16 +193,6 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void OnLanding()
         {
-            var matchedBonus = _playerModel.EvaluateTrick(
-                _bonusMaster != null ? _bonusMaster.BonusList : null
-            );
-
-#if UNITY_EDITOR
-            if (matchedBonus != null)
-            {
-                Debug.Log($"[PlayerController] Bonus! {matchedBonus.BonusName} : {matchedBonus.Score}");
-            }
-#endif
             _playerModel.ClearTrickInputs();
             _playerView?.PlayLand();
         }
@@ -208,7 +204,9 @@ namespace CarTrickRush.Characters.Player
         {
             if (nextState == null)
             {
+                #if UNITY_EDITOR
                 Debug.LogError("ChangeState failed.");
+                #endif
                 return;
             }
 
@@ -220,48 +218,36 @@ namespace CarTrickRush.Characters.Player
 
             _playerModel.ChangeState(nextState.StateType);
 
-            // 演出は「状態遷移」タイミングで呼び出す（Landing/Jump/Penalty は別箇所でも呼ぶため上書きに注意）
             if (_playerView != null)
             {
                 if (nextState.StateType == PlayerStateType.Ground)
                 {
-                    // 空中→地上の遷移は OnLanding() で Land を再生するので、ここでは Run を抑制する。
                     if (prevStateType != PlayerStateType.Air)
                     {
                         _playerView.PlayRun();
                     }
 
-                    // ペナルティ終了時の点滅を止める。
                     if (prevStateType == PlayerStateType.Penalty)
                     {
+                        // ペナルティ終了時の点滅を止める.
                         _playerView.StopBlink();
                     }
                 }
                 else if (nextState.StateType == PlayerStateType.Penalty)
                 {
+                    // ペナルティ演出を開始.
                     _playerView.PlayPenalty();
                     _playerView.StartBlink();
                 }
                 else if (nextState.StateType == PlayerStateType.Air)
                 {
-                    // ペナルティ中→空中の遷移は点滅を止める。
                     if (prevStateType == PlayerStateType.Penalty)
                     {
+                        // ペナルティ中→空中の遷移は点滅を止める.
                         _playerView.StopBlink();
                     }
                 }
             }
-
-#if UNITY_EDITOR
-            if (_currentState.StateType == PlayerStateType.Ground)
-            {
-                Debug.Log("[PlayerController] State changed to Ground.");
-            }
-            else if (_currentState.StateType == PlayerStateType.Air)
-            {
-                Debug.Log("[PlayerController] State changed to Air.");
-            }
-#endif
         }
 
         /// <summary>
@@ -362,23 +348,58 @@ namespace CarTrickRush.Characters.Player
             }
 
             _playerModel.EnqueueTrickInput(input);
+            EvaluateTrickBonusOnRotation();
 
-#if UNITY_EDITOR
-            Debug.Log($"[PlayerController] Rotation Input: {input}");
-#endif
+            DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
             _playerView?.ApplyTrickRotation(input);
+        }
+
+        /// <summary>
+        /// 回転入力の瞬間にトリックボーナス判定を行う.
+        /// 将来的にスコア加算/エフェクト表示/スコア表示の起点にする.
+        /// </summary>
+        private void EvaluateTrickBonusOnRotation()
+        {
+            IReadOnlyList<TrickInputType> queueSnapshot = _playerModel.GetTrickInputsSnapshot();
+            var matchedBonus = _playerModel.EvaluateTrick(
+                _bonusMaster != null ? _bonusMaster.BonusList : null
+            );
+
+            if (matchedBonus == null)
+            {
+                return;
+            }
+
+            DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, queueSnapshot);
+        }
+
+        /// <summary>
+        /// 回転入力をHUD表示用メッセージへ変換する.
+        /// </summary>
+        /// <param name="input">トリック入力種別.</param>
+        /// <returns>表示メッセージ.</returns>
+        private static string GetRotationLogMessage(TrickInputType input)
+        {
+            return input switch
+            {
+                TrickInputType.RotateUp => "[TrickInput] 上回転を実行",
+                TrickInputType.RotateDown => "[TrickInput] 下回転を実行",
+                TrickInputType.RotateLeft => "[TrickInput] 左回転を実行",
+                TrickInputType.RotateRight => "[TrickInput] 右回転を実行",
+                _ => null
+            };
         }
 
         private void OnDrawGizmosSelected()
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             if (_groundCheckPoint == null) return;
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(
                 _groundCheckPoint.position,
                 _groundCheckPoint.position + Vector3.down * _groundCheckDistance);
-#endif
+            #endif
         }
 
         #endregion

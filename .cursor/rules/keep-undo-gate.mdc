@@ -1,0 +1,14 @@
+---
+description: Require keep/undo approval before file edits
+alwaysApply: true
+---
+
+# Keep/Undo Approval Gate
+
+- Before any file edit, show a concise proposed diff first.
+- After showing the diff, wait for explicit user approval:
+  - `keep`: apply exactly that diff.
+  - `undo` / `cancel`: do not apply the diff.
+- Do not perform write operations before approval.
+- For follow-up edits in the same request, repeat the same keep/undo gate each time.
+- If requested change is urgent, still require keep/undo unless user explicitly asks for immediate apply.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using CarTrickRush.Data;
 using CarTrickRush.Definitions;
@@ -93,6 +94,14 @@ namespace CarTrickRush.Characters.Player
         }
 
         /// <summary>
+        /// 現在のトリック入力キューのスナップショットを取得する.
+        /// </summary>
+        public IReadOnlyList<TrickInputType> GetTrickInputsSnapshot()
+        {
+            return new List<TrickInputType>(_trickInputs);
+        }
+
+        /// <summary>
         /// トリックボーナスを評価する.
         /// 一致した場合はキューをクリアして一致したボーナスを返す.
         /// </summary>
@@ -105,7 +114,11 @@ namespace CarTrickRush.Characters.Player
                 return null;
             }
 
-            foreach (var bonus in bonusList)
+            // コンボ数の大きい順で評価する.
+            // 一致した時点で1件のみ採用し同時に複数ボーナスは発火させない.
+            foreach (var bonus in bonusList
+                         .Where(b => (b?.Sequence?.Count ?? 0) > 0)
+                         .OrderByDescending(b => b.Sequence.Count))
             {
                 if (IsMatch(bonus.Sequence))
                 {
