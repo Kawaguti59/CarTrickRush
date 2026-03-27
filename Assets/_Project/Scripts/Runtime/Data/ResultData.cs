@@ -1,5 +1,3 @@
-using CarTrickRush.Definitions;
-
 namespace CarTrickRush.Data
 {
     /// =========================================================================================
@@ -21,11 +19,6 @@ namespace CarTrickRush.Data
         /// </summary>
         public int BestScore { get; }
 
-        /// <summary>
-        /// ニューレコードか.
-        /// </summary>
-        public bool IsNewRecord { get; }
-
         #endregion
 
         #region ------------------ Public Methods ------------------
@@ -33,27 +26,21 @@ namespace CarTrickRush.Data
         /// <summary>
         /// リザルトデータを生成する.
         /// </summary>
-        /// <param name="currentScore">今回スコア.</param>
+        /// <param name="currentScore">今回のスコア.</param>
         /// <param name="bestScore">ベストスコア.</param>
-        /// <param name="isNewRecord">ニューレコードか.</param>
-        public ResultData(int currentScore, int bestScore, bool isNewRecord)
+        public ResultData(int currentScore, int bestScore)
         {
             CurrentScore = currentScore;
             BestScore = bestScore;
-            IsNewRecord = isNewRecord;
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         /// <summary>
-        /// エディタ／Development ビルド向け。単体で Result シーンを開いたときなど用の仮データ.
+        /// 単体でリザルトシーンを開いたときなど用の仮データを生成する.
         /// </summary>
         public static ResultData CreateDebugPlaceholder()
         {
-            return new ResultData(
-                currentScore: 12345,
-                bestScore: 12000,
-                isNewRecord: true
-            );
+            return new ResultData(12345, 12000);
         }
 #endif
 

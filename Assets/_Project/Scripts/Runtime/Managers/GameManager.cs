@@ -5,6 +5,7 @@ using System.Collections;
 using CarTrickRush.Characters.Player;
 using CarTrickRush.Core;
 using CarTrickRush.Data;
+using CarTrickRush.UI.Result;
 
 namespace CarTrickRush.Managers
 {
@@ -61,11 +62,6 @@ namespace CarTrickRush.Managers
         /// </summary>
         public static GameManager Instance => _instance;
 
-        /// <summary>
-        /// 現在のリザルトデータ.
-        /// </summary>
-        public ResultData CurrentResultData { get; private set; }
-
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
@@ -113,8 +109,6 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void Replay()
         {
-            // InputManager.Instance?.SetInputEnabled(true);
-            CurrentResultData = null;
             SceneLoadManager.LoadScene(_gameSceneName);
         }
 
@@ -123,22 +117,8 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void ReturnToTitle()
         {
-            // InputManager.Instance?.SetInputEnabled(true);
-            CurrentResultData = null;
             SceneLoadManager.LoadScene(_titleSceneName);
         }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        /// <summary>
-        /// <see cref="CurrentResultData"/> が無いときだけ、デバッグ用の仮リザルトを代入する（リリースビルドでは無効）.
-        /// </summary>
-        public void AssignDebugResultDataIfEmpty()
-        {
-            if (CurrentResultData != null) { return; }
-
-            CurrentResultData = ResultData.CreateDebugPlaceholder();
-        }
-#endif
 
         #endregion
 
@@ -151,8 +131,6 @@ namespace CarTrickRush.Managers
         private IEnumerator GoalSequenceCoroutine()
         {
             _isGoalSequenceRunning = true;
-
-            // InputManager.Instance?.SetInputEnabled(false);
 
             _playerController?.EnterGoalSequence();
 
@@ -176,13 +154,12 @@ namespace CarTrickRush.Managers
             var isNewRecord = currentScore > previousBestScore;
             var resolvedBestScore = isNewRecord ? currentScore : previousBestScore;
 
+            // セーブデータを更新する.
             saveManager?.UpdateBestScore(currentScore);
 
-            CurrentResultData = new ResultData(
-                currentScore,
-                resolvedBestScore,
-                isNewRecord
-            );
+            // リザルトシーンへ渡すデータをセットする.
+            var data = new ResultData(currentScore, resolvedBestScore);
+            ResultSceneSession.SetPending(data, isNewRecord);
         }
 
         #endregion

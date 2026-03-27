@@ -1,9 +1,10 @@
+using System.Collections;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-using System.Collections;
 using TMPro;
 
 using CarTrickRush.Data;
@@ -72,9 +73,9 @@ namespace CarTrickRush.UI.Result
         private bool _interactionsEnabled;
 
         /// <summary>
-        /// リトライ／タイトルいずれかが選択されているときの GameObject（選択が null に落ちたときだけ復帰に使う）.
+        /// ニューレコードか（<see cref="ResultSceneSession"/> から受け取り）.
         /// </summary>
-        private GameObject _lastSelectedButton;
+        private bool _isNewRecord;
 
         #endregion
 
@@ -83,8 +84,6 @@ namespace CarTrickRush.UI.Result
         private void Awake()
         {
             ApplyResult();
-            SetupPointerDownSelection(_retryButton);
-            SetupPointerDownSelection(_backToTitleButton);
             SetInteractionsEnabled(false);
         }
 
@@ -93,26 +92,6 @@ namespace CarTrickRush.UI.Result
             if (!_waitForAnimationBeforeInteractions)
             {
                 EnableResultInteractions();
-            }
-        }
-
-        private void LateUpdate()
-        {
-            if (!_interactionsEnabled) { return; }
-
-            var es = EventSystem.current;
-            if (es == null) { return; }
-
-            var sel = es.currentSelectedGameObject;
-            if (sel == _retryButton.gameObject || sel == _backToTitleButton.gameObject)
-            {
-                _lastSelectedButton = sel;
-                return;
-            }
-
-            if (sel == null && _lastSelectedButton != null)
-            {
-                es.SetSelectedGameObject(_lastSelectedButton);
             }
         }
 
@@ -155,48 +134,19 @@ namespace CarTrickRush.UI.Result
         private void ApplyResult()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            GameManager.Instance?.AssignDebugResultDataIfEmpty();
+            ResultSceneSession.AssignDebugPlaceholderIfEmpty();
 #endif
-            var resultData = GameManager.Instance?.CurrentResultData;
-
-            if (resultData == null) { return; }
+            if (!ResultSceneSession.TryConsume(out var resultData, out _isNewRecord))
+            {
+                return;
+            }
 
             _scoreValueText.text = resultData.CurrentScore.ToString("N0");
             _bestScoreValueText.text = resultData.BestScore.ToString("N0");
             _newRecordBestScoreText.text = resultData.BestScore.ToString("N0");
 
-            var isNew = resultData.IsNewRecord;
-            _lineBeforeNewRecord.SetActive(isNew);
-            _newRecordRoot.SetActive(isNew);
-        }
-
-        /// <summary>
-        /// ボタン押下時の選択処理を設定する.
-        /// </summary>
-        private void SetupPointerDownSelection(Button button)
-        {
-            var trigger = button.gameObject.GetComponent<EventTrigger>();
-            if (trigger == null)
-            {
-                trigger = button.gameObject.AddComponent<EventTrigger>();
-            }
-
-            var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            entry.callback.AddListener(_ => OnButtonPointerDown(button));
-            trigger.triggers.Add(entry);
-        }
-
-        /// <summary>
-        /// ボタン押下時の選択処理.
-        /// </summary>
-        private void OnButtonPointerDown(Button button)
-        {
-            if (!_interactionsEnabled) { return; }
-
-            var es = EventSystem.current;
-            if (es == null) { return; }
-
-            es.SetSelectedGameObject(button.gameObject);
+            _lineBeforeNewRecord.SetActive(_isNewRecord);
+            _newRecordRoot.SetActive(_isNewRecord);
         }
 
         /// <summary>
@@ -223,7 +173,6 @@ namespace CarTrickRush.UI.Result
             if (es == null) { yield break; }
 
             es.SetSelectedGameObject(_initialSelectedButton.gameObject);
-            _lastSelectedButton = _initialSelectedButton.gameObject;
         }
 
         #endregion
