@@ -9,37 +9,6 @@ using CarTrickRush.Core;
 
 namespace CarTrickRush.Managers
 {
-    /// <summary>
-    /// 加算シーン表示中に、元シーンのゲームプレイ入力（InputManager 経由）を無効にするためのゲート.
-    /// </summary>
-    public static class AdditiveOverlayInputGate
-    {
-        private static int _depth;
-
-        public static bool IsBlocked => _depth > 0;
-
-        internal static void Push()
-        {
-            _depth++;
-        }
-
-        internal static void Pop()
-        {
-            if (_depth > 0)
-            {
-                _depth--;
-            }
-        }
-
-        /// <summary>
-        /// シングルシーン遷移などで加算シーンが破棄されたとき、参照カウンタを初期化する.
-        /// </summary>
-        internal static void ResetDepth()
-        {
-            _depth = 0;
-        }
-    }
-
     /// =========================================================================================
     /// <summary>
     /// シーン遷移管理Manager.
