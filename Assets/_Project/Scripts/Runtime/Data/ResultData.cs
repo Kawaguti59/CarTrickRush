@@ -43,6 +43,20 @@ namespace CarTrickRush.Data
             IsNewRecord = isNewRecord;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>
+        /// エディタ／Development ビルド向け。単体で Result シーンを開いたときなど用の仮データ.
+        /// </summary>
+        public static ResultData CreateDebugPlaceholder()
+        {
+            return new ResultData(
+                currentScore: 12345,
+                bestScore: 12000,
+                isNewRecord: true
+            );
+        }
+#endif
+
         #endregion
     }
 }

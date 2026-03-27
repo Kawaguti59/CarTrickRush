@@ -128,6 +128,18 @@ namespace CarTrickRush.Managers
             SceneLoadManager.LoadScene(_titleSceneName);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>
+        /// <see cref="CurrentResultData"/> が無いときだけ、デバッグ用の仮リザルトを代入する（リリースビルドでは無効）.
+        /// </summary>
+        public void AssignDebugResultDataIfEmpty()
+        {
+            if (CurrentResultData != null) { return; }
+
+            CurrentResultData = ResultData.CreateDebugPlaceholder();
+        }
+#endif
+
         #endregion
 
         #region ------------------ Private Methods ------------------
