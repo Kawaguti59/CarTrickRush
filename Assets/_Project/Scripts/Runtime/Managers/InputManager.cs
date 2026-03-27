@@ -47,6 +47,11 @@ namespace CarTrickRush.Managers
 
         private void Update()
         {
+            if (AdditiveOverlayInputGate.IsBlocked)
+            {
+                return;
+            }
+
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null)
             {
@@ -96,12 +101,59 @@ namespace CarTrickRush.Managers
 
         #region ------------------ Public Methods ------------------
 
-        public void InvokeRotateRight() => RotateRightPerformed?.Invoke();
-        public void InvokeRotateLeft() => RotateLeftPerformed?.Invoke();
-        public void InvokeRotateUp() => RotateUpPerformed?.Invoke();
-        public void InvokeRotateDown() => RotateDownPerformed?.Invoke();
+        /// <summary>
+        /// 右回転を実行する.
+        /// </summary>
+        public void InvokeRotateRight()
+        {
+            if (AdditiveOverlayInputGate.IsBlocked) { return; }
 
-        public void InvokePause() => PausePerformed?.Invoke();
+            RotateRightPerformed?.Invoke();
+        }
+
+        /// <summary>
+        /// 左回転を実行する.
+        /// </summary>
+        public void InvokeRotateLeft()
+        {
+            if (AdditiveOverlayInputGate.IsBlocked) { return; }
+
+            RotateLeftPerformed?.Invoke();
+        }
+
+        /// <summary>
+        /// 上回転を実行する.
+        /// </summary>
+        public void InvokeRotateUp()
+        {
+            if (AdditiveOverlayInputGate.IsBlocked) { return; }
+
+            RotateUpPerformed?.Invoke();
+        }
+
+        /// <summary>
+        /// 下回転を実行する.
+        /// </summary>
+        public void InvokeRotateDown()
+        {
+            if (AdditiveOverlayInputGate.IsBlocked) { return; }
+
+            RotateDownPerformed?.Invoke();
+        }
+
+        /// <summary>
+        /// ポーズを実行する.
+        /// </summary>
+        public void InvokePause()
+        {
+            if (AdditiveOverlayInputGate.IsBlocked) { return; }
+
+            PausePerformed?.Invoke();
+        }
+
+        /// <summary>
+        /// 右回転を実行する.
+        /// </summary>
         public void OnRotateRight(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -110,6 +162,9 @@ namespace CarTrickRush.Managers
             }
         }
 
+        /// <summary>
+        /// 左回転を実行する.
+        /// </summary>
         public void OnRotateLeft(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -118,6 +173,9 @@ namespace CarTrickRush.Managers
             }
         }
 
+        /// <summary>
+        /// 上回転を実行する.
+        /// </summary>
         public void OnRotateUp(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -126,6 +184,9 @@ namespace CarTrickRush.Managers
             }
         }
 
+        /// <summary>
+        /// 下回転を実行する.
+        /// </summary>
         public void OnRotateDown(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -134,6 +195,9 @@ namespace CarTrickRush.Managers
             }
         }
 
+        /// <summary>
+        /// ポーズを実行する.
+        /// </summary>
         public void OnPause(InputAction.CallbackContext context)
         {
             if (context.performed)
