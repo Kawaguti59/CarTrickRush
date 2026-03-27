@@ -395,7 +395,7 @@ namespace CarTrickRush.Characters.Player
 
         private void OnDrawGizmosSelected()
         {
-            #if UNITY_EDITOR
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(
                 _groundCheckPoint.position,

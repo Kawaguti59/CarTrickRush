@@ -115,9 +115,9 @@ namespace CarTrickRush.Characters.Player
                     PlayAnimation(_rotateDownAnimationName);
                     break;
                 default:
-#if UNITY_EDITOR
+                    #if UNITY_EDITOR || DEVELOPMENT_BUILD
                     Debug.LogError($"Invalid input: {input}");
-#endif
+                    #endif
                     break;
             }
         }
