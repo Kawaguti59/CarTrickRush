@@ -71,11 +71,11 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         private void BindButtons()
         {
-            _replayButton?.onClick.RemoveAllListeners();
-            _replayButton?.onClick.AddListener(OnClickReplay);
+            _replayButton.onClick.RemoveAllListeners();
+            _replayButton.onClick.AddListener(OnClickReplay);
 
-            _backToTitleButton?.onClick.RemoveAllListeners();
-            _backToTitleButton?.onClick.AddListener(OnClickBackToTitle);
+            _backToTitleButton.onClick.RemoveAllListeners();
+            _backToTitleButton.onClick.AddListener(OnClickBackToTitle);
         }
 
         /// <summary>
@@ -85,35 +85,13 @@ namespace CarTrickRush.UI.Result
         {
             var resultData = GameManager.Instance?.CurrentResultData;
 
-            if (resultData == null)
-            {
-                return;
-            }
+            if (resultData == null) { return; }
 
-            if (_scoreLabelText != null)
-            {
-                _scoreLabelText.text = "SCORE";
-            }
-
-            if (_scoreValueText != null)
-            {
-                _scoreValueText.text = resultData.CurrentScore.ToString("N0");
-            }
-
-            if (_bestScoreLabelText != null)
-            {
-                _bestScoreLabelText.text = "BEST SCORE";
-            }
-
-            if (_bestScoreValueText != null)
-            {
-                _bestScoreValueText.text = resultData.BestScore.ToString("N0");
-            }
-
-            if (_newRecordRoot != null)
-            {
-                _newRecordRoot.SetActive(resultData.IsNewRecord);
-            }
+            _scoreLabelText.text = "SCORE";
+            _scoreValueText.text = resultData.CurrentScore.ToString("N0");
+            _bestScoreLabelText.text = "BEST SCORE";
+            _bestScoreValueText.text = resultData.BestScore.ToString("N0");
+            _newRecordRoot.SetActive(resultData.IsNewRecord);
         }
 
         /// <summary>

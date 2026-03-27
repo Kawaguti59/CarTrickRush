@@ -22,7 +22,6 @@ namespace CarTrickRush.UI
         #region ------------------ MonoBehaviour Methods ------------------
         private void Awake()
         {
-            Validate();
             SetupProgressBar();
         }
         
@@ -36,11 +35,6 @@ namespace CarTrickRush.UI
         /// <param name="progressRate">進捗率</param>
         public void SetProgress(float progressRate)
         {
-            if (_progressBar == null)
-            {
-                return;
-            }
-
             _progressBar.size = 0f;
             _progressBar.value = Mathf.Clamp01(progressRate);
         }
@@ -50,30 +44,10 @@ namespace CarTrickRush.UI
         /// </summary>
         private void SetupProgressBar()
         {
-            if (_progressBar == null)
-            {
-                return;
-            }
-
             _progressBar.interactable = false;
             _progressBar.size = 0f;
             _progressBar.value = 0f;
         }
-        #endregion
-
-        #region ------------------ Private Methods ------------------
-
-        /// <summary>
-        /// バリデーションを行う.
-        /// </summary>
-        private void Validate()
-        {
-            if (_progressBar == null)
-            {
-                Debug.LogWarning($"{nameof(ProgressView)} : ProgressBar is not assigned.", this);
-            }
-        }
-
         #endregion
     }
 }

@@ -39,11 +39,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayRun()
         {
-            if (_animator == null)
-            {
-                return;
-            }
-
+            if (_animator == null) { return; }
             _animator.Play("Run");
         }
 
@@ -52,11 +48,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayJump()
         {
-            if (_animator == null)
-            {
-                return;
-            }
-
+            if (_animator == null) { return; }
             _animator.Play("Jump");
         }
 
@@ -65,11 +57,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayLand()
         {
-            if (_animator == null)
-            {
-                return;
-            }
-
+            if (_animator == null) { return; }
             _animator.Play("Land");
         }
 
@@ -78,11 +66,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayPenalty()
         {
-            if (_animator == null)
-            {
-                return;
-            }
-
+            if (_animator == null) { return; }
             _animator.Play("Penalty");
         }
 
@@ -106,6 +90,7 @@ namespace CarTrickRush.Characters.Player
         /// <param name="rotationZ">Z回転値.</param>
         public void SetRotation(float rotationZ)
         {
+            if (_visualRoot == null) { return; }
             _visualRoot.transform.localRotation = Quaternion.Euler(0f, 0f, rotationZ);
         }
 
@@ -114,11 +99,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void ApplyTrickRotation(TrickInputType input)
         {
-            if (_animator == null)
-            {
-                return;
-            }
-
+            if (_animator == null) { return; }
             switch (input)
             {
                 case TrickInputType.RotateRight:
@@ -149,6 +130,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void Initialize()
         {
+            if (_visualRoot == null) { return; }
             _visualRoot.SetActive(true);
         }
 
@@ -157,6 +139,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void Show()
         {
+            if (_visualRoot == null) { return; }
             _visualRoot.SetActive(true);
         }
 
@@ -165,15 +148,13 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void Hide()
         {
+            if (_visualRoot == null) { return; }
             _visualRoot.SetActive(false);
         }
 
         private void PlayAnimation(string animationName)
         {
-            if (string.IsNullOrWhiteSpace(animationName))
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(animationName)) { return; }
 
             _animator.Play(animationName);
         }

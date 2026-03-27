@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 using CarTrickRush.Managers;
@@ -47,17 +47,6 @@ namespace CarTrickRush.DebugMenu
         /// </summary>
         private void Awake()
         {
-            if (_button == null)
-            {
-                _button = GetComponent<Button>();
-            }
-
-            if (_button == null)
-            {
-                Debug.LogError("Buttonが見つからない.");
-                return;
-            }
-
             _button.onClick.AddListener(OnClick);
         }
 

@@ -52,11 +52,6 @@ namespace CarTrickRush.UI
 
         #region ------------------ MonoBehaviour Methods ------------------
 
-        private void Awake()
-        {
-            Validate();
-        }
-
         private void OnEnable()
         {
             SubscribeEvents();
@@ -86,10 +81,7 @@ namespace CarTrickRush.UI
         /// </summary>
         private void SubscribeEvents()
         {
-            if (ScoreManager == null)
-            {
-                return;
-            }
+            if (ScoreManager == null) { return; }
 
             ScoreManager.ScoreChanged += OnScoreChanged;
         }
@@ -99,10 +91,7 @@ namespace CarTrickRush.UI
         /// </summary>
         private void UnsubscribeEvents()
         {
-            if (ScoreManager == null)
-            {
-                return;
-            }
+            if (ScoreManager == null) { return; }
 
             ScoreManager.ScoreChanged -= OnScoreChanged;
         }
@@ -112,7 +101,7 @@ namespace CarTrickRush.UI
         /// </summary>
         private void OnScoreChanged(int score)
         {
-            _scoreView?.SetScore(score);
+            _scoreView.SetScore(score);
         }
 
         /// <summary>
@@ -129,12 +118,9 @@ namespace CarTrickRush.UI
         /// </summary>
         private void RefreshScoreView()
         {
-            if (ScoreManager == null)
-            {
-                return;
-            }
+            if (ScoreManager == null) { return; }
 
-            _scoreView?.SetScore(ScoreManager.CurrentScore);
+            _scoreView.SetScore(ScoreManager.CurrentScore);
         }
 
         /// <summary>
@@ -142,12 +128,9 @@ namespace CarTrickRush.UI
         /// </summary>
         private void RefreshProgressView()
         {
-            if (!TryCalculateProgressRate(out var progressRate))
-            {
-                return;
-            }
+            if (!TryCalculateProgressRate(out var progressRate)) { return; }
 
-            _progressView?.SetProgress(progressRate);
+            _progressView.SetProgress(progressRate);
         }
 
         /// <summary>
@@ -156,11 +139,6 @@ namespace CarTrickRush.UI
         private bool TryCalculateProgressRate(out float progressRate)
         {
             progressRate = 0f;
-
-            if (_playerTransform == null || _startPoint == null || _goalPoint == null)
-            {
-                return false;
-            }
 
             var startX = _startPoint.position.x;
             var goalX = _goalPoint.position.x;
@@ -175,42 +153,6 @@ namespace CarTrickRush.UI
             progressRate = Mathf.InverseLerp(startX, goalX, playerX);
 
             return true;
-        }
-
-        /// <summary>
-        /// バリデーションを行う.
-        /// </summary>
-        private void Validate()
-        {
-            if (_scoreView == null)
-            {
-                Debug.LogWarning($"{nameof(GameUIPresenter)} : ScoreView is not assigned.", this);
-            }
-
-            if (_progressView == null)
-            {
-                Debug.LogWarning($"{nameof(GameUIPresenter)} : ProgressView is not assigned.", this);
-            }
-
-            if (ScoreManager == null)
-            {
-                Debug.LogWarning($"{nameof(GameUIPresenter)} : ScoreManager is not assigned.", this);
-            }
-
-            if (_playerTransform == null)
-            {
-                Debug.LogWarning($"{nameof(GameUIPresenter)} : PlayerTransform is not assigned.", this);
-            }
-
-            if (_startPoint == null)
-            {
-                Debug.LogWarning($"{nameof(GameUIPresenter)} : StartPoint is not assigned.", this);
-            }
-
-            if (_goalPoint == null)
-            {
-                Debug.LogWarning($"{nameof(GameUIPresenter)} : GoalPoint is not assigned.", this);
-            }
         }
 
         #endregion

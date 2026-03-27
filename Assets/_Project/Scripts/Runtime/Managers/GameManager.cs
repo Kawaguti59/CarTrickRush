@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using System.Collections;
 
@@ -93,10 +93,7 @@ namespace CarTrickRush.Managers
         /// <param name="playerController">PlayerController.</param>
         public void RegisterPlayer(PlayerController playerController)
         {
-            if (playerController == null)
-            {
-                return;
-            }
+            if (playerController == null) { return; }
 
             _playerController = playerController;
         }
@@ -106,10 +103,7 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void OnGoalReached()
         {
-            if (_isGoalSequenceRunning)
-            {
-                return;
-            }
+            if (_isGoalSequenceRunning) { return; }
 
             StartCoroutine(GoalSequenceCoroutine());
         }

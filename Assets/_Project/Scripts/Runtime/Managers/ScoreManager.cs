@@ -55,10 +55,7 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void ResetScore()
         {
-            if (_gameSessionData == null)
-            {
-                return;
-            }
+            if (_gameSessionData == null) { return; }
 
             _gameSessionData.SetScore(0);
             ScoreChanged?.Invoke(_gameSessionData.CurrentScore);
@@ -70,10 +67,7 @@ namespace CarTrickRush.Managers
         /// <param name="value">加算するスコア</param>
         public void AddScore(int value)
         {
-            if (_gameSessionData == null)
-            {
-                return;
-            }
+            if (_gameSessionData == null) { return; }
 
             var nextScore = _gameSessionData.CurrentScore + Mathf.Max(0, value);
             _gameSessionData.SetScore(nextScore);

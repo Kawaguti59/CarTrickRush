@@ -22,7 +22,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// セーブデータ.
         /// </summary>
-        [SerializeField] private UserSaveData _userSaveData;
+        private UserSaveData _userSaveData;
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace CarTrickRush.Managers
             _userSaveData = new UserSaveData();
 
             var bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
-            _userSaveData.SetBestScore(bestScore);
+            _userSaveData?.SetBestScore(bestScore);
         }
 
         /// <summary>
@@ -63,12 +63,7 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void Save()
         {
-            if (_userSaveData == null)
-            {
-                return;
-            }
-
-            PlayerPrefs.SetInt(BestScoreKey, _userSaveData.BestScore);
+            PlayerPrefs.SetInt(BestScoreKey, (_userSaveData?.BestScore ?? 0));
             PlayerPrefs.Save();
         }
 
@@ -78,17 +73,9 @@ namespace CarTrickRush.Managers
         /// <param name="currentScore">今回スコア.</param>
         public void UpdateBestScore(int currentScore)
         {
-            if (_userSaveData == null)
-            {
-                return;
-            }
+            if (currentScore <= (_userSaveData?.BestScore ?? 0)) { return; }
 
-            if (currentScore <= _userSaveData.BestScore)
-            {
-                return;
-            }
-
-            _userSaveData.SetBestScore(currentScore);
+            _userSaveData?.SetBestScore(currentScore);
             Save();
         }
 

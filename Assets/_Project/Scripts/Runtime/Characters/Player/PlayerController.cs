@@ -135,24 +135,11 @@ namespace CarTrickRush.Characters.Player
 
         private void Awake()
         {
-            if (_rigidbody == null)
-            {
-                _rigidbody = GetComponent<Rigidbody>();
-            }
-            if (_playerView == null)
-            {
-                _playerView = GetComponent<PlayerView>();
-            }
-            if (_playerView == null)
-            {
-                _playerView = GetComponentInChildren<PlayerView>(true);
-            }
-
             // プレイヤーモデルを初期化.
             _playerModel = new PlayerModel();
             _playerModel.Initialize();
             // プレイヤービューを初期化.
-            _playerView?.Initialize();
+            _playerView.Initialize();
 
             // 地上状態インスタンスを初期化.
             _groundState = new GroundState(this);
@@ -172,10 +159,7 @@ namespace CarTrickRush.Characters.Player
 
         private void Update()
         {
-            if (IsGoalSequenceRunning)
-            {
-                return;
-            }
+            if (IsGoalSequenceRunning) { return; }
 
             _currentState?.HandleInput();
             _currentState?.Update();
@@ -183,10 +167,7 @@ namespace CarTrickRush.Characters.Player
 
         private void FixedUpdate()
         {
-            if (IsGoalSequenceRunning)
-            {
-                return;
-            }
+            if (IsGoalSequenceRunning) { return; }
 
             _currentState?.FixedUpdate();
         }
@@ -217,7 +198,7 @@ namespace CarTrickRush.Characters.Player
         public void OnLanding()
         {
             _playerModel.ClearTrickInputs();
-            _playerView?.PlayLand();
+            _playerView.PlayLand();
         }
 
         /// <summary>
@@ -225,10 +206,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void ChangeState(IPlayerState nextState)
         {
-            if (nextState == null)
-            {
-                return;
-            }
+            if (nextState == null) { return; }
 
             var prevStateType = CurrentStateType;
 
@@ -237,11 +215,6 @@ namespace CarTrickRush.Characters.Player
             _currentState.Enter();
 
             _playerModel.ChangeState(nextState.StateType);
-
-            if (_playerView == null)
-            {
-                return;
-            }
 
             if (nextState.StateType == PlayerStateType.Ground)
             {
@@ -301,14 +274,11 @@ namespace CarTrickRush.Characters.Player
         /// <param name="jumpPower">ジャンプ力.</param>
         public void OnJumpPadTriggered(float jumpPower)
         {
-            if (CurrentStateType != PlayerStateType.Ground)
-            {
-                return;
-            }
+            if (CurrentStateType != PlayerStateType.Ground) { return; }
 
             // ジャンプ処理.
             Jump(jumpPower);
-            _playerView?.PlayJump();
+            _playerView.PlayJump();
             // 空中状態に遷移.
             ChangeState(_airState);
         }
@@ -329,7 +299,7 @@ namespace CarTrickRush.Characters.Player
         {
             _isGoalSequenceRunning = true;
 
-            _playerView?.PlayRun();
+            _playerView.PlayRun();
         }
 
         /// <summary>
@@ -383,16 +353,13 @@ namespace CarTrickRush.Characters.Player
         /// <param name="input">トリック入力種別.</param>
         private void RequestTrick(TrickInputType input)
         {
-            if (CurrentStateType != PlayerStateType.Air)
-            {
-                return;
-            }
+            if (CurrentStateType != PlayerStateType.Air) { return; }
 
             _playerModel.EnqueueTrickInput(input);
             EvaluateTrickBonusOnRotation();
 
             DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
-            _playerView?.ApplyTrickRotation(input);
+            _playerView.ApplyTrickRotation(input);
         }
 
         /// <summary>
@@ -402,14 +369,9 @@ namespace CarTrickRush.Characters.Player
         private void EvaluateTrickBonusOnRotation()
         {
             IReadOnlyList<TrickInputType> queueSnapshot = _playerModel.GetTrickInputsSnapshot();
-            var matchedBonus = _playerModel.EvaluateTrick(
-                _bonusMaster != null ? _bonusMaster.BonusList : null
-            );
+            var matchedBonus = _playerModel.EvaluateTrick(_bonusMaster.BonusList);
 
-            if (matchedBonus == null)
-            {
-                return;
-            }
+            if (matchedBonus == null) { return; }
 
             DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, queueSnapshot);
         }
@@ -434,8 +396,6 @@ namespace CarTrickRush.Characters.Player
         private void OnDrawGizmosSelected()
         {
             #if UNITY_EDITOR
-            if (_groundCheckPoint == null) return;
-
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(
                 _groundCheckPoint.position,
