@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a10449b5fce37d42a092473fb3cd2a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Core.Bootstrap
-  _firstSceneName: GameScene
+  _firstSceneName: TitleScene
 --- !u!4 &1091546379
 Transform:
   m_ObjectHideFlags: 0

@@ -84,7 +84,12 @@ namespace CarTrickRush.Characters.Player
         /// ペナルティ状態インスタンス.
         /// </summary>
         private PenaltyState _penaltyState;
-
+    
+        /// <summary>
+        /// ゴール演出中か.
+        /// </summary>
+        private bool _isGoalSequenceRunning = default;
+    
         #endregion
 
         #region ------------------ Properties ------------------
@@ -113,6 +118,11 @@ namespace CarTrickRush.Characters.Player
         /// ペナルティ時間.
         /// </summary>
         public float PenaltyDuration => _penaltyDuration;
+
+        /// <summary>
+        /// ゴール演出中か.
+        /// </summary>
+        public bool IsGoalSequenceRunning => _isGoalSequenceRunning;
 
         #endregion
 
@@ -154,17 +164,30 @@ namespace CarTrickRush.Characters.Player
 
         private void Start()
         {
+            // 初期状態に遷移.
             ChangeState(_groundState);
+            // ゲームマネージャーにプレイヤーを登録する.
+            GameManager.Instance?.RegisterPlayer(this);
         }
 
         private void Update()
         {
+            if (IsGoalSequenceRunning)
+            {
+                return;
+            }
+
             _currentState?.HandleInput();
             _currentState?.Update();
         }
 
         private void FixedUpdate()
         {
+            if (IsGoalSequenceRunning)
+            {
+                return;
+            }
+
             _currentState?.FixedUpdate();
         }
 
@@ -298,6 +321,28 @@ namespace CarTrickRush.Characters.Player
         {
             // ペナルティ状態に遷移.
             ChangeState(_penaltyState);
+        }
+
+        /// <summary>
+        /// ゴール演出状態を開始する.
+        /// </summary>
+        public void EnterGoalSequence()
+        {
+            _isGoalSequenceRunning = true;
+
+            if (_playerView != null)
+            {
+                _playerView.PlayRun();
+            }
+        }
+
+        /// <summary>
+        /// 前進速度を設定する.
+        /// </summary>
+        /// <param name="speed">前進速度.</param>
+        public void SetAutoMoveSpeed(float speed)
+        {
+            _autoMoveSpeed = Mathf.Max(0f, speed);
         }
 
         #endregion

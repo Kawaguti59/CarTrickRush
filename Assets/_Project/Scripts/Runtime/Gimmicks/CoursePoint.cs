@@ -1,6 +1,8 @@
-﻿using CarTrickRush.Definitions;
+﻿using UnityEngine;
+
+using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
-using UnityEngine;
+using CarTrickRush.Characters.Player;
 
 namespace CarTrickRush.Gimmicks
 {
@@ -44,31 +46,21 @@ namespace CarTrickRush.Gimmicks
                 return;
             }
 
-            if (_pointType != CoursePointType.Goal)
+            if (other.TryGetComponent<PlayerController>(out var playerController))
             {
+                _isTriggered = true;
+                switch (_pointType)
+                {
+                    case CoursePointType.Start:
+                        break;
+                    case CoursePointType.Goal:
+                        GameManager.Instance?.OnGoalReached();
+                        break;
+                    default:
+                        break;
+                }
                 return;
             }
-
-            if (other.TryGetComponent<Characters.Player.PlayerController>(out _) == false)
-            {
-                return;
-            }
-
-            _isTriggered = true;
-            SceneLoadManager.LoadScene("ResultScene");
-        }
-
-        #endregion
-
-        #region ------------------ Public Methods ------------------
-
-        /// <summary>
-        /// 開始地点座標を返します.
-        /// </summary>
-        /// <returns>開始地点座標.</returns>
-        public Vector3 GetPointPosition()
-        {
-            return transform.position;
         }
 
         #endregion

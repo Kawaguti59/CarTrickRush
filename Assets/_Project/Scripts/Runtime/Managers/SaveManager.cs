@@ -26,6 +26,15 @@ namespace CarTrickRush.Managers
 
         #endregion
 
+        #region ------------------ Properties ------------------
+
+        /// <summary>
+        /// 現在のベストスコア.
+        /// </summary>
+        public int BestScore => _userSaveData?.BestScore ?? 0;
+
+        #endregion
+
         #region ------------------ MonoBehaviour Methods ------------------
 
         private void Awake()
@@ -66,6 +75,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// ベストスコアを更新する.
         /// </summary>
+        /// <param name="currentScore">今回スコア.</param>
         public void UpdateBestScore(int currentScore)
         {
             if (_userSaveData == null)

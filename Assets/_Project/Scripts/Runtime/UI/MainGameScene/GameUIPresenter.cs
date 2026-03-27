@@ -112,12 +112,7 @@ namespace CarTrickRush.UI
         /// </summary>
         private void OnScoreChanged(int score)
         {
-            if (_scoreView == null)
-            {
-                return;
-            }
-
-            _scoreView.SetScore(score);
+            _scoreView?.SetScore(score);
         }
 
         /// <summary>
@@ -134,12 +129,12 @@ namespace CarTrickRush.UI
         /// </summary>
         private void RefreshScoreView()
         {
-            if (ScoreManager == null || _scoreView == null)
+            if (ScoreManager == null)
             {
                 return;
             }
 
-            _scoreView.SetScore(ScoreManager.CurrentScore);
+            _scoreView?.SetScore(ScoreManager.CurrentScore);
         }
 
         /// <summary>
@@ -147,17 +142,12 @@ namespace CarTrickRush.UI
         /// </summary>
         private void RefreshProgressView()
         {
-            if (_progressView == null)
+            if (!TryCalculateProgressRate(out var progressRate))
             {
                 return;
             }
 
-            if (TryCalculateProgressRate(out var progressRate) == false)
-            {
-                return;
-            }
-
-            _progressView.SetProgress(progressRate);
+            _progressView?.SetProgress(progressRate);
         }
 
         /// <summary>
