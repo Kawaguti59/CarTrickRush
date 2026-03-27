@@ -77,6 +77,20 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         private bool _isNewRecord;
 
+        /// <summary>
+        /// 現在のフォーカス対象（リトライ／タイトル）。選択が解除されたときの復帰先.
+        /// </summary>
+        private Button _currentButton;
+
+        #endregion
+
+        #region ------------------ Properties ------------------
+
+        /// <summary>
+        /// 現在のフォーカス対象ボタン。選択解除時はこの参照へ戻す.
+        /// </summary>
+        public Button CurrentButton => _currentButton;
+
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
@@ -84,6 +98,8 @@ namespace CarTrickRush.UI.Result
         private void Awake()
         {
             ApplyResult();
+            SetupButtonPointerSyncSelection(_retryButton);
+            SetupButtonPointerSyncSelection(_backToTitleButton);
             SetInteractionsEnabled(false);
         }
 
@@ -92,6 +108,32 @@ namespace CarTrickRush.UI.Result
             if (!_waitForAnimationBeforeInteractions)
             {
                 EnableResultInteractions();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (!_interactionsEnabled) { return; }
+
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) { return; }
+
+            var selectedGameObject = eventSystem.currentSelectedGameObject;
+            if (selectedGameObject == _retryButton.gameObject)
+            {
+                _currentButton = _retryButton;
+                return;
+            }
+
+            if (selectedGameObject == _backToTitleButton.gameObject)
+            {
+                _currentButton = _backToTitleButton;
+                return;
+            }
+
+            if (selectedGameObject == null && _currentButton != null)
+            {
+                eventSystem.SetSelectedGameObject(_currentButton.gameObject);
             }
         }
 
@@ -133,9 +175,10 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         private void ApplyResult()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             ResultSceneSession.AssignDebugPlaceholderIfEmpty();
-#endif
+            #endif
+
             if (!ResultSceneSession.TryConsume(out var resultData, out _isNewRecord))
             {
                 return;
@@ -147,6 +190,42 @@ namespace CarTrickRush.UI.Result
 
             _lineBeforeNewRecord.SetActive(_isNewRecord);
             _newRecordRoot.SetActive(_isNewRecord);
+        }
+
+        /// <summary>
+        /// マウスホバー／押下で EventSystem の選択と <see cref="_currentButton"/> を同期する.
+        /// </summary>
+        /// <param name="button">ボタン.</param>
+        private void SetupButtonPointerSyncSelection(Button button)
+        {
+            var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
+            if (eventTrigger == null)
+            {
+                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+            }
+
+            var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            pointerEnterEntry.callback.AddListener(_ => SyncSelectionToButton(button));
+            eventTrigger.triggers.Add(pointerEnterEntry);
+
+            var pointerDownEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            pointerDownEntry.callback.AddListener(_ => SyncSelectionToButton(button));
+            eventTrigger.triggers.Add(pointerDownEntry);
+        }
+
+        /// <summary>
+        /// 選択をボタンに同期する.
+        /// </summary>
+        /// <param name="button">ボタン.</param>
+        private void SyncSelectionToButton(Button button)
+        {
+            if (!_interactionsEnabled) { return; }
+
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) { return; }
+
+            eventSystem.SetSelectedGameObject(button.gameObject);
+            _currentButton = button;
         }
 
         /// <summary>
@@ -169,10 +248,11 @@ namespace CarTrickRush.UI.Result
 
             if (!_interactionsEnabled) { yield break; }
 
-            var es = EventSystem.current;
-            if (es == null) { yield break; }
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) { yield break; }
 
-            es.SetSelectedGameObject(_initialSelectedButton.gameObject);
+            eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
+            _currentButton = _initialSelectedButton;
         }
 
         #endregion
