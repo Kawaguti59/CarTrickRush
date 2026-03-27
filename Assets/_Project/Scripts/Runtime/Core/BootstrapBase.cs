@@ -7,7 +7,7 @@ namespace CarTrickRush.Core
     /// Boot処理の共通初期化を提供するクラス.
     /// </summary>
     /// =========================================================================================
-    public static class BootstrapUtility
+    public static class BootstrapBase
     {
         /// <summary>
         /// 必要なManagerを初期化する.
@@ -18,6 +18,8 @@ namespace CarTrickRush.Core
             CreateManager<CarTrickRush.Managers.SceneLoadManager>("SceneLoadManager");
             CreateManager<CarTrickRush.Managers.InputManager>("InputManager");
             CreateManager<CarTrickRush.Managers.TimeManager>("TimeManager");
+            CreateManager<CarTrickRush.Managers.SaveManager>("SaveManager");
+            CreateManager<CarTrickRush.Managers.ScoreManager>("ScoreManager");
         }
 
         /// <summary>

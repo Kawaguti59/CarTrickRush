@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+using CarTrickRush.Core;
+
 namespace CarTrickRush.Managers
 {
     /// =========================================================================================
@@ -39,6 +41,8 @@ namespace CarTrickRush.Managers
 
             _instance = this;
             DontDestroyOnLoad(gameObject);
+            // ManagerLocatorに登録する.
+            ManagerLocator.Register(this);
         }
 
         #endregion

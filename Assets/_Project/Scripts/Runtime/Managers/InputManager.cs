@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using CarTrickRush.Core;
 
 namespace CarTrickRush.Managers
 {
@@ -41,6 +42,7 @@ namespace CarTrickRush.Managers
 
             _instance = this;
             DontDestroyOnLoad(gameObject);
+            ManagerLocator.Register(this);
         }
 
         private void Update()

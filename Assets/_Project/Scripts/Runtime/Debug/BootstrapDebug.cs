@@ -13,7 +13,7 @@ namespace CarTrickRush.Core
 
         private void Awake()
         {
-            BootstrapUtility.InitializeManagers();
+            BootstrapBase.InitializeManagers();
         }
 
         #endregion
