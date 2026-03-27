@@ -227,9 +227,6 @@ namespace CarTrickRush.Characters.Player
         {
             if (nextState == null)
             {
-                #if UNITY_EDITOR
-                Debug.LogError("ChangeState failed.");
-                #endif
                 return;
             }
 
@@ -241,34 +238,36 @@ namespace CarTrickRush.Characters.Player
 
             _playerModel.ChangeState(nextState.StateType);
 
-            if (_playerView != null)
+            if (_playerView == null)
             {
-                if (nextState.StateType == PlayerStateType.Ground)
-                {
-                    if (prevStateType != PlayerStateType.Air)
-                    {
-                        _playerView.PlayRun();
-                    }
+                return;
+            }
 
-                    if (prevStateType == PlayerStateType.Penalty)
-                    {
-                        // ペナルティ終了時の点滅を止める.
-                        _playerView.StopBlink();
-                    }
-                }
-                else if (nextState.StateType == PlayerStateType.Penalty)
+            if (nextState.StateType == PlayerStateType.Ground)
+            {
+                if (prevStateType != PlayerStateType.Air)
                 {
-                    // ペナルティ演出を開始.
-                    _playerView.PlayPenalty();
-                    _playerView.StartBlink();
+                    _playerView.PlayRun();
                 }
-                else if (nextState.StateType == PlayerStateType.Air)
+
+                if (prevStateType == PlayerStateType.Penalty)
                 {
-                    if (prevStateType == PlayerStateType.Penalty)
-                    {
-                        // ペナルティ中→空中の遷移は点滅を止める.
-                        _playerView.StopBlink();
-                    }
+                    // ペナルティ終了時の点滅を止める.
+                    _playerView.StopBlink();
+                }
+            }
+            else if (nextState.StateType == PlayerStateType.Penalty)
+            {
+                // ペナルティ演出を開始.
+                _playerView.PlayPenalty();
+                _playerView.StartBlink();
+            }
+            else if (nextState.StateType == PlayerStateType.Air)
+            {
+                if (prevStateType == PlayerStateType.Penalty)
+                {
+                    // ペナルティ中→空中の遷移は点滅を止める.
+                    _playerView.StopBlink();
                 }
             }
         }
@@ -330,10 +329,7 @@ namespace CarTrickRush.Characters.Player
         {
             _isGoalSequenceRunning = true;
 
-            if (_playerView != null)
-            {
-                _playerView.PlayRun();
-            }
+            _playerView?.PlayRun();
         }
 
         /// <summary>

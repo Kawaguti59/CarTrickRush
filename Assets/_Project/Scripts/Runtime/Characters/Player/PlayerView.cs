@@ -106,11 +106,6 @@ namespace CarTrickRush.Characters.Player
         /// <param name="rotationZ">Z回転値.</param>
         public void SetRotation(float rotationZ)
         {
-            if (_visualRoot == null)
-            {
-                return;
-            }
-
             _visualRoot.transform.localRotation = Quaternion.Euler(0f, 0f, rotationZ);
         }
 
@@ -154,10 +149,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void Initialize()
         {
-            if (_visualRoot != null)
-            {
-                _visualRoot.SetActive(true);
-            }
+            _visualRoot.SetActive(true);
         }
 
         /// <summary>
@@ -165,10 +157,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void Show()
         {
-            if (_visualRoot != null)
-            {
-                _visualRoot.SetActive(true);
-            }
+            _visualRoot.SetActive(true);
         }
 
         /// <summary>
@@ -176,10 +165,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void Hide()
         {
-            if (_visualRoot != null)
-            {
-                _visualRoot.SetActive(false);
-            }
+            _visualRoot.SetActive(false);
         }
 
         private void PlayAnimation(string animationName)

@@ -70,7 +70,7 @@ namespace CarTrickRush.Characters.Player.States
         /// </summary>
         public void Update()
         {
-            if (_hasLeftGround == false &&  !IsGrounded)
+            if (!_hasLeftGround && !IsGrounded)
             {
                 _hasLeftGround = true;
                 return;

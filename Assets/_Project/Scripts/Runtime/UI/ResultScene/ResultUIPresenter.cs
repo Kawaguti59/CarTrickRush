@@ -71,17 +71,11 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         private void BindButtons()
         {
-            if (_replayButton != null)
-            {
-                _replayButton.onClick.RemoveAllListeners();
-                _replayButton.onClick.AddListener(OnClickReplay);
-            }
+            _replayButton?.onClick.RemoveAllListeners();
+            _replayButton?.onClick.AddListener(OnClickReplay);
 
-            if (_backToTitleButton != null)
-            {
-                _backToTitleButton.onClick.RemoveAllListeners();
-                _backToTitleButton.onClick.AddListener(OnClickBackToTitle);
-            }
+            _backToTitleButton?.onClick.RemoveAllListeners();
+            _backToTitleButton?.onClick.AddListener(OnClickBackToTitle);
         }
 
         /// <summary>

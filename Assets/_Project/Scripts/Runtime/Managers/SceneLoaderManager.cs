@@ -116,7 +116,7 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            if (IsSceneLoaded(sceneName) == false)
+            if (!IsSceneLoaded(sceneName))
             {
                 return;
             }
@@ -159,7 +159,7 @@ namespace CarTrickRush.Managers
                 yield break;
             }
 
-            while (asyncOperation.isDone == false)
+            while (!asyncOperation.isDone)
             {
                 yield return null;
             }

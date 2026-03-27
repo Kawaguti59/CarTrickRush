@@ -148,10 +148,7 @@ namespace CarTrickRush.Managers
 
             // InputManager.Instance?.SetInputEnabled(false);
 
-            if (_playerController != null)
-            {
-                _playerController.EnterGoalSequence();
-            }
+            _playerController?.EnterGoalSequence();
 
             BuildResultData();
 
