@@ -64,8 +64,9 @@ namespace CarTrickRush.Core
             get
             {
                 if (!TryGetValue(key, out var value))
+                {
                     throw new KeyNotFoundException();
-
+                }
                 return value;
             }
             set
@@ -83,6 +84,28 @@ namespace CarTrickRush.Core
                 _pairs.Add(new InspectablePair(key, value));
             }
         }
+
+        #endregion
+
+        #region ------------------ Interface Methods ------------------
+
+        /// <summary>
+        /// 列挙子を取得する.
+        /// </summary>
+        /// <returns>列挙子.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <summary>
+        /// シリアライズ前に呼ばれる.
+        /// </summary>
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+        }
+
+        /// <summary>
+        /// シリアライズ後に呼ばれる.
+        /// </summary>
+        void ISerializationCallbackReceiver.OnAfterDeserialize() => _cacheDirty = true;
 
         #endregion
 
@@ -225,28 +248,6 @@ namespace CarTrickRush.Core
 
         #endregion
 
-        #region ------------------ Interface Methods ------------------
-
-        /// <summary>
-        /// 列挙子を取得する.
-        /// </summary>
-        /// <returns>列挙子.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        /// <summary>
-        /// シリアライズ前に呼ばれる.
-        /// </summary>
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-        }
-
-        /// <summary>
-        /// シリアライズ後に呼ばれる.
-        /// </summary>
-        void ISerializationCallbackReceiver.OnAfterDeserialize() => _cacheDirty = true;
-
-        #endregion
-
         #region ------------------ Private Methods ------------------
 
         /// <summary>
@@ -325,7 +326,7 @@ namespace CarTrickRush.Core
 
             #endregion
 
-            #region ------------------ Constructors ------------------
+            #region ------------------ Public Methods ------------------
 
             /// <summary>
             /// コンストラクタ.

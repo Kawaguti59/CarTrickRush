@@ -23,12 +23,16 @@ namespace CarTrickRush.Managers
 
         #endregion
 
-        #region ------------------ Properties & Events ------------------
+        #region ------------------ Properties ------------------
 
         /// <summary>
         /// 現在のスコア.
         /// </summary>
         public int CurrentScore => _gameSessionData?.CurrentScore ?? 0;
+
+        #endregion
+
+        #region ------------------ Events ------------------
 
         /// <summary>
         /// スコア変更時イベント.

@@ -42,6 +42,26 @@ alwaysApply: false
 - ScriptableObject をデータ定義に活用。
 - 直接参照よりイベント・インターフェースを優先。
 
+## クラス先頭コメント
+
+- クラス直後はスニペットどおり `/// ===...===` で囲んだ `<summary>` を置く。
+
+## `#region` の区分名と並び（このセットのみ使用）
+
+メンバーが無い区分は **`#region` ごと省略**してよい。出す場合は次の順序を守る（上にある区分をすべて省略したうえで、残った区分同士の順序が正しければよい）。
+
+1. **Constants** — `const` および区分したい `static readonly` 等。ある場合は**常に最上**。
+2. **Fields**
+3. **Properties**
+4. **Events** — `event` 宣言。**Properties の直後**に置く（イベントが無ければ省略）。
+5. **MonoBehaviour Methods** — `MonoBehaviour` / `ScriptableObject` の Unity ライフサイクル・`OnValidate` 等。
+6. **Interface Methods** — 明示的インターフェース実装や、インターフェース契約としてまとめたいメソッド。
+7. **Public Methods**
+8. **Private Methods**
+9. **Nested Class** — ネスト型を親クラス内にまとめるラッパー。親型の末尾（上記の後）に置く。
+
+上記以外の区分名（例: `Unity Methods`, `Constructors`, `Internal Methods`, `Fields & Constants`, `Properties & Events` など）は**使わない**。`.ctor` は **Public Methods** または **Private Methods** に含める。`Unity Methods` は **MonoBehaviour Methods** に統一する。
+
 ## デバッグ（必要時）
 
 状態表示、コンボ表示、強制ペナルティ、スコア加算テストなどを想定し得る。

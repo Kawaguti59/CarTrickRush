@@ -7,15 +7,16 @@ namespace CarTrickRush.Data
     /// =========================================================================================
     public sealed class UserSaveData
     {
-        #region ------------------ Fields & Constants ------------------
+        #region ------------------ Fields ------------------
 
         /// <summary>
         /// ベストスコア.
         /// </summary>
         private int _bestScore;
+
         #endregion
 
-        #region ------------------ Properties & Events ------------------
+        #region ------------------ Properties ------------------
 
         /// <summary>
         /// ベストスコア.

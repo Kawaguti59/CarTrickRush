@@ -25,7 +25,7 @@ namespace CarTrickRush.Managers
 
         #endregion
 
-        #region ------------------ Internal Methods ------------------
+        #region ------------------ Private Methods ------------------
 
         /// <summary>
         /// ゲートを積む.

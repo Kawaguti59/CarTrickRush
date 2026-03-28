@@ -32,6 +32,17 @@ namespace CarTrickRush.Managers
 
         #endregion
 
+        #region ------------------ Events ------------------
+
+        public event Action RotateRightPerformed;
+        public event Action RotateLeftPerformed;
+        public event Action RotateUpPerformed;
+        public event Action RotateDownPerformed;
+
+        public event Action PausePerformed;
+
+        #endregion
+
         #region ------------------ MonoBehaviour Methods ------------------
 
         private void Awake()
@@ -87,17 +98,6 @@ namespace CarTrickRush.Managers
                 InvokePause();
             }
         }
-
-        #endregion
-
-        #region ------------------ Events ------------------
-
-        public event Action RotateRightPerformed;
-        public event Action RotateLeftPerformed;
-        public event Action RotateUpPerformed;
-        public event Action RotateDownPerformed;
-
-        public event Action PausePerformed;
 
         #endregion
 
