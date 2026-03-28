@@ -36,6 +36,11 @@ namespace CarTrickRush.Managers
         [SerializeField] private Color _transitionOverlayColor = Color.black;
 
         /// <summary>
+        /// Cover で全面が黒になったあと、シーン読み込みを始める前に待つ時間（秒、unscaled）.
+        /// </summary>
+        [SerializeField] private float _minFullBlackHoldDuration = 0.1f;
+
+        /// <summary>
         /// シングル遷移のルールフェード実行中.
         /// </summary>
         private bool _singleLoadTransitionRunning = default;
@@ -278,6 +283,12 @@ namespace CarTrickRush.Managers
             overlay.Show();
 
             yield return overlay.AnimateProgress(0f, 1f, entry.CoverDuration);
+
+            var holdBeforeLoad = Mathf.Max(0f, _minFullBlackHoldDuration);
+            if (holdBeforeLoad > 0f)
+            {
+                yield return new WaitForSecondsRealtime(holdBeforeLoad);
+            }
 
             var asyncOperation = SceneManager.LoadSceneAsync(sceneName);
             if (asyncOperation == null)

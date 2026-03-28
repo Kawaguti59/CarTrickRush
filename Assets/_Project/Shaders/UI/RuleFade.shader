@@ -70,7 +70,10 @@ Shader "CarTrickRush/UI/RuleFade"
                 half4 sampleTex = tex2D(_MainTex, i.texcoord);
                 half m = max(sampleTex.r, sampleTex.a);
                 half edge = max(_Softness, 0.0001);
-                half cover = smoothstep(m - edge, m + edge, _Progress);
+                // m が 1 に近い画素では [m-edge,m+edge] に _Progress==1 が収まり cover が 1 にならないため、
+                // 進捗をわずかにスケールして _Progress==1 で必ず帯の右側に来るようにする.
+                half p = _Progress * (1.0 + 2.0 * edge);
+                half cover = smoothstep(m - edge, m + edge, p);
                 fixed4 col = _Color;
                 col.a *= cover;
                 return col;
