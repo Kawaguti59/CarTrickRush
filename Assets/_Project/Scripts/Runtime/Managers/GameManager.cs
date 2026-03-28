@@ -39,16 +39,6 @@ namespace CarTrickRush.Managers
         private bool _isGoalSequenceRunning = default;
 
         /// <summary>
-        /// タイトルシーン名.
-        /// </summary>
-        private string _titleSceneName = "TitleScene";
-
-        /// <summary>
-        /// ゲームシーン名.
-        /// </summary>
-        private string _gameSceneName = "GameScene";
-
-        /// <summary>
         /// リザルト加算シーン名.
         /// </summary>
         private string _resultOverlaySceneName = "ResultScene";
@@ -102,22 +92,6 @@ namespace CarTrickRush.Managers
             if (_isGoalSequenceRunning) { return; }
 
             StartCoroutine(GoalSequenceCoroutine());
-        }
-
-        /// <summary>
-        /// リプレイする.
-        /// </summary>
-        public void Replay()
-        {
-            SceneLoadManager.LoadScene(_gameSceneName);
-        }
-
-        /// <summary>
-        /// タイトルへ戻る.
-        /// </summary>
-        public void ReturnToTitle()
-        {
-            SceneLoadManager.LoadScene(_titleSceneName);
         }
 
         #endregion

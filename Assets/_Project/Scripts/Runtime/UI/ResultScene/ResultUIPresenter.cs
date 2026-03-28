@@ -155,7 +155,7 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         public void OnClickRetry()
         {
-            GameManager.Instance?.Replay();
+            SceneLoadManager.LoadScene("GameScene", 0);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         public void OnClickBackToTitle()
         {
-            GameManager.Instance?.ReturnToTitle();
+            SceneLoadManager.LoadScene("TitleScene", 0);
         }
 
         #endregion
