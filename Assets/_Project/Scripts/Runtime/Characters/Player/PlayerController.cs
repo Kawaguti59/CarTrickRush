@@ -7,6 +7,7 @@ using CarTrickRush.Characters.Player.Interfaces;
 using CarTrickRush.Data;
 using CarTrickRush.Debugging;
 using CarTrickRush.Definitions;
+using CarTrickRush.GameScene;
 using CarTrickRush.Managers;
 
 namespace CarTrickRush.Characters.Player
@@ -155,7 +156,7 @@ namespace CarTrickRush.Characters.Player
             // 初期状態に遷移.
             ChangeState(_groundState);
             // ゲームマネージャーにプレイヤーを登録する.
-            GameManager.Instance?.RegisterPlayer(this);
+            MainProcess.Instance?.RegisterPlayer(this);
         }
 
         private void Update()

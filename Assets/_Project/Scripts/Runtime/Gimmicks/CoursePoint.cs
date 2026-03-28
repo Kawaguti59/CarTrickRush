@@ -1,8 +1,8 @@
 using UnityEngine;
 
 using CarTrickRush.Definitions;
-using CarTrickRush.Managers;
 using CarTrickRush.Characters.Player;
+using CarTrickRush.GameScene;
 
 namespace CarTrickRush.Gimmicks
 {
@@ -54,7 +54,7 @@ namespace CarTrickRush.Gimmicks
                     case CoursePointType.Start:
                         break;
                     case CoursePointType.Goal:
-                        GameManager.Instance?.OnGoalReached();
+                        MainProcess.Instance?.OnGoalReached();
                         break;
                     default:
                         break;
