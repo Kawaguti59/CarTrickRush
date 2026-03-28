@@ -126,12 +126,12 @@ namespace CarTrickRush.Data
                 return false;
             }
 
-            for (var i = 0; i < _sets.Count; i++)
+            for (var index = 0; index < _sets.Count; index++)
             {
-                var s = _sets[i];
-                if (s != null && s.Id == id)
+                var setEntry = _sets[index];
+                if (setEntry != null && setEntry.Id == id)
                 {
-                    entry = s;
+                    entry = setEntry;
                     return true;
                 }
             }
@@ -147,15 +147,15 @@ namespace CarTrickRush.Data
         private void OnValidate()
         {
             var seen = new HashSet<int>();
-            for (var i = 0; i < _sets.Count; i++)
+            for (var index = 0; index < _sets.Count; index++)
             {
-                var s = _sets[i];
-                if (s == null)
+                var setEntry = _sets[index];
+                if (setEntry == null)
                 {
                     continue;
                 }
 
-                var id = s.Id;
+                var id = setEntry.Id;
                 if (id < 0)
                 {
                     Debug.LogWarning($"{name}: セットの ID は 0 以上にしてください（負の値は LoadScene のフェードなし指定用）.");

@@ -86,7 +86,7 @@ namespace CarTrickRush.UI.SceneTransition
         }
 
         #endregion
-        
+
         #region ------------------ Public Methods ------------------
 
         /// <summary>
@@ -134,16 +134,16 @@ namespace CarTrickRush.UI.SceneTransition
             _canvasGroup.interactable = false;
             _canvasGroup.alpha = 1f;
 
-            var imageGo = new GameObject("RuleFadeRawImage", typeof(RectTransform));
-            imageGo.transform.SetParent(transform, false);
-            _rawImage = imageGo.AddComponent<RawImage>();
+            var ruleFadeRawImageObject = new GameObject("RuleFadeRawImage", typeof(RectTransform));
+            ruleFadeRawImageObject.transform.SetParent(this.transform, false);
+            _rawImage = ruleFadeRawImageObject.AddComponent<RawImage>();
             _rawImage.raycastTarget = true;
 
-            var rt = _rawImage.rectTransform;
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
+            var transform = _rawImage.rectTransform;
+            transform.anchorMin = Vector2.zero;
+            transform.anchorMax = Vector2.one;
+            transform.offsetMin = Vector2.zero;
+            transform.offsetMax = Vector2.zero;
 
             var shader = Shader.Find(ShaderName);
             if (shader == null)
@@ -239,9 +239,9 @@ namespace CarTrickRush.UI.SceneTransition
             while (elapsed < duration)
             {
                 elapsed += Time.unscaledDeltaTime;
-                var t = Mathf.Clamp01(elapsed / duration);
-                var p = Mathf.Lerp(from, to, t);
-                _materialInstance.SetFloat(ProgressId, p);
+                var normalizedTime = Mathf.Clamp01(elapsed / duration);
+                var lerpedProgress = Mathf.Lerp(from, to, normalizedTime);
+                _materialInstance.SetFloat(ProgressId, lerpedProgress);
                 yield return null;
             }
 

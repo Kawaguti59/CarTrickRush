@@ -1,0 +1,47 @@
+---
+description: CarTrickRush C# コーディング規約（_Project スクリプト）
+globs: Assets/_Project/**/*.cs
+alwaysApply: false
+---
+
+# CarTrickRush — C# 規約
+
+## アクセス・API
+
+- メソッドは原則 `private`。外部から必要なものだけ `public`。
+- `public` API は必要最小限にし、**必ず XML コメント（`<summary>`）** を付ける。
+- 外部に渡す値は getter のみのプロパティを優先。`protected` は継承用途のみ、`internal` は意図がある場合のみ。
+- `SerializeField private` を基本とし、**public フィールドは禁止**。
+
+## 命名
+
+- フィールド（`SerializeField` 含む）: `_camelCase`。
+- プロパティ: `PascalCase`。
+
+## コメント（XML）
+
+- 体言止めまたは常体。文末は「.」で統一。一行で簡潔に。
+- クラス `<summary>` は役割のみ。冗長禁止。必要なら `<remarks>`。
+
+## using の順
+
+1. `UnityEngine` 系  
+2. `System` 系  
+3. その他外部  
+4. プロジェクト内 namespace（**直前に 1 行空行**、プロジェクト内は**アルファベット順**）
+
+## var
+
+- ローカル変数は原則すべて `var`。型がやや不明瞭でも `var` を優先。明示型はやむを得ない場合のみ。
+
+## 実装方針
+
+- 1 クラス 1 責務。状態変更は専用メソッド経由。
+- MonoBehaviour は制御に留め、データと表示を分離。
+- null チェック必須。`Update` の乱用を避け、イベント駆動を優先。
+- ScriptableObject をデータ定義に活用。
+- 直接参照よりイベント・インターフェースを優先。
+
+## デバッグ（必要時）
+
+状態表示、コンボ表示、強制ペナルティ、スコア加算テストなどを想定し得る。

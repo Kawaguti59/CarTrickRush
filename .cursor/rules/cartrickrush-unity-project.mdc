@@ -1,0 +1,43 @@
+---
+description: CarTrickRush Unity 6 プロジェクト概要・アーキテクチャ・ゲーム仕様（常時）
+alwaysApply: true
+---
+
+# CarTrickRush — プロジェクトコンテキスト
+
+## スタック・環境
+
+- Unity 6.0 LTS、URP、新 Input System のみ（旧 Input Manager は使わない）。
+- 解像度 1920×1080（16:9）。
+- パッケージ: Input System、TextMeshPro、Cinemachine。
+
+## シーン
+
+- BootScene → TitleScene、GameScene、ResultScene。Boot で各 Manager 初期化。
+
+## アーキテクチャ
+
+- Model / View / Controller（Driver）。Manager 層で全体制御。
+- View は Model を直接変更しない。MonoBehaviour 同士の直接依存を避け、インターフェース・イベントで抽象化。
+- グローバル変数は使わない。外部公開は最小限、実装は隠蔽。
+- ギミック拡張: `IPlayerTrigger`、`IPlayerEffect` を想定。
+
+## 想定 Manager
+
+GameManager、シーン遷移（標準ラップ可）、Audio、Save、Input、UI、Score、Time など。
+
+## ゲーム要約（実装時の前提）
+
+- オート横スクロール、60 秒固定、スコアアタック。
+- 入力: RotateRight/Left/Up/Down、Pause（回転はジャンプ中のみ）。
+- プレイヤー状態: Ground → Air（回転・着地）→ Penalty（演出・操作不能・点滅復活・ジャンプ台無効）。
+- スコア: 回転ごと加算、シーケンスは ScriptableObject のコンボボーナス、ペナルティで減点。
+- データ: MVP は PlayerPrefs のベストスコア。Stretch はランキング等。
+
+## MVP 必須
+
+自動走行、ジャンプ台 2 種、4 方向回転、コンボ、ペナルティ、HUD、Result、ベストスコア保存。
+
+## 完成条件の目安
+
+60 秒プレイ可能、例外なし、シーン遷移安定、README に設計思想。

@@ -71,11 +71,11 @@ namespace CarTrickRush.Core
             set
             {
                 _cacheDirty = true;
-                for (var i = 0; i < _pairs.Count; i++)
+                for (var index = 0; index < _pairs.Count; index++)
                 {
-                    if (KeyEquals(_pairs[i].Key, key))
+                    if (KeyEquals(_pairs[index].Key, key))
                     {
-                        _pairs[i] = new InspectablePair(key, value);
+                        _pairs[index] = new InspectablePair(key, value);
                         return;
                     }
                 }
@@ -114,15 +114,17 @@ namespace CarTrickRush.Core
         /// <summary>
         /// バリューが存在するかどうかを判断する.
         /// </summary>
-        /// <param name="value">バリュー.</param>
+        /// <param name="searchValue">検索するバリュー.</param>
         /// <returns>バリューが存在するかどうか.</returns>
-        public bool ContainsValue(TValue value)
+        public bool ContainsValue(TValue searchValue)
         {
             EnsureCache();
-            foreach (var v in _cache.Values)
+            foreach (var value in _cache.Values)
             {
-                if (ValueEquals(v, value))
+                if (ValueEquals(value, searchValue))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -136,7 +138,9 @@ namespace CarTrickRush.Core
         public void Add(TKey key, TValue value)
         {
             if (ContainsKey(key))
+            {
                 throw new ArgumentException("An item with the same key has already been added.", nameof(key));
+            }
 
             _cacheDirty = true;
             _pairs.Add(new InspectablePair(key, value));
@@ -151,11 +155,11 @@ namespace CarTrickRush.Core
         {
             _cacheDirty = true;
             var removed = false;
-            for (var i = _pairs.Count - 1; i >= 0; i--)
+            for (var index = _pairs.Count - 1; index >= 0; index--)
             {
-                if (KeyEquals(_pairs[i].Key, key))
+                if (KeyEquals(_pairs[index].Key, key))
                 {
-                    _pairs.RemoveAt(i);
+                    _pairs.RemoveAt(index);
                     removed = true;
                 }
             }
@@ -256,10 +260,10 @@ namespace CarTrickRush.Core
             _cache ??= new Dictionary<TKey, TValue>(EqualityComparer<TKey>.Default);
             _cache.Clear();
 
-            for (var i = 0; i < _pairs.Count; i++)
+            for (var index = 0; index < _pairs.Count; index++)
             {
-                var p = _pairs[i];
-                _cache[p.Key] = p.Value;
+                var pair = _pairs[index];
+                _cache[pair.Key] = pair.Value;
             }
 
             _cacheDirty = false;

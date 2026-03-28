@@ -329,9 +329,9 @@ namespace CarTrickRush.Managers
 
             var disabled = new List<EventSystem>();
             var systems = FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
-            for (var i = 0; i < systems.Length; i++)
+            for (var index = 0; index < systems.Length; index++)
             {
-                var eventSystem = systems[i];
+                var eventSystem = systems[index];
                 if (eventSystem == null || eventSystem.gameObject.scene == overlayScene)
                 {
                     continue;
@@ -387,9 +387,9 @@ namespace CarTrickRush.Managers
             if (_disabledEventSystemLayers.Count > 0)
             {
                 var disabled = _disabledEventSystemLayers.Pop();
-                for (var i = 0; i < disabled.Count; i++)
+                for (var index = 0; index < disabled.Count; index++)
                 {
-                    var eventSystem = disabled[i];
+                    var eventSystem = disabled[index];
                     if (eventSystem != null)
                     {
                         eventSystem.enabled = true;

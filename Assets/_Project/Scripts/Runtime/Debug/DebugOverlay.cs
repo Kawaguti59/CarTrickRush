@@ -93,15 +93,15 @@ namespace CarTrickRush.Debugging
             GUI.Box(area, GUIContent.none);
             GUI.color = Color.white;
 
-            var sb = new StringBuilder();
-            for (int i = _logs.Count - 1; i >= 0; i--)
+            var stringBuilder = new StringBuilder();
+            for (var index = _logs.Count - 1; index >= 0; index--)
             {
-                sb.AppendLine(_logs[i].Message);
+                stringBuilder.AppendLine(_logs[index].Message);
             }
 
             var padding = 20f;
             var textRect = new Rect(area.x + padding, area.y + padding, area.width - padding * 2f, area.height - padding * 2f);
-            GUI.Label(textRect, sb.ToString(), _labelStyle);
+            GUI.Label(textRect, stringBuilder.ToString(), _labelStyle);
         }
 
         #endregion
@@ -133,27 +133,27 @@ namespace CarTrickRush.Debugging
                 return;
             }
 
-            var sb = new StringBuilder();
-            sb.Append($"[Bonus] {bonusName} (+{score})");
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append($"[Bonus] {bonusName} (+{score})");
 
             if (queueSnapshot == null || queueSnapshot.Count == 0)
             {
-                sb.AppendLine();
-                sb.Append("Queue: (empty)");
+                stringBuilder.AppendLine();
+                stringBuilder.Append("Queue: (empty)");
             }
             else
             {
-                sb.AppendLine();
-                sb.Append("Queue:");
+                stringBuilder.AppendLine();
+                stringBuilder.Append("Queue:");
 
-                for (int i = 0; i < queueSnapshot.Count; i++)
+                for (var index = 0; index < queueSnapshot.Count; index++)
                 {
-                    sb.AppendLine();
-                    sb.Append($"{i + 1}. {ToShortLabel(queueSnapshot[i])}");
+                    stringBuilder.AppendLine();
+                    stringBuilder.Append($"{index + 1}. {ToShortLabel(queueSnapshot[index])}");
                 }
             }
 
-            _instance.PushLog(sb.ToString());
+            _instance.PushLog(stringBuilder.ToString());
         }
 
         private void PushLog(string message)
