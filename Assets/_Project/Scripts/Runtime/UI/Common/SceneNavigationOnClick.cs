@@ -39,6 +39,11 @@ namespace CarTrickRush.UI.Common
         /// </summary>
         [SerializeField] private LoadMode _loadMode = LoadMode.Single;
 
+        /// <summary>
+        /// ルールフェードのセットID.
+        /// </summary>
+        [SerializeField] private int _transitionSetId = 0;
+
         #endregion
 
         #region ------------------ Public Methods ------------------
@@ -60,7 +65,7 @@ namespace CarTrickRush.UI.Common
             {
                 // 単一シーン読み込み
                 case LoadMode.Single:
-                    SceneLoadManager.LoadScene(_sceneName);
+                    SceneLoadManager.LoadScene(_sceneName, _transitionSetId);
                     break;
                 // 加算読み込み
                 case LoadMode.Additive:

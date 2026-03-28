@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 using CarTrickRush.Core;
+using CarTrickRush.Data;
+using CarTrickRush.UI.SceneTransition;
 
 namespace CarTrickRush.Managers
 {
@@ -22,6 +24,26 @@ namespace CarTrickRush.Managers
         /// インスタンス.
         /// </summary>
         private static SceneLoadManager _instance;
+
+        /// <summary>
+        /// ルールフェード用カタログ.
+        /// </summary>
+        [SerializeField] private SceneTransitionCatalog _sceneTransitionCatalog;
+
+        /// <summary>
+        /// ルールフェードのオーバーレイ色.
+        /// </summary>
+        [SerializeField] private Color _transitionOverlayColor = Color.black;
+
+        /// <summary>
+        /// シングル遷移のルールフェード実行中.
+        /// </summary>
+        private bool _singleLoadTransitionRunning;
+
+        /// <summary>
+        /// ルールフェード用オーバーレイ.
+        /// </summary>
+        private SceneRuleFadeOverlay _ruleFadeOverlay;
 
         /// <summary>
         /// 加算シーンごとに無効化した EventSystem の復元用（LIFO）.
@@ -57,6 +79,7 @@ namespace CarTrickRush.Managers
             _instance = this;
             DontDestroyOnLoad(gameObject);
             ManagerLocator.Register(this);
+            ResolveSceneTransitionCatalog();
         }
 
         #endregion
@@ -67,7 +90,8 @@ namespace CarTrickRush.Managers
         /// 指定したシーンへ遷移する.
         /// </summary>
         /// <param name="sceneName">遷移先シーン名.</param>
-        public static void LoadScene(string sceneName)
+        /// <param name="transitionSetId">ルールフェードのセットID.</param>
+        public static void LoadScene(string sceneName, int transitionSetId = -1)
         {
             if (string.IsNullOrEmpty(sceneName))
             {
@@ -81,8 +105,42 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            Instance.ClearAdditiveOverlayStateForSingleLoad();
-            SceneManager.LoadScene(sceneName);
+            if (Instance._singleLoadTransitionRunning)
+            {
+                Debug.LogWarning("SceneLoadManager.LoadScene: 別のシングル遷移が進行中のため無視しました.");
+                return;
+            }
+
+            if (transitionSetId < 0)
+            {
+                Instance.ClearAdditiveOverlayStateForSingleLoad();
+                SceneManager.LoadScene(sceneName);
+                return;
+            }
+
+            Instance.ResolveSceneTransitionCatalog();
+            var catalog = Instance._sceneTransitionCatalog;
+            if (catalog == null)
+            {
+                Debug.LogWarning(
+                    "SceneLoadManager.LoadScene: SceneTransitionCatalog が null のためフェードをスキップしました. " +
+                    $"いずれかの Resources フォルダ（例: Data/Resources）に「{SceneTransitionCatalog.ResourcesAssetName}.asset」があるか、シーン上の SceneLoadManager にカタログをアサインしてください.");
+                Instance.ClearAdditiveOverlayStateForSingleLoad();
+                SceneManager.LoadScene(sceneName);
+                return;
+            }
+
+            if (!catalog.TryGet(transitionSetId, out var entry))
+            {
+                Debug.LogWarning(
+                    $"SceneLoadManager.LoadScene: transitionSetId={transitionSetId} がカタログに無いためフェードをスキップしました. " +
+                    "カタログの Sets に同じ ID のエントリがあるか確認してください.");
+                Instance.ClearAdditiveOverlayStateForSingleLoad();
+                SceneManager.LoadScene(sceneName);
+                return;
+            }
+
+            Instance.StartCoroutine(Instance.LoadSceneWithRuleFadeRoutine(sceneName, entry));
         }
 
         /// <summary>
@@ -130,10 +188,7 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            if (!IsSceneLoaded(sceneName))
-            {
-                return;
-            }
+            if (!IsSceneLoaded(sceneName)) { return; }
 
             Instance.StartCoroutine(Instance.UnloadSceneCoroutine(sceneName));
         }
@@ -157,6 +212,85 @@ namespace CarTrickRush.Managers
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// カタログ参照を解決する（Inspector 未設定時は Resources）.
+        /// </summary>
+        private void ResolveSceneTransitionCatalog()
+        {
+            if (_sceneTransitionCatalog != null) { return; }
+
+            _sceneTransitionCatalog = Resources.Load<SceneTransitionCatalog>(SceneTransitionCatalog.ResourcesAssetName);
+        }
+
+        /// <summary>
+        /// ルールフェード用オーバーレイを確保する.
+        /// </summary>
+        /// <returns>オーバーレイ.</returns>
+        private SceneRuleFadeOverlay EnsureRuleFadeOverlay()
+        {
+            if (_ruleFadeOverlay != null)
+            {
+                return _ruleFadeOverlay;
+            }
+
+            var gameObject = new GameObject("SceneTransitionOverlay");
+            gameObject.transform.SetParent(transform, false);
+            _ruleFadeOverlay = gameObject.AddComponent<SceneRuleFadeOverlay>();
+            _ruleFadeOverlay.EnsureBuilt(_transitionOverlayColor);
+            return _ruleFadeOverlay;
+        }
+
+        /// <summary>
+        /// ルールフェード付きシングルシーン読み込み.
+        /// </summary>
+        /// <param name="sceneName">遷移先シーン名.</param>
+        /// <param name="entry">カタログエントリ.</param>
+        /// <returns>コルーチン.</returns>
+        private IEnumerator LoadSceneWithRuleFadeRoutine(string sceneName, SceneTransitionSetEntry entry)
+        {
+            _singleLoadTransitionRunning = true;
+            ClearAdditiveOverlayStateForSingleLoad();
+
+            var overlay = EnsureRuleFadeOverlay();
+            overlay.EnsureBuilt(_transitionOverlayColor);
+            if (!overlay.IsReady)
+            {
+                Debug.LogError("SceneLoadManager: ルールフェード用シェーダーが無効のため即時遷移します.");
+                SceneManager.LoadScene(sceneName);
+                _singleLoadTransitionRunning = false;
+                yield break;
+            }
+
+            overlay.Configure(entry.FadeOutMask, entry.Softness);
+            overlay.SetProgress(0f);
+            overlay.Show();
+
+            yield return overlay.AnimateProgress(0f, 1f, entry.CoverDuration);
+
+            var asyncOperation = SceneManager.LoadSceneAsync(sceneName);
+            if (asyncOperation == null)
+            {
+                Debug.LogError($"SceneLoadManager.LoadSceneWithRuleFadeRoutine failed. sceneName:{sceneName}");
+                overlay.Hide();
+                _singleLoadTransitionRunning = false;
+                yield break;
+            }
+
+            while (asyncOperation.isDone == false)
+            {
+                yield return null;
+            }
+
+            yield return null;
+
+            overlay.Configure(entry.FadeInMask, entry.Softness);
+            overlay.SetProgress(1f);
+            yield return overlay.AnimateProgress(1f, 0f, entry.RevealDuration);
+            overlay.Hide();
+
+            _singleLoadTransitionRunning = false;
+        }
 
         /// <summary>
         /// 加算読み込みコルーチン.
@@ -197,16 +331,16 @@ namespace CarTrickRush.Managers
             var systems = FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
             for (var i = 0; i < systems.Length; i++)
             {
-                var es = systems[i];
-                if (es == null || es.gameObject.scene == overlayScene)
+                var eventSystem = systems[i];
+                if (eventSystem == null || eventSystem.gameObject.scene == overlayScene)
                 {
                     continue;
                 }
 
-                if (es.enabled)
+                if (eventSystem.enabled)
                 {
-                    es.enabled = false;
-                    disabled.Add(es);
+                    eventSystem.enabled = false;
+                    disabled.Add(eventSystem);
                 }
             }
 
@@ -242,10 +376,7 @@ namespace CarTrickRush.Managers
         /// </summary>
         private void RestoreOneAdditiveOverlayLayer()
         {
-            if (_inputGateLayers.Count == 0)
-            {
-                return;
-            }
+            if (_inputGateLayers.Count == 0) { return; }
 
             var hadInputGate = _inputGateLayers.Pop();
             if (hadInputGate)
@@ -258,10 +389,10 @@ namespace CarTrickRush.Managers
                 var disabled = _disabledEventSystemLayers.Pop();
                 for (var i = 0; i < disabled.Count; i++)
                 {
-                    var es = disabled[i];
-                    if (es != null)
+                    var eventSystem = disabled[i];
+                    if (eventSystem != null)
                     {
-                        es.enabled = true;
+                        eventSystem.enabled = true;
                     }
                 }
             }

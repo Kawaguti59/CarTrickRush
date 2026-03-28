@@ -800,6 +800,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Common.SceneNavigationOnClick
   _sceneName: Settings
   _loadMode: 1
+  _transitionSetId: 0
 --- !u!1001 &1764058472
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -979,6 +980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Common.SceneNavigationOnClick
   _sceneName: GameScene
   _loadMode: 0
+  _transitionSetId: 0
 --- !u!1 &1777018406
 GameObject:
   m_ObjectHideFlags: 0
