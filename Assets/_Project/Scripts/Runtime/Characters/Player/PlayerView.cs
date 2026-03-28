@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using CarTrickRush.Characters.Player.Interfaces;
+using CarTrickRush.Core;
 using CarTrickRush.Definitions;
 
 namespace CarTrickRush.Characters.Player
@@ -24,12 +25,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         [SerializeField] private Animator _animator;
 
-        [Header("Trick Animation Names")]
-        [SerializeField] private string _rotateRightAnimationName = "TrickRotateRight";
-        [SerializeField] private string _rotateLeftAnimationName = "TrickRotateLeft";
-        [SerializeField] private string _rotateUpAnimationName = "TrickRotateUp";
-        [SerializeField] private string _rotateDownAnimationName = "TrickRotateDown";
-        
+        /// <summary>
+        /// 入力に応じたアニメーション名.
+        /// </summary>
+        [SerializeField] private InspectableMap<TrickInputType, string> _trickAnimationNames = default;
+
         #endregion
 
        #region ------------------ Interface Methods ------------------
@@ -100,25 +100,10 @@ namespace CarTrickRush.Characters.Player
         public void ApplyTrickRotation(TrickInputType input)
         {
             if (_animator == null) { return; }
-            switch (input)
+            if (_trickAnimationNames != null)
             {
-                case TrickInputType.RotateRight:
-                    PlayAnimation(_rotateRightAnimationName);
-                    break;
-                case TrickInputType.RotateLeft:
-                    PlayAnimation(_rotateLeftAnimationName);
-                    break;
-                case TrickInputType.RotateUp:
-                    PlayAnimation(_rotateUpAnimationName);
-                    break;
-                case TrickInputType.RotateDown:
-                    PlayAnimation(_rotateDownAnimationName);
-                    break;
-                default:
-                    #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                    Debug.LogError($"Invalid input: {input}");
-                    #endif
-                    break;
+                PlayAnimation(_trickAnimationNames[input]);
+                return;
             }
         }
         #endregion

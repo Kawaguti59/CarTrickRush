@@ -184,7 +184,6 @@ MonoBehaviour:
     m_Bits: 64
   _groundCheckDistance: 0.2
   _penaltyDuration: 1.5
-  _rotationSpeed: 360
   _bonusMaster: {fileID: 11400000, guid: fa45b045fbce3e140be1de0fc9ca80e6, type: 2}
   _playerView: {fileID: 8505319571068935465}
 --- !u!114 &8505319571068935465
@@ -201,6 +200,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Character.Player.View.PlayerView
   _visualRoot: {fileID: 0}
   _animator: {fileID: 0}
+  _rotateRightAnimationName: TrickRotateRight
+  _rotateLeftAnimationName: TrickRotateLeft
+  _rotateUpAnimationName: TrickRotateUp
+  _rotateDownAnimationName: TrickRotateDown
+  _trickAnimationNames:
+    _pairs:
+    - _key: 1
+      _value: TrickRotateRight
+    - _key: 2
+      _value: TrickRotateLeft
+    - _key: 3
+      _value: TrickRotateUp
+    - _key: 4
+      _value: TrickRotateDown
 --- !u!65 &5695945034185517499
 BoxCollider:
   m_ObjectHideFlags: 0
