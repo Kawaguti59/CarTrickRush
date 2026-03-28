@@ -137,10 +137,13 @@ namespace CarTrickRush.Characters.Player
             _visualRoot.SetActive(false);
         }
 
+        /// <summary>
+        /// アニメーションを再生する.
+        /// </summary>
+        /// <param name="animationName">アニメーション名.</param>
         private void PlayAnimation(string animationName)
         {
             if (string.IsNullOrWhiteSpace(animationName)) { return; }
-
             _animator.Play(animationName);
         }
         
