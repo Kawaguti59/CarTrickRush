@@ -1,9 +1,9 @@
-using System.Collections;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+using System.Collections;
 
 using TMPro;
 

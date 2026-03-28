@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 using System.Collections.Generic;
 using System.Text;
+
 using CarTrickRush.Definitions;
 
 namespace CarTrickRush.Debugging
