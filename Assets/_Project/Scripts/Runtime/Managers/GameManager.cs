@@ -113,6 +113,8 @@ namespace CarTrickRush.Managers
             yield return new WaitForSeconds(_resultOverlayDelay);
 
             SceneLoadManager.LoadSceneAdditive(_resultOverlaySceneName);
+
+            _isGoalSequenceRunning = false;
         }
 
         /// <summary>
