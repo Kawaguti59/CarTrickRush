@@ -46,22 +46,22 @@ namespace CarTrickRush.UI.SceneTransition
         /// <summary>
         /// マスク表示用 RawImage.
         /// </summary>
-        private RawImage _rawImage;
+        private RawImage _rawImage = default;
 
         /// <summary>
         /// マテリアルインスタンス.
         /// </summary>
-        private Material _materialInstance;
+        private Material _materialInstance = default;
 
         /// <summary>
         /// オーバーレイ用 Canvas.
         /// </summary>
-        private Canvas _canvas;
+        private Canvas _canvas = default;
 
         /// <summary>
         /// CanvasGroup.
         /// </summary>
-        private CanvasGroup _canvasGroup;
+        private CanvasGroup _canvasGroup = default;
 
         #endregion
 

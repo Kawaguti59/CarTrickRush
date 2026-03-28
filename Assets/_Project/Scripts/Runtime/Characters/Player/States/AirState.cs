@@ -18,12 +18,12 @@ namespace CarTrickRush.Characters.Player.States
         /// <summary>
         /// プレイヤー参照.
         /// </summary>
-        private readonly PlayerController _playerController;
+        private readonly PlayerController _playerController = default;
 
         /// <summary>
         /// 地面離脱済みフラグ.
         /// </summary>
-        private bool _hasLeftGround;
+        private bool _hasLeftGround = default;
 
         #endregion
 

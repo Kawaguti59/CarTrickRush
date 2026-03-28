@@ -19,7 +19,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// ゲームセッションデータ.
         /// </summary>
-        private GameSessionData _gameSessionData;
+        private GameSessionData _gameSessionData = default;
 
         #endregion
 

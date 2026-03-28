@@ -16,17 +16,17 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// インスタンス.
         /// </summary>
-        private static AudioManager _instance;
+        private static AudioManager _instance = default;
 
         /// <summary>
         /// BGM 用 AudioSource.
         /// </summary>
-        private AudioSource _bgmSource;
+        private AudioSource _bgmSource = default;
 
         /// <summary>
         /// SE 用 AudioSource.
         /// </summary>
-        private AudioSource _seSource;
+        private AudioSource _seSource = default;
 
         /// <summary>
         /// BGM音量 (0〜1).

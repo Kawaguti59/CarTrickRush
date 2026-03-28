@@ -24,12 +24,12 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// Rigidbody参照.
         /// </summary>
-        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Rigidbody _rigidbody = default;
 
         /// <summary>
         /// 着地判定位置.
         /// </summary>
-        [SerializeField] private Transform _groundCheckPoint;
+        [SerializeField] private Transform _groundCheckPoint = default;
 
         /// <summary>
         /// 自動前進速度.
@@ -39,7 +39,7 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// 着地判定レイヤー.
         /// </summary>
-        [SerializeField] private LayerMask _groundLayer;
+        [SerializeField] private LayerMask _groundLayer = default;
 
         /// <summary>
         /// 着地判定距離.
@@ -54,37 +54,37 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// トリックボーナスマスタ.
         /// </summary>
-        [SerializeField] private TrickBonusMaster _bonusMaster;
+        [SerializeField] private TrickBonusMaster _bonusMaster = default;
 
         /// <summary>
         /// プレイヤー見た目制御.
         /// </summary>
-        [SerializeField] private PlayerView _playerView;
+        [SerializeField] private PlayerView _playerView = default;
 
         /// <summary>
         /// 現在状態.
         /// </summary>
-        private IPlayerState _currentState;
+        private IPlayerState _currentState = default;
 
         /// <summary>
         /// プレイヤーモデル.
         /// </summary>
-        private PlayerModel _playerModel;
+        private PlayerModel _playerModel = default;
 
         /// <summary>
         /// 地上状態インスタンス.
         /// </summary>
-        private GroundState _groundState;
+        private GroundState _groundState = default;
 
         /// <summary>
         /// 空中状態インスタンス.
         /// </summary>
-        private AirState _airState;
+        private AirState _airState = default;
 
         /// <summary>
         /// ペナルティ状態インスタンス.
         /// </summary>
-        private PenaltyState _penaltyState;
+        private PenaltyState _penaltyState = default;
     
         /// <summary>
         /// ゴール演出中か.

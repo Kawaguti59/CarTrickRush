@@ -17,7 +17,7 @@ namespace CarTrickRush.Debugging
     {
         #region ------------------ Fields ------------------
 
-        private static DebugOverlay _instance;
+        private static DebugOverlay _instance = default;
 
         [SerializeField] private Vector2 _position = new(32f, 32f);
         [SerializeField] private Vector2 _boxSize = new(1120f, 360f);
@@ -29,9 +29,9 @@ namespace CarTrickRush.Debugging
 
         private readonly List<LogEntry> _logs = new();
         private bool _isVisible = true;
-        private int _sequenceIndex;
-        private float _sequenceExpireAt;
-        private GUIStyle _labelStyle;
+        private int _sequenceIndex = default;
+        private float _sequenceExpireAt = default;
+        private GUIStyle _labelStyle = default;
         private readonly char[] _toggleSequence = { 'd', 'b', 'g' };
 
         private struct LogEntry

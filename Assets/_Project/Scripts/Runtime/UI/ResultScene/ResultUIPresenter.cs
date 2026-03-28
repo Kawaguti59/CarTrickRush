@@ -24,63 +24,63 @@ namespace CarTrickRush.UI.Result
         /// <summary>
         /// スコア値テキスト.
         /// </summary>
-        [SerializeField] private TextMeshProUGUI _scoreValueText;
+        [SerializeField] private TextMeshProUGUI _scoreValueText = default;
 
         /// <summary>
         /// ベストスコア値テキスト.
         /// </summary>
-        [SerializeField] private TextMeshProUGUI _bestScoreValueText;
+        [SerializeField] private TextMeshProUGUI _bestScoreValueText = default;
 
         /// <summary>
         /// ニューレコード用の区切りライン.
         /// </summary>
-        [SerializeField] private GameObject _lineBeforeNewRecord;
+        [SerializeField] private GameObject _lineBeforeNewRecord = default;
 
         /// <summary>
         /// ニューレコード表示ルート.
         /// </summary>
-        [SerializeField] private GameObject _newRecordRoot;
+        [SerializeField] private GameObject _newRecordRoot = default;
 
         /// <summary>
         /// ニューレコード用スコア値テキスト.
         /// </summary>
-        [SerializeField] private TextMeshProUGUI _newRecordBestScoreText;
+        [SerializeField] private TextMeshProUGUI _newRecordBestScoreText = default;
 
         /// <summary>
         /// リトライボタン.
         /// </summary>
         [FormerlySerializedAs("_replayButton")]
-        [SerializeField] private Button _retryButton;
+        [SerializeField] private Button _retryButton = default;
 
         /// <summary>
         /// タイトルへ戻るボタン.
         /// </summary>
-        [SerializeField] private Button _backToTitleButton;
+        [SerializeField] private Button _backToTitleButton = default;
 
         /// <summary>
         /// 最初にフォーカスするボタン.
         /// </summary>
-        [SerializeField] private Button _initialSelectedButton;
+        [SerializeField] private Button _initialSelectedButton = default;
 
         /// <summary>
         /// オンのとき、<see cref="EnableResultInteractions"/> が呼ばれるまでボタン操作を無効にする.
         /// </summary>
-        [SerializeField] private bool _waitForAnimationBeforeInteractions;
+        [SerializeField] private bool _waitForAnimationBeforeInteractions = default;
 
         /// <summary>
         /// ボタン操作が有効かどうか.
         /// </summary>
-        private bool _interactionsEnabled;
+        private bool _interactionsEnabled = default;
 
         /// <summary>
         /// ニューレコードか（<see cref="ResultSceneSession"/> から受け取り）.
         /// </summary>
-        private bool _isNewRecord;
+        private bool _isNewRecord = default;
 
         /// <summary>
         /// 現在のフォーカス対象（リトライ／タイトル）。選択が解除されたときの復帰先.
         /// </summary>
-        private Button _currentButton;
+        private Button _currentButton = default;
 
         #endregion
 

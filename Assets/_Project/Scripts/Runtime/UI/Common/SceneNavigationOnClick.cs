@@ -32,7 +32,7 @@ namespace CarTrickRush.UI.Common
         /// <summary>
         /// 遷移先シーン名.
         /// </summary>     
-        [SerializeField] private string _sceneName;
+        [SerializeField] private string _sceneName = default;
 
         /// <summary>
         /// 読み込みモード.

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
@@ -24,7 +24,7 @@ namespace CarTrickRush.Gimmicks
         /// <summary>
         /// 多重実行防止フラグ.
         /// </summary>
-        private bool _isTriggered;
+        private bool _isTriggered = default;
 
         #endregion
 

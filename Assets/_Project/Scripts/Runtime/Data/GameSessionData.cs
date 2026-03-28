@@ -11,8 +11,8 @@ namespace CarTrickRush.Data
     {
         #region ------------------ Fields ------------------
 
-        private int _currentScore;
-        private float _progressRate;
+        private int _currentScore = default;
+        private float _progressRate = default;
 
         #endregion
 

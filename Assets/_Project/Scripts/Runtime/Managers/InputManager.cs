@@ -19,7 +19,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// インスタンス.
         /// </summary>
-        private static InputManager _instance;
+        private static InputManager _instance = default;
 
         #endregion
 

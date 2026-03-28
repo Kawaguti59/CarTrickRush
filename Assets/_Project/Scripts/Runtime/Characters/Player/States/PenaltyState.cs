@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using CarTrickRush.Definitions;
 using CarTrickRush.Characters.Player.Interfaces;
@@ -17,12 +17,12 @@ namespace CarTrickRush.Characters.Player.States
         /// <summary>
         /// プレイヤー参照.
         /// </summary>
-        private readonly PlayerController _playerController;
+        private readonly PlayerController _playerController = default;
 
         /// <summary>
         /// ペナルティ残り時間.
         /// </summary>
-        private float _penaltyTimer;
+        private float _penaltyTimer = default;
 
         #endregion
 

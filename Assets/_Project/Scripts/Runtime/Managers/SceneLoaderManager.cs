@@ -23,12 +23,12 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// インスタンス.
         /// </summary>
-        private static SceneLoadManager _instance;
+        private static SceneLoadManager _instance = default;
 
         /// <summary>
         /// ルールフェード用カタログ.
         /// </summary>
-        [SerializeField] private SceneTransitionCatalog _sceneTransitionCatalog;
+        [SerializeField] private SceneTransitionCatalog _sceneTransitionCatalog = default;
 
         /// <summary>
         /// ルールフェードのオーバーレイ色.
@@ -38,12 +38,12 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// シングル遷移のルールフェード実行中.
         /// </summary>
-        private bool _singleLoadTransitionRunning;
+        private bool _singleLoadTransitionRunning = default;
 
         /// <summary>
         /// ルールフェード用オーバーレイ.
         /// </summary>
-        private SceneRuleFadeOverlay _ruleFadeOverlay;
+        private SceneRuleFadeOverlay _ruleFadeOverlay = default;
 
         /// <summary>
         /// 加算シーンごとに無効化した EventSystem の復元用（LIFO）.

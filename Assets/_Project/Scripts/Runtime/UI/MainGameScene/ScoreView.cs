@@ -16,7 +16,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// スコア表示用のテキスト.
         /// </summary>
-        [SerializeField] private TMP_Text _scoreText;
+        [SerializeField] private TMP_Text _scoreText = default;
 
         #endregion
 

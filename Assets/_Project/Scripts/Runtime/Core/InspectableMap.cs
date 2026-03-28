@@ -26,7 +26,7 @@ namespace CarTrickRush.Core
         /// <summary>
         /// キャッシュ.
         /// </summary>
-        [NonSerialized] private Dictionary<TKey, TValue> _cache;
+        [NonSerialized] private Dictionary<TKey, TValue> _cache = default;
 
         /// <summary>
         /// キャッシュがDirtyかどうか.
@@ -303,12 +303,12 @@ namespace CarTrickRush.Core
             /// <summary>
             /// キー.
             /// </summary>
-            [SerializeField] private TKey _key;
+            [SerializeField] private TKey _key = default;
 
             /// <summary>
             /// バリュー.
             /// </summary>
-            [SerializeField] private TValue _value;
+            [SerializeField] private TValue _value = default;
 
             #endregion
 

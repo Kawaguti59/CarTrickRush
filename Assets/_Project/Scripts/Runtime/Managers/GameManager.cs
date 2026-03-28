@@ -21,7 +21,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// インスタンス.
         /// </summary>
-        private static GameManager _instance;
+        private static GameManager _instance = default;
 
         /// <summary>
         /// ゴール後待機時間.
@@ -31,12 +31,12 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// ゴール時プレイヤー参照.
         /// </summary>
-        private PlayerController _playerController;
+        private PlayerController _playerController = default;
 
         /// <summary>
         /// ゴール演出実行中か.
         /// </summary>
-        private bool _isGoalSequenceRunning;
+        private bool _isGoalSequenceRunning = default;
 
         /// <summary>
         /// タイトルシーン名.

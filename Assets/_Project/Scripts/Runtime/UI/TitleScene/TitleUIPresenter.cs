@@ -18,32 +18,32 @@ namespace CarTrickRush.UI.Title
         /// <summary>
         /// ゲーム開始ボタン.
         /// </summary>
-        [SerializeField] private Button _startGameButton;
+        [SerializeField] private Button _startGameButton = default;
 
         /// <summary>
         /// 設定ボタン.
         /// </summary>
-        [SerializeField] private Button _openSettingsButton;
+        [SerializeField] private Button _openSettingsButton = default;
 
         /// <summary>
         /// 終了ボタン.
         /// </summary>
-        [SerializeField] private Button _quitButton;
+        [SerializeField] private Button _quitButton = default;
 
         /// <summary>
         /// 初期選択ボタン.
         /// </summary>  
-        [SerializeField] private Button _initialSelectedButton;
+        [SerializeField] private Button _initialSelectedButton = default;
 
         /// <summary>
         /// インタラクション有効か.
         /// </summary>
-        private bool _interactionsEnabled;
+        private bool _interactionsEnabled = default;
 
         /// <summary>
         /// 現在の選択ボタン.
         /// </summary>
-        private Button _currentButton;
+        private Button _currentButton = default;
 
         #endregion
 

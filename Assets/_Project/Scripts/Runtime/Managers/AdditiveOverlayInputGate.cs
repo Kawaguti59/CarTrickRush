@@ -12,7 +12,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// ゲートの深さ.
         /// </summary>
-        private static int _depth;
+        private static int _depth = default;
 
         #endregion
 

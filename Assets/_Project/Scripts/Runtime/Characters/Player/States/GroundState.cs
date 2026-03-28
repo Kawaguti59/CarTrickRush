@@ -1,4 +1,4 @@
-﻿using CarTrickRush.Definitions;
+using CarTrickRush.Definitions;
 using CarTrickRush.Characters.Player.Interfaces;
 
 namespace CarTrickRush.Characters.Player.States
@@ -15,7 +15,7 @@ namespace CarTrickRush.Characters.Player.States
         /// <summary>
         /// プレイヤー参照.
         /// </summary>
-        private readonly PlayerController _playerController;
+        private readonly PlayerController _playerController = default;
 
         #endregion
 

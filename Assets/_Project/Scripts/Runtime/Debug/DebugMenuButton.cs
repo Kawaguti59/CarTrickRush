@@ -31,12 +31,12 @@ namespace CarTrickRush.DebugMenu
         /// <summary>
         /// 読み込み先シーン名.
         /// </summary>
-        [SerializeField] private string _sceneName;
+        [SerializeField] private string _sceneName = default;
 
         /// <summary>
         /// ボタン本体.
         /// </summary>
-        [SerializeField] private Button _button;
+        [SerializeField] private Button _button = default;
 
         #endregion
 

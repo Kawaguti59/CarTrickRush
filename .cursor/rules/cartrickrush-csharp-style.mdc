@@ -18,6 +18,10 @@ alwaysApply: false
 - フィールド（`SerializeField` 含む）: `_camelCase`。
 - プロパティ: `PascalCase`。
 
+## フィールド初期化
+
+- インスペクタや `new()` など**明示の初期値が無い**フィールドは **`= default;`** を付ける（`Runtime/Data` の ScriptableObject・アセット定義スクリプトはプロジェクト方針で除外してよい）。
+
 ## コメント（XML）
 
 - 体言止めまたは常体。文末は「.」で統一。一行で簡潔に。

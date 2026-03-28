@@ -15,7 +15,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// 進捗表示用のスクロールバー.
         /// </summary>
-        [SerializeField] private Scrollbar _progressBar;
+        [SerializeField] private Scrollbar _progressBar = default;
 
         #endregion
 

@@ -17,27 +17,27 @@ namespace CarTrickRush.UI
         /// <summary>
         /// スコア表示用のビュー.
         /// </summary>
-        [SerializeField] private ScoreView _scoreView;
+        [SerializeField] private ScoreView _scoreView = default;
 
         /// <summary>
         /// 進捗表示用のビュー.
         /// </summary>
-        [SerializeField] private ProgressView _progressView;
+        [SerializeField] private ProgressView _progressView = default;
 
         /// <summary>
         /// プレイヤーのTransform.
         /// </summary>
-        [SerializeField] private Transform _playerTransform;
+        [SerializeField] private Transform _playerTransform = default;
 
         /// <summary>
         /// スタート地点のTransform.
         /// </summary>
-        [SerializeField] private Transform _startPoint;
+        [SerializeField] private Transform _startPoint = default;
 
         /// <summary>
         /// ゴール地点のTransform.
         /// </summary>
-        [SerializeField] private Transform _goalPoint;
+        [SerializeField] private Transform _goalPoint = default;
 
         #endregion
 

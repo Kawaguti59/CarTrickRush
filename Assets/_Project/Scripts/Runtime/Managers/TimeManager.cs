@@ -15,7 +15,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// インスタンス.
         /// </summary>
-        private static TimeManager _instance;
+        private static TimeManager _instance = default;
 
         #endregion
 

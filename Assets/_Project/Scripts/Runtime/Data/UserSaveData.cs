@@ -12,7 +12,7 @@ namespace CarTrickRush.Data
         /// <summary>
         /// ベストスコア.
         /// </summary>
-        private int _bestScore;
+        private int _bestScore = default;
 
         #endregion
 

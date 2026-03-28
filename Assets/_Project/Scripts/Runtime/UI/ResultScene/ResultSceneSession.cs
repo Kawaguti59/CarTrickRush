@@ -14,17 +14,17 @@ namespace CarTrickRush.UI.Result
         /// <summary>
         /// 遷移直前に呼ぶ。スコア反映後の表示用ベストと、ニューレコードかを渡す.
         /// </summary>   
-        private static ResultData _pendingData;
+        private static ResultData _pendingData = default;
 
         /// <summary>
         /// ニューレコードかどうか.
         /// </summary>
-        private static bool _pendingIsNewRecord;
+        private static bool _pendingIsNewRecord = default;
 
         /// <summary>
         /// 保留があるかどうか.
         /// </summary>
-        private static bool _hasPending;
+        private static bool _hasPending = default;
 
         #endregion
 

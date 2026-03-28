@@ -22,7 +22,7 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// セーブデータ.
         /// </summary>
-        private UserSaveData _userSaveData;
+        private UserSaveData _userSaveData = default;
 
         #endregion
 

@@ -18,12 +18,12 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// プレイヤー見た目ルート.
         /// </summary>
-        [SerializeField] private GameObject _visualRoot;
+        [SerializeField] private GameObject _visualRoot = default;
 
         /// <summary>
         /// アニメーター参照.
         /// </summary>
-        [SerializeField] private Animator _animator;
+        [SerializeField] private Animator _animator = default;
 
         /// <summary>
         /// 入力に応じたアニメーション名.
