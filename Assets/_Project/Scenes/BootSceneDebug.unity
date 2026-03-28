@@ -1705,6 +1705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13a3ad81859987747a6a20122957c01b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Core.BootstrapDebug
+  _sceneTransitionCatalog: {fileID: 11400000, guid: d3e021e3ad3629741b767f428f496902, type: 2}
 --- !u!1001 &3259801808708391518
 PrefabInstance:
   m_ObjectHideFlags: 0

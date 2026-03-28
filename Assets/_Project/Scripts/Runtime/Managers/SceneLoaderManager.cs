@@ -140,7 +140,7 @@ namespace CarTrickRush.Managers
             {
                 Debug.LogWarning(
                     "SceneLoadManager.LoadScene: SceneTransitionCatalog が null のためフェードをスキップしました. " +
-                    $"BootScene の Bootstrap にカタログをアサインするか、Data.Load 用に Resources 配下へ「{SceneTransitionCatalog.ResourcesAssetName}.asset」があるか確認してください.");
+                    $"BootScene の Bootstrap / BootSceneDebug の BootstrapDebug にカタログをアサインするか、Resources 配下へ「{SceneTransitionCatalog.ResourcesAssetName}.asset」があるか確認してください.");
                 Instance.ClearAdditiveOverlayStateForSingleLoad();
                 SceneManager.LoadScene(sceneName);
                 return;
