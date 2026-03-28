@@ -18,9 +18,13 @@ alwaysApply: false
 - フィールド（`SerializeField` 含む）: `_camelCase`。
 - プロパティ: `PascalCase`。
 
-## フィールド初期化
+## フィールド初期化（`default`）
 
-- インスペクタや `new()` など**明示の初期値が無い**フィールドは **`= default;`** を付ける（`Runtime/Data` の ScriptableObject・アセット定義スクリプトはプロジェクト方針で除外してよい）。
+- クラス／ネスト型の**インスタンスフィールド**で、`=` による初期値が無い宣言は **`= default;`** で終える（`private int _x = default;`、`[SerializeField] private Button _btn = default;` など）。
+- **`= 0f`・`= new()`・`= true` など既に意図が書かれているもの**はそのまま。`default` に置き換えない。
+- **`readonly` フィールド**も、宣言時に値を書かない場合は **`= default;`** を付けてよい（コンストラクタで上書きする前提と両立する）。
+- **`Assets/_Project/Scripts/Runtime/Data/` の ScriptableObject およびアセット向けデータ定義**（例: `SceneTransitionCatalog`, `TrickBonusData`）は、このプロジェクトでは **`= default` を付けない**運用とする。
+- **ネスト `struct` のフィールド**で C# 9 未満の言語バージョンのときは、フィールド初期化子が使えないため **`= default` を無理に付けない**（必要なら言語バージョンを上げてから検討する）。
 
 ## コメント（XML）
 

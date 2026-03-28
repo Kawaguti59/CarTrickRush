@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
+
+using CarTrickRush.Data;
+using CarTrickRush.Managers;
 
 namespace CarTrickRush.Core
 {
@@ -16,6 +19,11 @@ namespace CarTrickRush.Core
         /// </summary>
         [SerializeField] private string _firstSceneName = "TitleScene";
 
+        /// <summary>
+        /// シーン遷移カタログ.
+        /// </summary>
+        [SerializeField] private SceneTransitionCatalog _sceneTransitionCatalog = default;
+
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
@@ -23,11 +31,15 @@ namespace CarTrickRush.Core
         private void Awake()
         {
             BootstrapBase.InitializeManagers();
+            if (_sceneTransitionCatalog != null && ManagerLocator.SceneLoadManager != null)
+            {
+                ManagerLocator.SceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
+            }
         }
 
         private void Start()
         {
-            CarTrickRush.Managers.SceneLoadManager.LoadScene(_firstSceneName);
+            SceneLoadManager.LoadScene(_firstSceneName);
         }
 
         #endregion

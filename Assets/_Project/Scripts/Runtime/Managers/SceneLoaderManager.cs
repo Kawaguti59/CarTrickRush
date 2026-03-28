@@ -87,6 +87,17 @@ namespace CarTrickRush.Managers
         #region ------------------ Public Methods ------------------
 
         /// <summary>
+        /// Boot から注入したシーン遷移カタログを適用する（非 null のときのみ上書き）.
+        /// </summary>
+        /// <param name="catalog">カタログ.</param>
+        public void ApplyBootstrapSceneTransitionCatalog(SceneTransitionCatalog catalog)
+        {
+            if (catalog == null) { return; }
+
+            _sceneTransitionCatalog = catalog;
+        }
+
+        /// <summary>
         /// 指定したシーンへ遷移する.
         /// </summary>
         /// <param name="sceneName">遷移先シーン名.</param>
@@ -124,7 +135,7 @@ namespace CarTrickRush.Managers
             {
                 Debug.LogWarning(
                     "SceneLoadManager.LoadScene: SceneTransitionCatalog が null のためフェードをスキップしました. " +
-                    $"いずれかの Resources フォルダ（例: Data/Resources）に「{SceneTransitionCatalog.ResourcesAssetName}.asset」があるか、シーン上の SceneLoadManager にカタログをアサインしてください.");
+                    $"BootScene の Bootstrap にカタログをアサインするか、Data.Load 用に Resources 配下へ「{SceneTransitionCatalog.ResourcesAssetName}.asset」があるか確認してください.");
                 Instance.ClearAdditiveOverlayStateForSingleLoad();
                 SceneManager.LoadScene(sceneName);
                 return;
@@ -214,13 +225,13 @@ namespace CarTrickRush.Managers
         #region ------------------ Private Methods ------------------
 
         /// <summary>
-        /// カタログ参照を解決する（Inspector 未設定時は Resources）.
+        /// カタログ参照を解決する.
         /// </summary>
         private void ResolveSceneTransitionCatalog()
         {
             if (_sceneTransitionCatalog != null) { return; }
 
-            _sceneTransitionCatalog = Resources.Load<SceneTransitionCatalog>(SceneTransitionCatalog.ResourcesAssetName);
+            _sceneTransitionCatalog = CarTrickRush.DataLoading.Data.Load<SceneTransitionCatalog>(SceneTransitionCatalog.ResourcesAssetName);
         }
 
         /// <summary>
