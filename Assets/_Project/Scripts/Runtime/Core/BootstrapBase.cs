@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace CarTrickRush.Core
 {
@@ -20,6 +20,7 @@ namespace CarTrickRush.Core
             CreateManager<CarTrickRush.Managers.TimeManager>("TimeManager");
             CreateManager<CarTrickRush.Managers.SaveManager>("SaveManager");
             CreateManager<CarTrickRush.Managers.ScoreManager>("ScoreManager");
+            CreateManager<CarTrickRush.Managers.AudioManager>("AudioManager");
         }
 
         /// <summary>

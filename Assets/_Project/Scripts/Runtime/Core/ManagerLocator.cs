@@ -46,6 +46,11 @@ namespace CarTrickRush.Core
         /// </summary>
         public static SaveManager SaveManager { get; private set; }
 
+        /// <summary>
+        /// 音声管理クラス.
+        /// </summary>
+        public static AudioManager AudioManager { get; private set; }
+
         #endregion
 
         #region ------------------ Public Methods ------------------
@@ -141,6 +146,21 @@ namespace CarTrickRush.Core
         }
 
         /// <summary>
+        /// AudioManagerを登録する.
+        /// </summary>
+        /// <param name="manager">AudioManager</param>
+        public static void Register(AudioManager manager)
+        {
+            if (manager == null)
+            {
+                Debug.LogError($"{nameof(ManagerLocator)} : AudioManager is null.");
+                return;
+            }
+
+            AudioManager = manager;
+        }
+
+        /// <summary>
         /// 全Manager参照をクリアする.
         /// </summary>
         public static void Clear()
@@ -151,6 +171,7 @@ namespace CarTrickRush.Core
             TimeManager = null;
             ScoreManager = null;
             SaveManager = null;
+            AudioManager = null;
         }
 
         #endregion
