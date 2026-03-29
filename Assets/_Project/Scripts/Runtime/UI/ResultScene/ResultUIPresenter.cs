@@ -63,9 +63,9 @@ namespace CarTrickRush.UI.Result
         [SerializeField] private Button _initialSelectedButton = default;
 
         /// <summary>
-        /// オンのとき、<see cref="EnableResultInteractions"/> が呼ばれるまでボタン操作を無効にする.
+        /// オンならイントロを待たず操作できる.
         /// </summary>
-        [SerializeField] private bool _waitForAnimationBeforeInteractions = default;
+        [SerializeField] private bool _canOperate = default;
 
         /// <summary>
         /// ボタン操作が有効かどうか.
@@ -73,12 +73,12 @@ namespace CarTrickRush.UI.Result
         private bool _interactionsEnabled = default;
 
         /// <summary>
-        /// ニューレコードか（<see cref="ResultSceneSession"/> から受け取り）.
+        /// ニューレコードか.
         /// </summary>
         private bool _isNewRecord = default;
 
         /// <summary>
-        /// 現在のフォーカス対象（リトライ／タイトル）。選択が解除されたときの復帰先.
+        /// 現在のフォーカス対象.
         /// </summary>
         private Button _currentButton = default;
 
@@ -87,7 +87,7 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// 現在のフォーカス対象ボタン。選択解除時はこの参照へ戻す.
+        /// 現在のフォーカス対象ボタン.
         /// </summary>
         public Button CurrentButton => _currentButton;
 
@@ -105,7 +105,7 @@ namespace CarTrickRush.UI.Result
 
         private void Start()
         {
-            if (!_waitForAnimationBeforeInteractions)
+            if (_canOperate)
             {
                 EnableResultInteractions();
             }
@@ -142,7 +142,7 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// リザルトアニメーション完了後などに呼び出し、ボタン操作と初期フォーカスを有効にする.
+        /// ボタン操作と初期フォーカスを有効にする.
         /// </summary>
         public void EnableResultInteractions()
         {
@@ -151,7 +151,7 @@ namespace CarTrickRush.UI.Result
         }
 
         /// <summary>
-        /// リトライボタン用。Button の OnClick から割り当てる.
+        /// 再プレイボタン処理.
         /// </summary>
         public void OnClickRetry()
         {
@@ -159,7 +159,7 @@ namespace CarTrickRush.UI.Result
         }
 
         /// <summary>
-        /// タイトルへ戻るボタン用。Button の OnClick から割り当てる.
+        /// タイトルへ戻るボタン処理.
         /// </summary>
         public void OnClickBackToTitle()
         {
@@ -193,16 +193,12 @@ namespace CarTrickRush.UI.Result
         }
 
         /// <summary>
-        /// マウスホバー／押下で EventSystem の選択と <see cref="_currentButton"/> を同期する.
+        /// ボタンのポインター同期選択を設定する.
         /// </summary>
         /// <param name="button">ボタン.</param>
         private void SetupButtonPointerSyncSelection(Button button)
         {
             var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
-            if (eventTrigger == null)
-            {
-                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
-            }
 
             var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
             pointerEnterEntry.callback.AddListener(_ => SyncSelectionToButton(button));
@@ -240,7 +236,7 @@ namespace CarTrickRush.UI.Result
         }
 
         /// <summary>
-        /// <see cref="_initialSelectedButton"/> を次のフレームで選択する.
+        /// 最初に選択するボタンを設定する.
         /// </summary>
         private IEnumerator SelectInitialButtonNextFrame()
         {

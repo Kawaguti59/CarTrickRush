@@ -2173,7 +2173,7 @@ MonoBehaviour:
   _retryButton: {fileID: 346206249}
   _backToTitleButton: {fileID: 905391273}
   _initialSelectedButton: {fileID: 346206249}
-  _waitForAnimationBeforeInteractions: 0
+  _canOperate: 1
 --- !u!95 &2136773012
 Animator:
   serializedVersion: 7
