@@ -1098,10 +1098,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b0b58e3bf200441b35934d21f7bf6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Title.TitleUIPresenter
-  _startGameButton: {fileID: 1764058474}
-  _openSettingsButton: {fileID: 1414250156}
-  _quitButton: {fileID: 2104563449}
-  _initialSelectedButton: {fileID: 1764058474}
+  _selectableButtons:
+  - {fileID: 1764058474}
+  - {fileID: 1414250156}
+  - {fileID: 2104563449}
 --- !u!1 &1794523733
 GameObject:
   m_ObjectHideFlags: 0

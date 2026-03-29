@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+using System.Collections.Generic;
+
 namespace CarTrickRush.UI.Title
 {
     /// =========================================================================================
@@ -14,24 +16,9 @@ namespace CarTrickRush.UI.Title
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// ゲーム開始ボタン.
-        /// </summary>
-        [SerializeField] private Button _startGameButton = default;
-
-        /// <summary>
         /// 設定ボタン.
         /// </summary>
-        [SerializeField] private Button _openSettingsButton = default;
-
-        /// <summary>
-        /// 終了ボタン.
-        /// </summary>
-        [SerializeField] private Button _quitButton = default;
-
-        /// <summary>
-        /// 初期選択ボタン.
-        /// </summary>  
-        [SerializeField] private Button _initialSelectedButton = default;
+        [SerializeField] private List<Button> _selectableButtons = default;
 
         /// <summary>
         /// インタラクション有効か.
@@ -59,24 +46,25 @@ namespace CarTrickRush.UI.Title
         private void Awake()
         {
             SetInteractions(true);
-            BindPointerSelect(_startGameButton);
-            BindPointerSelect(_openSettingsButton);
-            BindPointerSelect(_quitButton);
+            foreach (var button in _selectableButtons)
+            {
+                BindPointerSelect(button);
+            }
         }
 
         private void Start()
         {
             var eventSystem = EventSystem.current;
-            if (eventSystem == null || _initialSelectedButton == null) { return; }
+            if (eventSystem == null || _selectableButtons.Count == 0) { return; }
 
-            eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
-            _currentButton = _initialSelectedButton;
+            eventSystem.SetSelectedGameObject(_selectableButtons[0].gameObject);
+            _currentButton = _selectableButtons[0];
         }
 
         private void LateUpdate()
         {
             if (!_interactionsEnabled) { return; }
-            if (_startGameButton == null || _openSettingsButton == null || _quitButton == null) { return; }
+            if (_selectableButtons.Count == 0) { return; }
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { return; }
@@ -85,16 +73,16 @@ namespace CarTrickRush.UI.Title
             switch (selectedGameObject)
             {
                 // ゲーム開始ボタン.
-                case GameObject gameObject when gameObject == _startGameButton.gameObject:
-                    _currentButton = _startGameButton;
+                case GameObject gameObject when gameObject == _selectableButtons[0].gameObject:
+                    _currentButton = _selectableButtons[0];
                     return;
                 // 設定ボタン.
-                case GameObject go when go == _openSettingsButton.gameObject:
-                    _currentButton = _openSettingsButton;
+                case GameObject gameObject when gameObject == _selectableButtons[1].gameObject:
+                    _currentButton = _selectableButtons[1];
                     return;
                 // 終了ボタン.
-                case GameObject go when go == _quitButton.gameObject:
-                    _currentButton = _quitButton;
+                case GameObject gameObject when gameObject == _selectableButtons[2].gameObject:
+                    _currentButton = _selectableButtons[2];
                     return;
             }
 
@@ -133,9 +121,10 @@ namespace CarTrickRush.UI.Title
         {
             _interactionsEnabled = enabled;
 
-            if (_startGameButton != null) { _startGameButton.interactable = enabled; }
-            if (_openSettingsButton != null) { _openSettingsButton.interactable = enabled; }
-            if (_quitButton != null) { _quitButton.interactable = enabled; }
+            foreach (var button in _selectableButtons)
+            {
+                if (button != null) { button.interactable = enabled; }
+            }
         }
 
         /// <summary>
@@ -147,7 +136,7 @@ namespace CarTrickRush.UI.Title
 
             var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
             if (eventTrigger == null) { return; }
-            
+
             var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
             pointerEnterEntry.callback.AddListener(_ => SelectButton(button));
             eventTrigger.triggers.Add(pointerEnterEntry);
