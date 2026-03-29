@@ -65,15 +65,11 @@ namespace CarTrickRush.UI.Result
         /// リザルト画面の表示を扱うView.
         /// </summary>
         [SerializeField] private ResultUIPresenterView _resultUIPresenterView = default;
-        /// <summary>
-        /// オンならイントロを待たず操作できる.
-        /// </summary>
-        private bool _canOperate = default;
 
         /// <summary>
         /// ボタン操作が有効かどうか.
         /// </summary>
-        private bool _interactionsEnabled = default;
+        private bool _canOperate = false;
 
         /// <summary>
         /// ニューレコードか.
@@ -108,12 +104,13 @@ namespace CarTrickRush.UI.Result
 
         private void Start()
         {
-            _resultUIPresenterView.PlayIntro(_isNewRecord);
+            StartCoroutine(InitializeCoroutine());
         }
 
         private void LateUpdate()
         {
-            if (!_interactionsEnabled) { return; }
+            if (!_canOperate) { return; }
+            if (_retryButton == null || _backToTitleButton == null) { return; }
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { return; }
@@ -171,6 +168,30 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Private Methods ------------------
 
         /// <summary>
+        /// 初期化処理を行う.
+        /// </summary>
+        private IEnumerator InitializeCoroutine()
+        {
+            if (_resultUIPresenterView == null)
+            {
+                SetInteractionsEnabled(true);
+                StartCoroutine(SelectInitialButtonNextFrame());
+                yield break;
+            }
+
+            _resultUIPresenterView.PlayIntro(_isNewRecord);
+            yield return null;
+
+            while (_resultUIPresenterView.IsPlaying())
+            {
+                yield return null;
+            }
+
+            SetInteractionsEnabled(true);
+            StartCoroutine(SelectInitialButtonNextFrame());
+        }
+
+        /// <summary>
         /// リザルト表示を反映する.
         /// </summary>
         private void ApplyResult()
@@ -198,7 +219,13 @@ namespace CarTrickRush.UI.Result
         /// <param name="button">ボタン.</param>
         private void SetupButtonPointerSyncSelection(Button button)
         {
+            if (button == null) { return; }
+
             var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
+            if (eventTrigger == null)
+            {
+                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+            }
 
             var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
             pointerEnterEntry.callback.AddListener(_ => SyncSelectionToButton(button));
@@ -215,7 +242,7 @@ namespace CarTrickRush.UI.Result
         /// <param name="button">ボタン.</param>
         private void SyncSelectionToButton(Button button)
         {
-            if (!_interactionsEnabled) { return; }
+            if (!_canOperate) { return; }
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { return; }
@@ -229,10 +256,10 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         private void SetInteractionsEnabled(bool enabled)
         {
-            _interactionsEnabled = enabled;
+            _canOperate = enabled;
 
-            _retryButton.interactable = enabled;
-            _backToTitleButton.interactable = enabled;
+            if (_retryButton != null) { _retryButton.interactable = enabled; }
+            if (_backToTitleButton != null) { _backToTitleButton.interactable = enabled; }
         }
 
         /// <summary>
@@ -242,10 +269,11 @@ namespace CarTrickRush.UI.Result
         {
             yield return null;
 
-            if (!_interactionsEnabled) { yield break; }
+            if (!_canOperate) { yield break; }
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { yield break; }
+            if (_initialSelectedButton == null) { yield break; }
 
             eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
             _currentButton = _initialSelectedButton;
