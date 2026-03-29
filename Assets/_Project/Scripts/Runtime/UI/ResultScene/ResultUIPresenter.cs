@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 using System.Collections;
@@ -97,8 +96,6 @@ namespace CarTrickRush.UI.Result
         private void Awake()
         {
             ApplyResult();
-            SetupButtonPointerSyncSelection(_retryButton);
-            SetupButtonPointerSyncSelection(_backToTitleButton);
             SetInteractionsEnabled(false);
         }
 
@@ -139,15 +136,6 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// ボタン操作と初期フォーカスを有効にする.
-        /// </summary>
-        public void EnableResultInteractions()
-        {
-            SetInteractionsEnabled(true);
-            StartCoroutine(SelectInitialButtonNextFrame());
-        }
-
-        /// <summary>
         /// 再プレイボタン処理.
         /// </summary>
         public void OnClickRetry()
@@ -168,27 +156,36 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Private Methods ------------------
 
         /// <summary>
-        /// 初期化処理を行う.
+        /// イントロがあれば終了まで待ち、操作可能にして初期フォーカスを当てる.
         /// </summary>
         private IEnumerator InitializeCoroutine()
         {
-            if (_resultUIPresenterView == null)
+            if (_resultUIPresenterView != null)
             {
-                SetInteractionsEnabled(true);
-                StartCoroutine(SelectInitialButtonNextFrame());
-                yield break;
+                _resultUIPresenterView.PlayIntro(_isNewRecord);
+                yield return null;
+                while (_resultUIPresenterView.IsPlaying())
+                {
+                    yield return null;
+                }
             }
 
-            _resultUIPresenterView.PlayIntro(_isNewRecord);
+            yield return StartCoroutine(SetupButtonCoroutine());
+        }
+
+        /// <summary>
+        /// ボタンの初期設定を行う.
+        /// </summary>
+        private IEnumerator SetupButtonCoroutine()
+        {
+            SetInteractionsEnabled(true);
             yield return null;
 
-            while (_resultUIPresenterView.IsPlaying())
-            {
-                yield return null;
-            }
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null || _initialSelectedButton == null) { yield break; }
 
-            SetInteractionsEnabled(true);
-            StartCoroutine(SelectInitialButtonNextFrame());
+            eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
+            _currentButton = _initialSelectedButton;
         }
 
         /// <summary>
@@ -214,44 +211,6 @@ namespace CarTrickRush.UI.Result
         }
 
         /// <summary>
-        /// ボタンのポインター同期選択を設定する.
-        /// </summary>
-        /// <param name="button">ボタン.</param>
-        private void SetupButtonPointerSyncSelection(Button button)
-        {
-            if (button == null) { return; }
-
-            var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
-            if (eventTrigger == null)
-            {
-                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
-            }
-
-            var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-            pointerEnterEntry.callback.AddListener(_ => SyncSelectionToButton(button));
-            eventTrigger.triggers.Add(pointerEnterEntry);
-
-            var pointerDownEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            pointerDownEntry.callback.AddListener(_ => SyncSelectionToButton(button));
-            eventTrigger.triggers.Add(pointerDownEntry);
-        }
-
-        /// <summary>
-        /// 選択をボタンに同期する.
-        /// </summary>
-        /// <param name="button">ボタン.</param>
-        private void SyncSelectionToButton(Button button)
-        {
-            if (!_canOperate) { return; }
-
-            var eventSystem = EventSystem.current;
-            if (eventSystem == null) { return; }
-
-            eventSystem.SetSelectedGameObject(button.gameObject);
-            _currentButton = button;
-        }
-
-        /// <summary>
         /// ボタン操作が有効かどうかを設定する.
         /// </summary>
         private void SetInteractionsEnabled(bool enabled)
@@ -260,23 +219,6 @@ namespace CarTrickRush.UI.Result
 
             if (_retryButton != null) { _retryButton.interactable = enabled; }
             if (_backToTitleButton != null) { _backToTitleButton.interactable = enabled; }
-        }
-
-        /// <summary>
-        /// 最初に選択するボタンを設定する.
-        /// </summary>
-        private IEnumerator SelectInitialButtonNextFrame()
-        {
-            yield return null;
-
-            if (!_canOperate) { yield break; }
-
-            var eventSystem = EventSystem.current;
-            if (eventSystem == null) { yield break; }
-            if (_initialSelectedButton == null) { yield break; }
-
-            eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
-            _currentButton = _initialSelectedButton;
         }
 
         #endregion
