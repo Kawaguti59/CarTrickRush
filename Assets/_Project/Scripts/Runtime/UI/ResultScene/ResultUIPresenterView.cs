@@ -4,7 +4,11 @@ using CarTrickRush.Core.View;
 
 namespace CarTrickRush.UI.Result
 {
-    /// <summary>リザルト UI のイントロ再生だけを扱う View.</summary>
+    /// =========================================================================================
+    /// <summary>
+    /// リザルト画面の表示を扱うView.
+    /// </summary>
+    /// =========================================================================================
     public sealed class ResultUIPresenterView : MonoBehaviour, IView
     {
         #region ------------------ Fields ------------------

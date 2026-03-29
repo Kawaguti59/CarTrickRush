@@ -49,7 +49,6 @@ namespace CarTrickRush.UI.Result
         /// <summary>
         /// リトライボタン.
         /// </summary>
-        [FormerlySerializedAs("_replayButton")]
         [SerializeField] private Button _retryButton = default;
 
         /// <summary>
@@ -63,9 +62,13 @@ namespace CarTrickRush.UI.Result
         [SerializeField] private Button _initialSelectedButton = default;
 
         /// <summary>
+        /// リザルト画面の表示を扱うView.
+        /// </summary>
+        [SerializeField] private ResultUIPresenterView _resultUIPresenterView = default;
+        /// <summary>
         /// オンならイントロを待たず操作できる.
         /// </summary>
-        [SerializeField] private bool _canOperate = default;
+        private bool _canOperate = default;
 
         /// <summary>
         /// ボタン操作が有効かどうか.
@@ -105,10 +108,7 @@ namespace CarTrickRush.UI.Result
 
         private void Start()
         {
-            if (_canOperate)
-            {
-                EnableResultInteractions();
-            }
+            _resultUIPresenterView.PlayIntro(_isNewRecord);
         }
 
         private void LateUpdate()
