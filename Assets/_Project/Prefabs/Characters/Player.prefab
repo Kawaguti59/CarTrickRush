@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 5931138649947814439}
   - component: {fileID: 8505319571068935465}
   - component: {fileID: 5695945034185517499}
+  - component: {fileID: 2583043715216334101}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -198,22 +199,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666047c383e9d044fa42cd2533610cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Character.Player.View.PlayerView
-  _visualRoot: {fileID: 0}
-  _animator: {fileID: 0}
-  _rotateRightAnimationName: TrickRotateRight
-  _rotateLeftAnimationName: TrickRotateLeft
-  _rotateUpAnimationName: TrickRotateUp
-  _rotateDownAnimationName: TrickRotateDown
+  _visualRoot: {fileID: 3725117048813243186}
+  _animator: {fileID: 2583043715216334101}
   _trickAnimationNames:
     _pairs:
     - _key: 1
-      _value: TrickRotateRight
+      _value: RotateRight
     - _key: 2
-      _value: TrickRotateLeft
+      _value: RotateLeft
     - _key: 3
-      _value: TrickRotateUp
+      _value: RotateUp
     - _key: 4
-      _value: TrickRotateDown
+      _value: RotateDown
 --- !u!65 &5695945034185517499
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -235,6 +232,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.34, y: 1.37, z: 1.85}
   m_Center: {x: 0, y: 0.71, z: -0.018977284}
+--- !u!95 &2583043715216334101
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3001462574445137774}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a16561c73aa778c4393257ed64bd3c2f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8150999897714947826
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,6 +342,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
+--- !u!1 &3725117048813243186 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1248598967819147742, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
+  m_PrefabInstance: {fileID: 2513479309726077676}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4105478100743328136 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1880317207959290724, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
