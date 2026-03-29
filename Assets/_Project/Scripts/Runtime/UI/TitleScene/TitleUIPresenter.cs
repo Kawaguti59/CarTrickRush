@@ -59,6 +59,9 @@ namespace CarTrickRush.UI.Title
         private void Awake()
         {
             SetInteractions(true);
+            BindPointerSelect(_startGameButton);
+            BindPointerSelect(_openSettingsButton);
+            BindPointerSelect(_quitButton);
         }
 
         private void Start()
@@ -133,6 +136,36 @@ namespace CarTrickRush.UI.Title
             if (_startGameButton != null) { _startGameButton.interactable = enabled; }
             if (_openSettingsButton != null) { _openSettingsButton.interactable = enabled; }
             if (_quitButton != null) { _quitButton.interactable = enabled; }
+        }
+
+        /// <summary>
+        /// ホバー時に選択を切り替える.
+        /// </summary>
+        private void BindPointerSelect(Button button)
+        {
+            if (button == null) { return; }
+
+            var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
+            if (eventTrigger == null) { return; }
+            
+            var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            pointerEnterEntry.callback.AddListener(_ => SelectButton(button));
+            eventTrigger.triggers.Add(pointerEnterEntry);
+
+            var pointerDownEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            pointerDownEntry.callback.AddListener(_ => SelectButton(button));
+            eventTrigger.triggers.Add(pointerDownEntry);
+        }
+
+        private void SelectButton(Button button)
+        {
+            if (!_interactionsEnabled || button == null) { return; }
+
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) { return; }
+
+            eventSystem.SetSelectedGameObject(button.gameObject);
+            _currentButton = button;
         }
 
         #endregion

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 789129606456493987}
   - component: {fileID: 4106576131650582078}
   - component: {fileID: 7218688930325795884}
+  - component: {fileID: 3362278217383505734}
   m_Layer: 5
   m_Name: TitleButton
   m_TagString: Untagged
@@ -121,6 +122,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3362278217383505734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930167475168888154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &3412244388748966242
 GameObject:
   m_ObjectHideFlags: 0
