@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using System.Collections;
-
 namespace CarTrickRush.UI.Title
 {
     /// =========================================================================================
@@ -50,7 +48,7 @@ namespace CarTrickRush.UI.Title
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// 現在のフォーカス対象ボタン。選択解除時はこの参照へ戻す.
+        /// 現在の選択ボタン.
         /// </summary>
         public Button CurrentButton => _currentButton;
 
@@ -60,20 +58,22 @@ namespace CarTrickRush.UI.Title
 
         private void Awake()
         {
-            SetupButtonPointerSyncSelection(_startGameButton);
-            SetupButtonPointerSyncSelection(_openSettingsButton);
-            SetupButtonPointerSyncSelection(_quitButton);
-            SetInteractionsEnabled(true);
+            SetInteractions(true);
         }
 
         private void Start()
         {
-            StartCoroutine(SelectInitialButtonNextFrame());
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null || _initialSelectedButton == null) { return; }
+
+            eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
+            _currentButton = _initialSelectedButton;
         }
 
         private void LateUpdate()
         {
             if (!_interactionsEnabled) { return; }
+            if (_startGameButton == null || _openSettingsButton == null || _quitButton == null) { return; }
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { return; }
@@ -123,74 +123,16 @@ namespace CarTrickRush.UI.Title
         #region ------------------ Private Methods ------------------
 
         /// <summary>
-        /// ボタンのポインター同期選択を設定する.
-        /// </summary>
-        /// <param name="button">ボタン</param>
-        private void SetupButtonPointerSyncSelection(Button button)
-        {
-            var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
-            if (eventTrigger == null)
-            {
-                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
-            }
-
-            var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-            pointerEnterEntry.callback.AddListener(_ => SyncSelectionToButton(button));
-            eventTrigger.triggers.Add(pointerEnterEntry);
-
-            var pointerDownEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            pointerDownEntry.callback.AddListener(_ => SyncSelectionToButton(button));
-            eventTrigger.triggers.Add(pointerDownEntry);
-        }
-
-        /// <summary>
-        /// 選択ボタンを同期する.
-        /// </summary>
-        /// <param name="button">ボタン</param>
-        private void SyncSelectionToButton(Button button)
-        {
-            if (!_interactionsEnabled) { return; }
-
-            var eventSystem = EventSystem.current;
-            if (eventSystem == null) { return; }
-
-            eventSystem.SetSelectedGameObject(button.gameObject);
-            _currentButton = button;
-        }
-
-        /// <summary>
         /// インタラクション有効かを設定する.
         /// </summary>
         /// <param name="enabled">有効か</param>
-        private void SetInteractionsEnabled(bool enabled)
+        private void SetInteractions(bool enabled)
         {
             _interactionsEnabled = enabled;
 
-            _startGameButton.interactable = enabled;
-            _openSettingsButton.interactable = enabled;
-            _quitButton.interactable = enabled;
-        }
-
-        /// <summary>
-        /// 初期選択ボタンを選択する.
-        /// </summary>
-        /// <returns>コルーチン</returns>
-        private IEnumerator SelectInitialButtonNextFrame()
-        {
-            yield return null;
-
-            if (!_interactionsEnabled) { yield break; }
-
-            var eventSystem = EventSystem.current;
-            if (eventSystem == null) { yield break; }
-
-            if (_initialSelectedButton == null)
-            {
-                yield break;
-            }
-
-            eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
-            _currentButton = _initialSelectedButton;
+            if (_startGameButton != null) { _startGameButton.interactable = enabled; }
+            if (_openSettingsButton != null) { _openSettingsButton.interactable = enabled; }
+            if (_quitButton != null) { _quitButton.interactable = enabled; }
         }
 
         #endregion
