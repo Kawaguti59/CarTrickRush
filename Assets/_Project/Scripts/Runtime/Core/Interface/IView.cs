@@ -21,5 +21,10 @@ namespace CarTrickRush.Core.View
         /// Viewを非表示にする.
         /// </summary>
         void Hide();
+
+        /// <summary>
+        /// アニメーションが再生中かどうか.
+        /// </summary>
+        bool IsPlaying();
     }
 }

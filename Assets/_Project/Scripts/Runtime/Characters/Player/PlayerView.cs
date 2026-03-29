@@ -34,6 +34,30 @@ namespace CarTrickRush.Characters.Player
 
        #region ------------------ Interface Methods ------------------
 
+        public void Initialize()
+        {
+            if (_visualRoot == null) { return; }
+            _visualRoot.SetActive(true);
+        }
+
+        public void Show()
+        {
+            if (_visualRoot == null) { return; }
+            _visualRoot.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            if (_visualRoot == null) { return; }
+            _visualRoot.SetActive(false);
+        }
+
+        public bool IsPlaying()
+        {
+            if (_animator == null) { return false; }
+            return _animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f;
+        }
+
         /// <summary>
         /// 走行演出を再生する.
         /// </summary>
@@ -102,51 +126,10 @@ namespace CarTrickRush.Characters.Player
             if (_animator == null) { return; }
             if (_trickAnimationNames != null)
             {
-                PlayAnimation(_trickAnimationNames[input]);
+                _animator?.Play(_trickAnimationNames[input]);
                 return;
             }
         }
-        #endregion
-
-        #region ------------------ Public Methods ------------------
-        
-        /// <summary>
-        /// Viewを初期化する.
-        /// </summary>
-        public void Initialize()
-        {
-            if (_visualRoot == null) { return; }
-            _visualRoot.SetActive(true);
-        }
-
-        /// <summary>
-        /// Viewを表示する.
-        /// </summary>
-        public void Show()
-        {
-            if (_visualRoot == null) { return; }
-            _visualRoot.SetActive(true);
-        }
-
-        /// <summary>
-        /// Viewを非表示にする.
-        /// </summary>
-        public void Hide()
-        {
-            if (_visualRoot == null) { return; }
-            _visualRoot.SetActive(false);
-        }
-
-        /// <summary>
-        /// アニメーションを再生する.
-        /// </summary>
-        /// <param name="animationName">アニメーション名.</param>
-        private void PlayAnimation(string animationName)
-        {
-            if (string.IsNullOrWhiteSpace(animationName)) { return; }
-            _animator.Play(animationName);
-        }
-        
         #endregion
     }
 }
