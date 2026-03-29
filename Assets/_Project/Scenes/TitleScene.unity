@@ -927,7 +927,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Navigate
+      value: SceneLoad
       objectReference: {fileID: 0}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

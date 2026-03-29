@@ -51,7 +51,7 @@ namespace CarTrickRush.UI.Common
         /// <summary>
         /// Button の OnClick に割り当てる.
         /// </summary>
-        public void Navigate()
+        public void SceneLoad()
         {
             if (string.IsNullOrWhiteSpace(_sceneName))
             {

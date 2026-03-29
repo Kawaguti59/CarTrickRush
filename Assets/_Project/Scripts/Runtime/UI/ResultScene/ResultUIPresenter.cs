@@ -96,6 +96,8 @@ namespace CarTrickRush.UI.Result
         private void Awake()
         {
             ApplyResult();
+            BindPointerSelect(_retryButton);
+            BindPointerSelect(_backToTitleButton);
             SetInteractionsEnabled(false);
         }
 
@@ -129,26 +131,6 @@ namespace CarTrickRush.UI.Result
             {
                 eventSystem.SetSelectedGameObject(_currentButton.gameObject);
             }
-        }
-
-        #endregion
-
-        #region ------------------ Public Methods ------------------
-
-        /// <summary>
-        /// 再プレイボタン処理.
-        /// </summary>
-        public void OnClickRetry()
-        {
-            SceneLoadManager.LoadScene("GameScene", 0);
-        }
-
-        /// <summary>
-        /// タイトルへ戻るボタン処理.
-        /// </summary>
-        public void OnClickBackToTitle()
-        {
-            SceneLoadManager.LoadScene("TitleScene", 0);
         }
 
         #endregion
@@ -219,6 +201,36 @@ namespace CarTrickRush.UI.Result
 
             if (_retryButton != null) { _retryButton.interactable = enabled; }
             if (_backToTitleButton != null) { _backToTitleButton.interactable = enabled; }
+        }
+
+        /// <summary>
+        /// ホバー時に選択を切り替える.
+        /// </summary>
+        private void BindPointerSelect(Button button)
+        {
+            if (button == null) { return; }
+
+            var eventTrigger = button.gameObject.GetComponent<EventTrigger>();
+            if (eventTrigger == null) { return; }
+
+            var pointerEnterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            pointerEnterEntry.callback.AddListener(_ => SelectButton(button));
+            eventTrigger.triggers.Add(pointerEnterEntry);
+
+            var pointerDownEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            pointerDownEntry.callback.AddListener(_ => SelectButton(button));
+            eventTrigger.triggers.Add(pointerDownEntry);
+        }
+
+        private void SelectButton(Button button)
+        {
+            if (!_canOperate || button == null) { return; }
+
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) { return; }
+
+            eventSystem.SetSelectedGameObject(button.gameObject);
+            _currentButton = button;
         }
 
         #endregion
