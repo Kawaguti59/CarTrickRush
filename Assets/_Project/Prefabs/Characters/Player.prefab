@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 7854848453051675285}
   - component: {fileID: 5931138649947814439}
   - component: {fileID: 8505319571068935465}
+  - component: {fileID: 6455379352912768441}
   - component: {fileID: 5695945034185517499}
   - component: {fileID: 2583043715216334101}
   m_Layer: 7
@@ -211,6 +212,24 @@ MonoBehaviour:
       _value: RotateUp
     - _key: 4
       _value: RotateDown
+  _vfxHandler: {fileID: 0}
+--- !u!114 &6455379352912768441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3001462574445137774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23c427a2698d75a4586c7ba1ddcaf9fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Characters.Player.PlayerVFXHandler
+  _normalRotationVfxPrefab: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
+  _bonusRotationVfxPrefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
+  _spawnParent: {fileID: 1509934415941281121}
+  _smokeLoopVfx: {fileID: 0}
+  _oneShotDestroyDelay: 3
 --- !u!65 &5695945034185517499
 BoxCollider:
   m_ObjectHideFlags: 0

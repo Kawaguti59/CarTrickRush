@@ -358,24 +358,26 @@ namespace CarTrickRush.Characters.Player
             if (CurrentStateType != PlayerStateType.Air) { return; }
 
             _playerModel.EnqueueTrickInput(input);
-            EvaluateTrickBonusOnRotation();
+            bool isBonus = EvaluateTrickBonusOnRotation();
 
             DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
             _playerView.ApplyTrickRotation(input);
+            _playerView.PlayRotationVfx(isBonus);
         }
 
         /// <summary>
         /// 回転入力の瞬間にトリックボーナス判定を行う.
         /// 将来的にスコア加算/エフェクト表示/スコア表示の起点にする.
         /// </summary>
-        private void EvaluateTrickBonusOnRotation()
+        private bool EvaluateTrickBonusOnRotation()
         {
             IReadOnlyList<TrickInputType> queueSnapshot = _playerModel.GetTrickInputsSnapshot();
             var matchedBonus = _playerModel.EvaluateTrick(_bonusMaster.BonusList);
 
-            if (matchedBonus == null) { return; }
+            if (matchedBonus == null) { return false; }
 
             DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, queueSnapshot);
+            return true;
         }
 
         /// <summary>

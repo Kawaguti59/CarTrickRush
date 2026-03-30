@@ -30,6 +30,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         [SerializeField] private InspectableMap<TrickInputType, string> _trickAnimationNames = default;
 
+        /// <summary>
+        /// Player用VFXハンドラー.
+        /// </summary>
+        [SerializeField] private PlayerVFXHandler _vfxHandler = default;
+
         #endregion
 
        #region ------------------ Interface Methods ------------------
@@ -129,6 +134,28 @@ namespace CarTrickRush.Characters.Player
                 _animator?.Play(_trickAnimationNames[input]);
                 return;
             }
+        }
+
+        /// <summary>
+        /// 回転VFXを再生する.
+        /// </summary>
+        /// <param name="isBonus">ボーナス演出か.</param>
+        public void PlayRotationVfx(bool isBonus)
+        {
+            if (_vfxHandler == null) { return; }
+
+            var origin = _visualRoot != null ? _visualRoot.transform.position : transform.position;
+            _vfxHandler.PlayRotationVfx(origin, isBonus);
+        }
+
+        /// <summary>
+        /// 常時煙VFXの有効/無効を切り替える.
+        /// </summary>
+        /// <param name="isActive">有効化する場合はtrue.</param>
+        public void SetSmokeActive(bool isActive)
+        {
+            if (_vfxHandler == null) { return; }
+            _vfxHandler.SetSmokeActive(isActive);
         }
         #endregion
     }
