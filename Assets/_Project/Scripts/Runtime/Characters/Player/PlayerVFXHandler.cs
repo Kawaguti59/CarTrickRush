@@ -42,11 +42,15 @@ namespace CarTrickRush.Characters.Player
 
         #region ------------------ Interface Methods ------------------
 
-        public void PlayOneShot(GameObject prefab, Vector3 position, Transform parent = null, float destroyDelay = 3.0f)
+        public void PlayOneShot(GameObject prefab, Vector3 position, Transform parent = null, float destroyDelay = 3.0f, Vector3? localScale = null)
         {
             if (prefab == null) { return; }
 
             var instance = Instantiate(prefab, position, Quaternion.identity, parent);
+            if (localScale.HasValue)
+            {
+                instance.transform.localScale = localScale.Value;
+            }
 
             if (destroyDelay > 0f)
             {
@@ -90,7 +94,7 @@ namespace CarTrickRush.Characters.Player
         {
             GameObject prefab = isBonus ? _bonusRotationVfxPrefab : _normalRotationVfxPrefab;
             Transform parent = _spawnParent != null ? _spawnParent : null;
-            PlayOneShot(prefab, position, parent, _oneShotDestroyDelay);
+            PlayOneShot(prefab, position, parent, _oneShotDestroyDelay, new Vector3(2.0f, 2.0f, 2.0f));
         }
 
         /// <summary>

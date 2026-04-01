@@ -16,7 +16,8 @@ namespace CarTrickRush.Core.Interface
         /// <param name="position">再生位置.</param>
         /// <param name="parent">生成先の親Transform.</param>
         /// <param name="destroyDelay">自動破棄までの秒数.</param>
-        void PlayOneShot(GameObject prefab, Vector3 position, Transform parent = null, float destroyDelay = 3.0f);
+        /// <param name="localScale">ルートのローカルスケール. null のときはプレハブのスケールを維持する.</param>
+        void PlayOneShot(GameObject prefab, Vector3 position, Transform parent = null, float destroyDelay = 3.0f, Vector3? localScale = null);
 
         /// <summary>
         /// ループVFXの再生を停止する.
