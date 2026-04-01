@@ -185,8 +185,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _groundCheckDistance: 0.2
-  _penaltyCarHiddenDuration: 1
-  _penaltyBlinkDuration: 0.5
+  _penaltyHideTime: 2
+  _penaltyBlinkTime: 2
   _bonusMaster: {fileID: 11400000, guid: fa45b045fbce3e140be1de0fc9ca80e6, type: 2}
   _playerView: {fileID: 8505319571068935465}
 --- !u!114 &8505319571068935465

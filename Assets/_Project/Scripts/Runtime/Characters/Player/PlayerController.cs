@@ -228,6 +228,7 @@ namespace CarTrickRush.Characters.Player
                 return false;
             }
 
+            // トリック入力をクリアして着地演出を開始する.
             _playerModel.ClearTrickInputs();
             _playerView.PlayLand();
             return true;
@@ -242,6 +243,7 @@ namespace CarTrickRush.Characters.Player
 
             var prevStateType = CurrentStateType;
 
+            // 現在の状態を終了して次の状態に遷移する.
             _currentState?.Exit();
             _currentState = nextState;
             _currentState.Enter();
@@ -252,6 +254,7 @@ namespace CarTrickRush.Characters.Player
             {
                 if (prevStateType != PlayerStateType.Air)
                 {
+                    // 走行演出を開始する.
                     _playerView.PlayRun();
                 }
 
@@ -321,7 +324,7 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// ペナルティ状態に遷移した直後の処理を行う.
         /// </summary>
-        internal void StartPenalty()
+        public void StartPenalty()
         {
             PlayTrickFailVfx();
             _playerView?.PlayPenalty();
@@ -331,18 +334,10 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// ペナルティ復帰の点滅演出を開始する.
         /// </summary>
-        internal void StartPenaltyBlink()
+        public void StartPenaltyBlink()
         {
             _playerView?.SetCarVisualActive(true);
             _playerView?.StartBlink();
-        }
-
-        private void PlayTrickFailVfx()
-        {
-            if (!_isTrickFailImpactVfx) { return; }
-
-            _isTrickFailImpactVfx = false;
-            _playerView?.PlayTrickFailImpactVfx();
         }
 
         /// <summary>
@@ -351,7 +346,6 @@ namespace CarTrickRush.Characters.Player
         public void StartGoal()
         {
             _isGoal = true;
-
             _playerView.PlayRun();
         }
 
@@ -399,6 +393,11 @@ namespace CarTrickRush.Characters.Player
         /// 下回転入力通知.
         /// </summary>
         private void OnRotateDown() => RequestTrick(TrickInputType.RotateDown);
+
+        /// <summary>
+        /// トリック失敗時のVFXを再生する.
+        /// </summary>
+        private void PlayTrickFailVfx() => _playerView?.PlayTrickFailImpactVfx();
 
         /// <summary>
         /// トリック入力リクエスト.
