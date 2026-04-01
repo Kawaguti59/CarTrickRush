@@ -14,9 +14,19 @@ namespace CarTrickRush.Characters.Player.States
     {
         #region ------------------ Fields ------------------
 
+        /// <summary>
+        /// プレイヤー本体参照.
+        /// </summary> 
         private readonly PlayerController _playerController = default;
 
+        /// <summary>
+        /// フェーズ.
+        /// </summary>
         private PenaltyPhase _phase = default;
+
+        /// <summary>
+        /// フェーズタイマー.
+        /// </summary>
         private float _phaseTimer = default;
 
         #endregion
