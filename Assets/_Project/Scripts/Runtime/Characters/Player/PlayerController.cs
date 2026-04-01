@@ -197,10 +197,18 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// 着地処理.
         /// </summary>
-        public void OnLanding()
+        /// <returns>着地したか.</returns>
+        public bool OnLanding()
         {
+            if (_playerView != null && _playerView.IsTrickRotationAnimationPlaying())
+            {
+                Destroy(gameObject);
+                return false;
+            }
+
             _playerModel.ClearTrickInputs();
             _playerView.PlayLand();
+            return true;
         }
 
         /// <summary>
@@ -356,6 +364,7 @@ namespace CarTrickRush.Characters.Player
         private void RequestTrick(TrickInputType input)
         {
             if (CurrentStateType != PlayerStateType.Air) { return; }
+            if (_playerView != null && _playerView.IsTrickRotationAnimationPlaying()) { return; }
 
             _playerModel.EnqueueTrickInput(input);
             bool isBonus = EvaluateTrickBonusOnRotation();

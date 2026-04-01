@@ -78,7 +78,11 @@ namespace CarTrickRush.Characters.Player.States
 
             if (_hasLeftGround && IsGrounded)
             {
-                _playerController.OnLanding();
+                if (!_playerController.OnLanding())
+                {
+                    return;
+                }
+
                 _playerController.ChangeState(_playerController.GroundState);
             }
         }

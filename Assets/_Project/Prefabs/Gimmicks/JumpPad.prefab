@@ -125,4 +125,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c3c8f4f2af81e4380631758ba6faf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Gimmicks.JumpPad
-  _jumpPower: 10
+  _jumpPower: 20

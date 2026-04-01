@@ -64,6 +64,37 @@ namespace CarTrickRush.Characters.Player
         }
 
         /// <summary>
+        /// トリック回転アニメが再生中（遷移中含む）かどうか.
+        /// </summary>
+        public bool IsTrickRotationAnimationPlaying()
+        {
+            if (_animator == null || _trickAnimationNames == null) { return false; }
+
+            if (_animator.IsInTransition(0))
+            {
+                AnimatorStateInfo cur = _animator.GetCurrentAnimatorStateInfo(0);
+                AnimatorStateInfo next = _animator.GetNextAnimatorStateInfo(0);
+                if (IsTrickRotationState(cur) || IsTrickRotationState(next))
+                {
+                    return true;
+                }
+            }
+
+            AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+            if (!IsTrickRotationState(info))
+            {
+                return false;
+            }
+
+            if (info.loop)
+            {
+                return true;
+            }
+
+            return info.normalizedTime < 1f;
+        }
+
+        /// <summary>
         /// 走行演出を再生する.
         /// </summary>
         public void PlayRun()
@@ -157,6 +188,24 @@ namespace CarTrickRush.Characters.Player
             if (_vfxHandler == null) { return; }
             _vfxHandler.SetSmokeActive(isActive);
         }
+
+        #endregion
+
+        #region ------------------ Private Methods ------------------
+
+        private bool IsTrickRotationState(AnimatorStateInfo info)
+        {
+            foreach (var pair in _trickAnimationNames)
+            {
+                if (info.IsName(pair.Value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         #endregion
     }
 }
