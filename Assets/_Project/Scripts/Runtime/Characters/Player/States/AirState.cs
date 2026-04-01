@@ -108,11 +108,5 @@ namespace CarTrickRush.Characters.Player.States
         }
 
         #endregion
-
-        #region ------------------ Private Methods ------------------
-
-
-
-        #endregion
     }
 }

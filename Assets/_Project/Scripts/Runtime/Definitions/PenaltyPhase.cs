@@ -9,7 +9,14 @@ namespace CarTrickRush.Definitions
     /// =========================================================================================
     public enum PenaltyPhase
     {
-        CarHidden,
-        BlinkRecover,
+        /// <summary>
+        /// 車体非表示.
+        /// </summary>
+        CarHidden = 0,
+
+        /// <summary>
+        /// 点滅復帰.
+        /// </summary>
+        BlinkRecover = 1,
     }
 }

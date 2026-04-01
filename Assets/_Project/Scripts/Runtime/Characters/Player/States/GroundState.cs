@@ -42,9 +42,17 @@ namespace CarTrickRush.Characters.Player.States
 
         #endregion
 
+        #region ------------------ Public Methods ------------------
+
+        /// <summary>
+        /// 地上状態初期化.
+        /// </summary>
+        /// <param name="playerController">プレイヤー本体参照.</param>
         public GroundState(PlayerController playerController)
         {
             _playerController = playerController;
         }
+
+        #endregion
     }
 }
