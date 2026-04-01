@@ -75,15 +75,17 @@ namespace CarTrickRush.Characters.Player
         }
 
         /// <summary>
-        /// トリック回転アニメが再生中（遷移中含む）かどうか.
+        /// トリック回転アニメが再生中かどうか.
         /// </summary>
         /// <returns>トリック回転アニメが再生中かどうか.</returns>
         public bool IsTrickRotationAnimationPlaying()
         {
             if (_animator == null || _trickAnimationNames == null) { return false; }
 
+            // 遷移中かどうかを判定する.
             if (_animator.IsInTransition(0))
             {
+                // 現在のアニメーションがトリック回転アニメかどうかを判定する.
                 AnimatorStateInfo cur = _animator.GetCurrentAnimatorStateInfo(0);
                 AnimatorStateInfo next = _animator.GetNextAnimatorStateInfo(0);
                 if (IsTrickRotationState(cur) || IsTrickRotationState(next))
@@ -92,17 +94,13 @@ namespace CarTrickRush.Characters.Player
                 }
             }
 
+            // 現在のアニメーションがトリック回転アニメかどうかを判定する.
             AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
-            if (!IsTrickRotationState(info))
-            {
-                return false;
-            }
+            if (!IsTrickRotationState(info)) { return false; }
 
-            if (info.loop)
-            {
-                return true;
-            }
+            if (info.loop) { return true; }
 
+            // 再生中かどうかを判定する.
             return info.normalizedTime < 1f;
         }
 

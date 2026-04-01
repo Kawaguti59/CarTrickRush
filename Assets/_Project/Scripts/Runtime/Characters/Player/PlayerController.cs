@@ -129,7 +129,7 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// ペナルティ中か.
         /// </summary>
-        public bool IsPenalty => CurrentStateType != PlayerStateType.Penalty;
+        public bool IsPenalty => CurrentStateType == PlayerStateType.Penalty;
 
         /// <summary>
         /// 車体非表示フェーズの長さ（秒）.
@@ -310,15 +310,6 @@ namespace CarTrickRush.Characters.Player
             _playerView.PlayJump();
             // 空中状態に遷移.
             ChangeState(_airState);
-        }
-
-        /// <summary>
-        /// ペナルティ遷移.
-        /// </summary>
-        public void EnterPenalty()
-        {
-            _isTrickFailImpactVfx = false;
-            ChangeState(_penaltyState);
         }
 
         /// <summary>
