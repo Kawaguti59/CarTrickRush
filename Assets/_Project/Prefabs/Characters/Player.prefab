@@ -212,7 +212,7 @@ MonoBehaviour:
       _value: RotateUp
     - _key: 4
       _value: RotateDown
-  _vfxHandler: {fileID: 0}
+  _vfxHandler: {fileID: 6455379352912768441}
 --- !u!114 &6455379352912768441
 MonoBehaviour:
   m_ObjectHideFlags: 0
