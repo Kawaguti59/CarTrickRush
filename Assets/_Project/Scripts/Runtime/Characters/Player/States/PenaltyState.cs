@@ -7,22 +7,17 @@ namespace CarTrickRush.Characters.Player.States
 {
     /// =========================================================================================
     /// <summary>
-    /// ペナルティ状態クラス.
+    /// ペナルティ状態クラス. 
     /// </summary>
     /// =========================================================================================
     public sealed class PenaltyState : IPlayerState
     {
         #region ------------------ Fields ------------------
 
-        /// <summary>
-        /// プレイヤー参照.
-        /// </summary>
         private readonly PlayerController _playerController = default;
 
-        /// <summary>
-        /// ペナルティ残り時間.
-        /// </summary>
-        private float _penaltyTimer = default;
+        private PenaltyPhase _phase = default;
+        private float _phaseTimer = default;
 
         #endregion
 
@@ -42,7 +37,9 @@ namespace CarTrickRush.Characters.Player.States
         /// </summary>
         public void Enter()
         {
-            _penaltyTimer = _playerController.PenaltyDuration;
+            _playerController.OnPenaltyStateEntered();
+            _phase = PenaltyPhase.CarHidden;
+            _phaseTimer = Mathf.Max(0f, _playerController.PenaltyCarHiddenDuration);
         }
 
         /// <summary>
@@ -64,10 +61,18 @@ namespace CarTrickRush.Characters.Player.States
         /// </summary>
         public void Update()
         {
-            _penaltyTimer -= Time.deltaTime;
+            _phaseTimer -= Time.deltaTime;
 
-            if (_penaltyTimer > 0f)
+            if (_phaseTimer > 0f)
             {
+                return;
+            }
+
+            if (_phase == PenaltyPhase.CarHidden)
+            {
+                _playerController.BeginPenaltyBlinkPhase();
+                _phase = PenaltyPhase.BlinkRecover;
+                _phaseTimer = Mathf.Max(0f, _playerController.PenaltyBlinkDuration);
                 return;
             }
 
@@ -79,6 +84,7 @@ namespace CarTrickRush.Characters.Player.States
         /// </summary>
         public void FixedUpdate()
         {
+            _playerController.MoveForward();
         }
 
         #endregion
@@ -93,12 +99,6 @@ namespace CarTrickRush.Characters.Player.States
         {
             _playerController = playerController;
         }
-
-        #endregion
-
-        #region ------------------ Private Methods ------------------
-
-
 
         #endregion
     }

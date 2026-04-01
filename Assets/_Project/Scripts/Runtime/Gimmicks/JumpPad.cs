@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using CarTrickRush.Gimmicks.Interfaces;
 using CarTrickRush.Characters.Player;
@@ -61,6 +61,8 @@ namespace CarTrickRush.Gimmicks
 
             if (other.TryGetComponent<PlayerController>(out var playerController))
             {
+                if (!playerController.IsPenalty) { return; }
+
                 playerController.OnJumpPadTriggered(JumpPower);
                 return;
             }

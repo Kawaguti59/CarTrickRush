@@ -38,6 +38,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         [SerializeField] private float _oneShotDestroyDelay = 3.0f;
 
+        /// <summary>
+        /// トリック失敗・激突時のヒットVFXプレハブ.
+        /// </summary>
+        [SerializeField] private GameObject _trickFailImpactVfxPrefab = default;
+
         #endregion
 
         #region ------------------ Interface Methods ------------------
@@ -90,11 +95,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         /// <param name="position">再生座標.</param>
         /// <param name="isBonus">ボーナス演出か.</param>
-        public void PlayRotationVfx(Vector3 position, bool isBonus)
+        public void PlayRotationVfx(Vector3 position, bool isBonus, Vector3 localScale)
         {
             GameObject prefab = isBonus ? _bonusRotationVfxPrefab : _normalRotationVfxPrefab;
             Transform parent = _spawnParent != null ? _spawnParent : null;
-            PlayOneShot(prefab, position, parent, _oneShotDestroyDelay, new Vector3(2.0f, 2.0f, 2.0f));
+            PlayOneShot(prefab, position, parent, _oneShotDestroyDelay, localScale);
         }
 
         /// <summary>
@@ -104,6 +109,16 @@ namespace CarTrickRush.Characters.Player
         public void SetSmokeActive(bool isActive)
         {
             SetLoopActive(_smokeLoopVfx, isActive);
+        }
+
+        /// <summary>
+        /// トリック失敗・激突演出用のヒットVFXを再生する.
+        /// </summary>
+        /// <param name="worldPosition">再生位置.</param>
+        public void PlayTrickFailImpact(Vector3 worldPosition, Vector3 localScale)
+        {
+            Transform parent = _spawnParent != null ? _spawnParent : null;
+            PlayOneShot(_trickFailImpactVfxPrefab, worldPosition, parent, _oneShotDestroyDelay, localScale);
         }
 
         #endregion

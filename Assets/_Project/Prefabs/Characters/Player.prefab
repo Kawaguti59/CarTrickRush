@@ -185,7 +185,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _groundCheckDistance: 0.2
-  _penaltyDuration: 1.5
+  _penaltyCarHiddenDuration: 1
+  _penaltyBlinkDuration: 0.5
   _bonusMaster: {fileID: 11400000, guid: fa45b045fbce3e140be1de0fc9ca80e6, type: 2}
   _playerView: {fileID: 8505319571068935465}
 --- !u!114 &8505319571068935465
@@ -213,6 +214,7 @@ MonoBehaviour:
     - _key: 4
       _value: RotateDown
   _vfxHandler: {fileID: 6455379352912768441}
+  _blinkInterval: 0.12
 --- !u!114 &6455379352912768441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +232,7 @@ MonoBehaviour:
   _spawnParent: {fileID: 1509934415941281121}
   _smokeLoopVfx: {fileID: 0}
   _oneShotDestroyDelay: 3
+  _trickFailImpactVfxPrefab: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
 --- !u!65 &5695945034185517499
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -48,6 +48,8 @@ namespace CarTrickRush.Gimmicks
 
             if (other.TryGetComponent<PlayerController>(out var playerController))
             {
+                if (!playerController.IsPenalty) { return; }
+
                 _isTriggered = true;
                 switch (_pointType)
                 {

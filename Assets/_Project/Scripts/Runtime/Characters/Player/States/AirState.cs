@@ -2,7 +2,6 @@ using UnityEngine;
 
 using CarTrickRush.Definitions;
 using CarTrickRush.Characters.Player.Interfaces;
-using TMPro;
 
 namespace CarTrickRush.Characters.Player.States
 {

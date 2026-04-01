@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using System.Collections;
+
 using CarTrickRush.Characters.Player.Interfaces;
 using CarTrickRush.Core;
 using CarTrickRush.Definitions;
@@ -35,6 +37,14 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         [SerializeField] private PlayerVFXHandler _vfxHandler = default;
 
+        /// <summary>
+        /// 点滅の切り替え間隔（秒）.
+        /// </summary>
+        [SerializeField] private float _blinkInterval = 0.12f;
+
+        private Coroutine _blinkCoroutine = default;
+        private Renderer[] _blinkRenderers = default;
+
         #endregion
 
        #region ------------------ Interface Methods ------------------
@@ -43,6 +53,7 @@ namespace CarTrickRush.Characters.Player
         {
             if (_visualRoot == null) { return; }
             _visualRoot.SetActive(true);
+            CacheBlinkRenderers();
         }
 
         public void Show()
@@ -66,6 +77,7 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// トリック回転アニメが再生中（遷移中含む）かどうか.
         /// </summary>
+        /// <returns>トリック回転アニメが再生中かどうか.</returns>
         public bool IsTrickRotationAnimationPlaying()
         {
             if (_animator == null || _trickAnimationNames == null) { return false; }
@@ -135,6 +147,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void StartBlink()
         {
+            StopBlinkInternal();
+            if (_visualRoot == null) { return; }
+
+            CacheBlinkRenderers();
+            _blinkCoroutine = StartCoroutine(BlinkRoutine());
         }
 
         /// <summary>
@@ -142,6 +159,31 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void StopBlink()
         {
+            StopBlinkInternal();
+        }
+
+        /// <summary>
+        /// Free Racing Car（見た目ルート）の表示を切り替える.
+        /// </summary>
+        public void SetCarVisualActive(bool isActive)
+        {
+            if (_visualRoot == null) { return; }
+            _visualRoot.SetActive(isActive);
+            if (isActive)
+            {
+                CacheBlinkRenderers();
+            }
+        }
+
+        /// <summary>
+        /// 激突時のヒットVFXを再生する.
+        /// </summary>
+        public void PlayTrickFailImpactVfx()
+        {
+            if (_vfxHandler == null) { return; }
+
+            Vector3 pos = _visualRoot != null ? _visualRoot.transform.position : transform.position;
+            _vfxHandler.PlayTrickFailImpact(pos, new Vector3(2.0f, 2.0f, 2.0f));
         }
 
         /// <summary>
@@ -176,7 +218,7 @@ namespace CarTrickRush.Characters.Player
             if (_vfxHandler == null) { return; }
 
             var origin = _visualRoot != null ? _visualRoot.transform.position : transform.position;
-            _vfxHandler.PlayRotationVfx(origin, isBonus);
+            _vfxHandler.PlayRotationVfx(origin, isBonus, new Vector3(2.0f, 2.0f, 2.0f));
         }
 
         /// <summary>
@@ -193,6 +235,79 @@ namespace CarTrickRush.Characters.Player
 
         #region ------------------ Private Methods ------------------
 
+        /// <summary>
+        /// 点滅用Rendererをキャッシュする.
+        /// </summary>
+        private void CacheBlinkRenderers()
+        {
+            if (_visualRoot == null) { return; }
+            _blinkRenderers = _visualRoot.GetComponentsInChildren<Renderer>(true);
+        }
+
+        /// <summary>
+        /// 点滅演出を停止する.
+        /// </summary>
+        private void StopBlinkInternal()
+        {
+            if (_blinkCoroutine != null)
+            {
+                StopCoroutine(_blinkCoroutine);
+                _blinkCoroutine = default;
+            }
+
+            SetAllBlinkRenderersEnabled(true);
+        }
+
+        /// <summary>
+        /// 点滅用Rendererを有効/無効にする.
+        /// </summary>
+        /// <param name="enabled">有効化する場合はtrue.</param>
+        private void SetAllBlinkRenderersEnabled(bool enabled)
+        {
+            if (_blinkRenderers == null) { return; }
+
+            for (var i = 0; i < _blinkRenderers.Length; i++)
+            {
+                Renderer r = _blinkRenderers[i];
+                if (r != null)
+                {
+                    r.enabled = enabled;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 点滅演出を実行する.
+        /// </summary>
+        private IEnumerator BlinkRoutine()
+        {
+            var wait = new WaitForSeconds(Mathf.Max(0.02f, _blinkInterval));
+            var visible = true;
+
+            while (true)
+            {
+                visible = !visible;
+                if (_blinkRenderers != null)
+                {
+                    for (var i = 0; i < _blinkRenderers.Length; i++)
+                    {
+                        Renderer r = _blinkRenderers[i];
+                        if (r != null)
+                        {
+                            r.enabled = visible;
+                        }
+                    }
+                }
+
+                yield return wait;
+            }
+        }
+
+        /// <summary>
+        /// トリック回転アニメが再生中かどうか.
+        /// </summary>
+        /// <param name="info">アニメーターStateInfo.</param>
+        /// <returns>トリック回転アニメが再生中かどうか.</returns>
         private bool IsTrickRotationState(AnimatorStateInfo info)
         {
             foreach (var pair in _trickAnimationNames)

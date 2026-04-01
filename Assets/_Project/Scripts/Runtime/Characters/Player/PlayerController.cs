@@ -50,7 +50,12 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// ペナルティ継続時間.
         /// </summary>
-        [SerializeField] private float _penaltyDuration = 1.5f;
+        [SerializeField] private float _penaltyCarHiddenDuration = 1.0f;
+
+        /// <summary>
+        /// 車体再表示後の点滅時間（秒）. 終了後に地上状態へ戻る.
+        /// </summary>
+        [SerializeField] private float _penaltyBlinkDuration = 0.5f;
 
         /// <summary>
         /// トリックボーナスマスタ.
@@ -88,10 +93,15 @@ namespace CarTrickRush.Characters.Player
         private PenaltyState _penaltyState = default;
     
         /// <summary>
-        /// ゴール演出中か.
+        /// ゴール中か.
         /// </summary>
-        private bool _isGoalSequenceRunning = default;
-    
+        private bool _isGoal = default;
+
+        /// <summary>
+        /// トリック失敗ヒットVFXを再生するか.
+        /// </summary>
+        private bool _isTrickFailImpactVfx = default;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -117,14 +127,24 @@ namespace CarTrickRush.Characters.Player
         public PenaltyState PenaltyState => _penaltyState;
 
         /// <summary>
-        /// ペナルティ時間.
+        /// ペナルティ中か.
         /// </summary>
-        public float PenaltyDuration => _penaltyDuration;
+        public bool IsPenalty => CurrentStateType != PlayerStateType.Penalty;
 
         /// <summary>
-        /// ゴール演出中か.
+        /// 車体非表示フェーズの長さ（秒）.
         /// </summary>
-        public bool IsGoalSequenceRunning => _isGoalSequenceRunning;
+        public float PenaltyCarHiddenDuration => _penaltyCarHiddenDuration;
+
+        /// <summary>
+        /// 復帰点滅フェーズの長さ（秒）.
+        /// </summary>
+        public float PenaltyBlinkDuration => _penaltyBlinkDuration;
+
+        /// <summary>
+        /// ゴール中か.
+        /// </summary>
+        public bool IsGoal => _isGoal;
 
         #endregion
 
@@ -161,7 +181,7 @@ namespace CarTrickRush.Characters.Player
 
         private void Update()
         {
-            if (IsGoalSequenceRunning) { return; }
+            if (IsGoal) { return; }
 
             _currentState?.HandleInput();
             _currentState?.Update();
@@ -169,7 +189,7 @@ namespace CarTrickRush.Characters.Player
 
         private void FixedUpdate()
         {
-            if (IsGoalSequenceRunning) { return; }
+            if (IsGoal) { return; }
 
             _currentState?.FixedUpdate();
         }
@@ -202,7 +222,9 @@ namespace CarTrickRush.Characters.Player
         {
             if (_playerView != null && _playerView.IsTrickRotationAnimationPlaying())
             {
-                Destroy(gameObject);
+                _playerModel.ClearTrickInputs();
+                _isTrickFailImpactVfx = true;
+                ChangeState(_penaltyState);
                 return false;
             }
 
@@ -238,12 +260,6 @@ namespace CarTrickRush.Characters.Player
                     // ペナルティ終了時の点滅を止める.
                     _playerView.StopBlink();
                 }
-            }
-            else if (nextState.StateType == PlayerStateType.Penalty)
-            {
-                // ペナルティ演出を開始.
-                _playerView.PlayPenalty();
-                _playerView.StartBlink();
             }
             else if (nextState.StateType == PlayerStateType.Air)
             {
@@ -298,8 +314,35 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void EnterPenalty()
         {
-            // ペナルティ状態に遷移.
+            _isTrickFailImpactVfx = false;
             ChangeState(_penaltyState);
+        }
+
+        /// <summary>
+        /// ペナルティ状態に入った直後の見た目・VFXをセットアップする.
+        /// </summary>
+        internal void OnPenaltyStateEntered()
+        {
+            PlayTrickFailImpactVfxIfPending();
+            _playerView?.PlayPenalty();
+            _playerView?.SetCarVisualActive(false);
+        }
+
+        /// <summary>
+        /// ペナルティ復帰の点滅フェーズを開始する（車体表示＋点滅）.
+        /// </summary>
+        internal void BeginPenaltyBlinkPhase()
+        {
+            _playerView?.SetCarVisualActive(true);
+            _playerView?.StartBlink();
+        }
+
+        private void PlayTrickFailImpactVfxIfPending()
+        {
+            if (!_isTrickFailImpactVfx) { return; }
+
+            _isTrickFailImpactVfx = false;
+            _playerView?.PlayTrickFailImpactVfx();
         }
 
         /// <summary>
@@ -307,7 +350,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void EnterGoalSequence()
         {
-            _isGoalSequenceRunning = true;
+            _isGoal = true;
 
             _playerView.PlayRun();
         }
