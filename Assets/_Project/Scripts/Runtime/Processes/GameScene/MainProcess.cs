@@ -113,7 +113,7 @@ namespace CarTrickRush.GameScene
         {
             _isGoalSequenceRunning = true;
 
-            _playerController?.EnterGoalSequence();
+            _playerController?.StartGoal();
 
             BuildResultData();
 

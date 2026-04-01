@@ -50,12 +50,12 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// ペナルティ継続時間.
         /// </summary>
-        [SerializeField] private float _penaltyCarHiddenDuration = 1.0f;
+        [SerializeField] private float _penaltyHideTime = 1.0f;
 
         /// <summary>
         /// 車体再表示後の点滅時間（秒）. 終了後に地上状態へ戻る.
         /// </summary>
-        [SerializeField] private float _penaltyBlinkDuration = 0.5f;
+        [SerializeField] private float _penaltyBlinkTime = 0.5f;
 
         /// <summary>
         /// トリックボーナスマスタ.
@@ -134,15 +134,15 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// 車体非表示フェーズの長さ（秒）.
         /// </summary>
-        public float PenaltyCarHiddenDuration => _penaltyCarHiddenDuration;
+        public float PenaltyHideTime => _penaltyHideTime;
 
         /// <summary>
         /// 復帰点滅フェーズの長さ（秒）.
         /// </summary>
-        public float PenaltyBlinkDuration => _penaltyBlinkDuration;
+        public float PenaltyBlinkTime => _penaltyBlinkTime;
 
         /// <summary>
-        /// ゴール中か.
+        /// ゴール演出中か.
         /// </summary>
         public bool IsGoal => _isGoal;
 
@@ -319,25 +319,25 @@ namespace CarTrickRush.Characters.Player
         }
 
         /// <summary>
-        /// ペナルティ状態に入った直後の見た目・VFXをセットアップする.
+        /// ペナルティ状態に遷移した直後の処理を行う.
         /// </summary>
-        internal void OnPenaltyStateEntered()
+        internal void StartPenalty()
         {
-            PlayTrickFailImpactVfxIfPending();
+            PlayTrickFailVfx();
             _playerView?.PlayPenalty();
             _playerView?.SetCarVisualActive(false);
         }
 
         /// <summary>
-        /// ペナルティ復帰の点滅フェーズを開始する（車体表示＋点滅）.
+        /// ペナルティ復帰の点滅演出を開始する.
         /// </summary>
-        internal void BeginPenaltyBlinkPhase()
+        internal void StartPenaltyBlink()
         {
             _playerView?.SetCarVisualActive(true);
             _playerView?.StartBlink();
         }
 
-        private void PlayTrickFailImpactVfxIfPending()
+        private void PlayTrickFailVfx()
         {
             if (!_isTrickFailImpactVfx) { return; }
 
@@ -348,7 +348,7 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// ゴール演出状態を開始する.
         /// </summary>
-        public void EnterGoalSequence()
+        public void StartGoal()
         {
             _isGoal = true;
 
@@ -410,7 +410,7 @@ namespace CarTrickRush.Characters.Player
             if (_playerView != null && _playerView.IsTrickRotationAnimationPlaying()) { return; }
 
             _playerModel.EnqueueTrickInput(input);
-            bool isBonus = EvaluateTrickBonusOnRotation();
+            bool isBonus = TryMatchTrickBonus();
 
             DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
             _playerView.ApplyTrickRotation(input);
@@ -421,7 +421,7 @@ namespace CarTrickRush.Characters.Player
         /// 回転入力の瞬間にトリックボーナス判定を行う.
         /// 将来的にスコア加算/エフェクト表示/スコア表示の起点にする.
         /// </summary>
-        private bool EvaluateTrickBonusOnRotation()
+        private bool TryMatchTrickBonus()
         {
             IReadOnlyList<TrickInputType> queueSnapshot = _playerModel.GetTrickInputsSnapshot();
             var matchedBonus = _playerModel.EvaluateTrick(_bonusMaster.BonusList);

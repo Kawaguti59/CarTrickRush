@@ -37,9 +37,9 @@ namespace CarTrickRush.Characters.Player.States
         /// </summary>
         public void Enter()
         {
-            _playerController.OnPenaltyStateEntered();
+            _playerController.StartPenalty();
             _phase = PenaltyPhase.CarHidden;
-            _phaseTimer = Mathf.Max(0f, _playerController.PenaltyCarHiddenDuration);
+            _phaseTimer = Mathf.Max(0f, _playerController.PenaltyHideTime);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace CarTrickRush.Characters.Player.States
 
             if (_phase == PenaltyPhase.CarHidden)
             {
-                _playerController.BeginPenaltyBlinkPhase();
+                _playerController.StartPenaltyBlink();
                 _phase = PenaltyPhase.BlinkRecover;
-                _phaseTimer = Mathf.Max(0f, _playerController.PenaltyBlinkDuration);
+                _phaseTimer = Mathf.Max(0f, _playerController.PenaltyBlinkTime);
                 return;
             }
 
