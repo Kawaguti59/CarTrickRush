@@ -35,6 +35,10 @@ namespace CarTrickRush.Characters.Player.States
         public void HandleInput() { }
         public void Update() { }
 
+        #endregion
+
+        #region ------------------ MonoBehaviour Methods ------------------
+
         public void FixedUpdate()
         {
             _playerController.MoveForward();
