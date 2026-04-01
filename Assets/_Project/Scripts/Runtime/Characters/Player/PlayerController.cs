@@ -411,18 +411,15 @@ namespace CarTrickRush.Characters.Player
         }
 
         /// <summary>
-        /// 回転入力の瞬間にトリックボーナス判定を行う.
-        /// 将来的にスコア加算/エフェクト表示/スコア表示の起点にする.
+        /// トリックボーナス判定を行う.
         /// </summary>
+        /// <returns>トリックボーナスが一致したか.</returns>
         private bool TryMatchTrickBonus()
         {
-            IReadOnlyList<TrickInputType> queueSnapshot = _playerModel.GetTrickInputsSnapshot();
             var matchedBonus = _playerModel.EvaluateTrick(_bonusMaster.BonusList);
-
             if (matchedBonus == null) { return false; }
-
             #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, queueSnapshot);
+            DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, _playerModel.GetTrickInputsSnapshot());
             #endif
             return true;
         }
