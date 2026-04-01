@@ -408,12 +408,15 @@ namespace CarTrickRush.Characters.Player
             if (CurrentStateType != PlayerStateType.Air) { return; }
             if (_playerView != null && _playerView.IsTrickRotationAnimationPlaying()) { return; }
 
+            // トリック入力をキューに追加する.
             _playerModel.EnqueueTrickInput(input);
-            bool isBonus = TryMatchTrickBonus();
 
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
+            #endif
+            // トリック入力を適用して演出を再生する.
             _playerView.ApplyTrickRotation(input);
-            _playerView.PlayRotationVfx(isBonus);
+            _playerView.PlayRotationVfx(TryMatchTrickBonus());
         }
 
         /// <summary>
@@ -427,7 +430,9 @@ namespace CarTrickRush.Characters.Player
 
             if (matchedBonus == null) { return false; }
 
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, queueSnapshot);
+            #endif
             return true;
         }
 
