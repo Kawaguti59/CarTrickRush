@@ -34,11 +34,29 @@ namespace CarTrickRush.Managers
 
         #region ------------------ Events ------------------
 
+        /// <summary>
+        /// 右回転を実行するイベント.
+        /// </summary>  
         public event Action RotateRightPerformed;
+
+        /// <summary>
+        /// 左回転を実行するイベント.
+        /// </summary>
         public event Action RotateLeftPerformed;
+
+        /// <summary>
+        /// 上回転を実行するイベント.
+        /// </summary>
         public event Action RotateUpPerformed;
+
+        /// <summary>
+        /// 下回転を実行するイベント.
+        /// </summary>
         public event Action RotateDownPerformed;
 
+        /// <summary>
+        /// ポーズを実行するイベント.
+        /// </summary>
         public event Action PausePerformed;
 
         #endregion
@@ -66,13 +84,8 @@ namespace CarTrickRush.Managers
             }
 
             Keyboard keyboard = Keyboard.current;
-            if (keyboard == null)
-            {
-                return;
-            }
+            if (keyboard == null) { return; }
 
-            // Fallback polling for Input System keyboard.
-            // This keeps gameplay input working even if PlayerInput/UnityEvent wiring is missing.
             if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
             {
                 InvokeRotateRight();

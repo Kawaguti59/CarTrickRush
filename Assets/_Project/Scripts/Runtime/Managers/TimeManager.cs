@@ -44,23 +44,5 @@ namespace CarTrickRush.Managers
         }
 
         #endregion
-
-        #region ------------------ Interface Methods ------------------
-
-
-
-        #endregion
-
-        #region ------------------ Public Methods ------------------
-
-
-
-        #endregion
-
-        #region ------------------ Private Methods ------------------
-
-
-
-        #endregion
     }
 }

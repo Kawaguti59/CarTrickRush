@@ -22,7 +22,10 @@ namespace CarTrickRush.Gimmicks
         #endregion
 
         #region ------------------ Properties ------------------
-
+        
+        /// <summary>
+        /// ジャンプ力.
+        /// </summary>
         private float JumpPower => _jumpPower;
 
         #endregion
