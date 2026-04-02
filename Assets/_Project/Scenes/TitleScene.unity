@@ -895,7 +895,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6365830860609969985, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_text
-      value: PlayGame
+      value: Play Game
       objectReference: {fileID: 0}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_Navigation.m_Mode
@@ -1271,7 +1271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6365830860609969985, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_text
-      value: GameEnd
+      value: Game End
       objectReference: {fileID: 0}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_Navigation.m_Mode
