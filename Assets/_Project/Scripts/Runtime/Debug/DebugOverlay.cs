@@ -17,26 +17,89 @@ namespace CarTrickRush.Debugging
     {
         #region ------------------ Fields ------------------
 
+        /// <summary>
+        /// インスタンス.
+        /// </summary>
         private static DebugOverlay _instance = default;
 
+        /// <summary>
+        /// 表示位置.
+        /// </summary>
         [SerializeField] private Vector2 _position = new(32f, 32f);
+
+        /// <summary>
+        /// 表示サイズ.
+        /// </summary>
         [SerializeField] private Vector2 _boxSize = new(1120f, 360f);
+
+        /// <summary>
+        /// 表示時間.
+        /// </summary>
         [SerializeField] private float _displayDuration = 4.0f;
+
+        /// <summary>
+        /// 最大表示行数.
+        /// </summary>
         [SerializeField] private int _maxLogLines = 8;
+
+        /// <summary>
+        /// フォントサイズ.
+        /// </summary>
         [SerializeField] private int _fontSize = 40;
+
+        /// <summary>
+        /// ウィンドウカラー.
+        /// </summary>
         [SerializeField] private Color _windowColor = new(0f, 0f, 0f, 0.65f);
+
+        /// <summary>
+        /// トグル入力ウィンドウ.
+        /// </summary>
         [SerializeField] private float _toggleInputWindow = 1.0f;
 
+        /// <summary>
+        /// ログエントリー.
+        /// </summary>
         private readonly List<LogEntry> _logs = new();
+
+        /// <summary>
+        /// 表示状態.
+        /// </summary>
         private bool _isVisible = false;
+
+        /// <summary>
+        /// シーケンスインデックス.
+        /// </summary>
         private int _sequenceIndex = default;
+
+        /// <summary>
+        /// シーケンス有効期限.
+        /// </summary> 
         private float _sequenceExpireAt = default;
+
+        /// <summary>
+        /// ラベルスタイル.
+        /// </summary>
         private GUIStyle _labelStyle = default;
+
+        /// <summary>
+        /// トグルシーケンス.
+        /// </summary>
         private readonly char[] _toggleSequence = { 'd', 'b', 'g' };
 
+        /// <summary>
+        /// ログエントリー.
+        /// </summary>
         private struct LogEntry
         {
+            /// <summary>
+            /// メッセージ.
+            /// </summary>
             public string Message;
+            
+            /// <summary>
+            /// 非表示時間.
+            /// </summary>
             public float HideAt;
         }
 
@@ -109,8 +172,7 @@ namespace CarTrickRush.Debugging
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// 回転ログをHUDに表示する.
-        /// DebugOverlayが存在しない場合は何もしない.
+        /// 回転ログを表示する.
         /// </summary>
         /// <param name="message">表示メッセージ.</param>
         public static void ShowRotationLog(string message)
@@ -124,7 +186,7 @@ namespace CarTrickRush.Debugging
         }
 
         /// <summary>
-        /// ボーナス発動内容とキュー内容をHUDに表示する.
+        /// ボーナス発動内容とキュー内容を表示する.
         /// </summary>
         public static void ShowBonusLog(string bonusName, int score, IReadOnlyList<TrickInputType> queueSnapshot)
         {
@@ -156,6 +218,10 @@ namespace CarTrickRush.Debugging
             _instance.PushLog(stringBuilder.ToString());
         }
 
+        /// <summary>
+        /// ログを追加する.
+        /// </summary>
+        /// <param name="message">表示メッセージ.</param>
         private void PushLog(string message)
         {
             _logs.Add(new LogEntry
@@ -170,6 +236,9 @@ namespace CarTrickRush.Debugging
             }
         }
 
+        /// <summary>
+        /// 期限切れのログを削除する.
+        /// </summary>
         private void PruneExpiredLogs()
         {
             float now = Time.unscaledTime;
