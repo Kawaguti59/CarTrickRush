@@ -434,25 +434,26 @@ namespace CarTrickRush.Characters.Player
             var gameUi = GameUIPresenter.Instance;
 
             var baseScore = Mathf.Max(0, _rotationBaseScore);
+            var hasBonusHud = matchedBonus != null && Mathf.Max(0, matchedBonus.Score) > 0;
+
             if (baseScore > 0)
             {
                 scoreManager?.AddScore(baseScore);
-                gameUi?.PushNormalTrickScore(GetRotationDisplayName(input), baseScore);
+                gameUi?.PushTrickScore(
+                    GetRotationDisplayName(input),
+                    baseScore,
+                    isBonus: false,
+                    endGroup: !hasBonusHud);
             }
 
-            if (matchedBonus != null)
+            if (hasBonusHud)
             {
                 var bonusScore = Mathf.Max(0, matchedBonus.Score);
-                if (bonusScore <= 0)
-                {
-                    return;
-                }
-                // トリックスコアを反映する.
                 scoreManager?.AddScore(bonusScore);
                 var label = string.IsNullOrEmpty(matchedBonus.BonusName)
                     ? "Combo Bonus"
                     : matchedBonus.BonusName;
-                gameUi?.PushBonusTrickScore(label, bonusScore);
+                gameUi?.PushTrickScore(label, bonusScore, isBonus: true, endGroup: true);
             }
         }
 

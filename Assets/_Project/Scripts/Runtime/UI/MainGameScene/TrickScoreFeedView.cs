@@ -51,6 +51,11 @@ namespace CarTrickRush.UI
         /// </summary>
         [SerializeField] private float _previousRowLayoutFactor = 0.8f;
 
+        /// <summary>
+        /// 現在のセットで追加した行数.
+        /// </summary>
+        private int _batchRowCount = default;
+
         #endregion
 
         #region ------------------ Public Methods ------------------
@@ -58,7 +63,11 @@ namespace CarTrickRush.UI
         /// <summary>
         /// 行を追加する (先頭が最新, 下に古い行が並ぶ).
         /// </summary>
-        public void Push(string displayName, int addValue, TrickScoreRowKind kind)
+        /// <param name="endGroup">
+        /// false のときは同一セットの続き (例: 回転スコアの次にボーナス行). 最後の1回だけ true にすると,
+        /// そのセットで追加した全行が等倍, それより前の行だけが縮小倍率になる.
+        /// </param>
+        public void Push(string displayName, int addValue, TrickScoreRowKind kind, bool endGroup = true)
         {
             var prefab = ResolvePrefab(kind);
             if (_rowParent == null || prefab == null) { return; }
@@ -79,9 +88,16 @@ namespace CarTrickRush.UI
             row.transform.SetAsFirstSibling();
             row.Show(displayName, addValue, _visibleDuration, _fadeDuration);
 
+            _batchRowCount++;
+
             Canvas.ForceUpdateCanvases();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_rowParent);
-            RefreshRowLayoutSizeFactors();
+            RefreshRowLayoutSizeFactors(_batchRowCount);
+
+            if (endGroup)
+            {
+                _batchRowCount = 0;
+            }
         }
 
         #endregion
@@ -92,13 +108,20 @@ namespace CarTrickRush.UI
         [ContextMenu("Debug/Push Sample Normal")]
         private void DebugPushSampleNormal()
         {
-            Push("Sample", 100, TrickScoreRowKind.Normal);
+            Push("Sample", 100, TrickScoreRowKind.Normal, endGroup: true);
         }
 
         [ContextMenu("Debug/Push Sample Bonus")]
         private void DebugPushSampleBonus()
         {
-            Push("Bonus", 500, TrickScoreRowKind.Bonus);
+            Push("Bonus", 500, TrickScoreRowKind.Bonus, endGroup: true);
+        }
+
+        [ContextMenu("Debug/Push Sample Set (2 rows)")]
+        private void DebugPushSampleSet()
+        {
+            Push("Row A", 10, TrickScoreRowKind.Normal, endGroup: false);
+            Push("Row B", 90, TrickScoreRowKind.Bonus, endGroup: true);
         }
 #endif
 
@@ -106,6 +129,11 @@ namespace CarTrickRush.UI
 
         #region ------------------ Private Methods ------------------
 
+        /// <summary>
+        /// プレハブを解決する.
+        /// </summary>
+        /// <param name="kind">スコア行の種別.</param>
+        /// <returns>解決したプレハブ.</returns>
         private TrickScoreRowView ResolvePrefab(TrickScoreRowKind kind)
         {
             if (kind == TrickScoreRowKind.Bonus && _bonusRowPrefab != null)
@@ -116,16 +144,21 @@ namespace CarTrickRush.UI
             return _normalRowPrefab;
         }
 
-        private void RefreshRowLayoutSizeFactors()
+        /// <summary>
+        /// 行のレイアウトサイズの倍率を更新する.
+        /// </summary>
+        /// <param name="leadingFullScaleCount">先頭から等倍表示する行数.</param>
+        private void RefreshRowLayoutSizeFactors(int leadingFullScaleCount)
         {
             var compact = Mathf.Max(0.01f, _previousRowLayoutFactor);
             var n = _rowParent.childCount;
+            var fullCount = Mathf.Clamp(leadingFullScaleCount, 0, n);
             for (var i = 0; i < n; i++)
             {
                 var rowView = _rowParent.GetChild(i).GetComponent<TrickScoreRowView>();
                 if (rowView == null) { continue; }
 
-                var factor = i == 0 ? 1f : compact;
+                var factor = i < fullCount ? 1f : compact;
                 rowView.SetRowLayoutSizeFactor(factor);
             }
         }

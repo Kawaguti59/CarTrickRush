@@ -69,23 +69,18 @@ namespace CarTrickRush.UI
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// 通常スコア行をフィードに追加する.
+        /// トリックスコアをフィードに追加する.
         /// </summary>
-        public void PushNormalTrickScore(string displayName, int addValue)
+        /// <param name="displayName">表示名.</param>
+        /// <param name="addValue">加算値.</param>
+        /// <param name="isBonus">ボーナスかどうか.</param>
+        /// <param name="endGroup">同一セットの最後かどうか.</param>
+        public void PushTrickScore(string displayName, int addValue, bool isBonus, bool endGroup = true)
         {
             if (_trickScoreFeedView == null) { return; }
 
-            _trickScoreFeedView.Push(displayName, addValue, TrickScoreRowKind.Normal);
-        }
-
-        /// <summary>
-        /// ボーナススコア行をフィードに追加する.
-        /// </summary>
-        public void PushBonusTrickScore(string displayName, int addValue)
-        {
-            if (_trickScoreFeedView == null) { return; }
-
-            _trickScoreFeedView.Push(displayName, addValue, TrickScoreRowKind.Bonus);
+            var kind = isBonus ? TrickScoreRowKind.Bonus : TrickScoreRowKind.Normal;
+            _trickScoreFeedView.Push(displayName, addValue, kind, endGroup);
         }
 
         #endregion
