@@ -188,6 +188,7 @@ MonoBehaviour:
   _penaltyHideTime: 2
   _penaltyBlinkTime: 2
   _bonusMaster: {fileID: 11400000, guid: fa45b045fbce3e140be1de0fc9ca80e6, type: 2}
+  _rotationBaseScore: 100
   _playerView: {fileID: 8505319571068935465}
 --- !u!114 &8505319571068935465
 MonoBehaviour:
