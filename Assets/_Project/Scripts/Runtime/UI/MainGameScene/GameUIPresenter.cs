@@ -25,6 +25,11 @@ namespace CarTrickRush.UI
         [SerializeField] private ProgressView _progressView = default;
 
         /// <summary>
+        /// ボーナススコアのキュー表示.
+        /// </summary>
+        [SerializeField] private BonusScoreFeedView _bonusScoreFeedView = default;
+
+        /// <summary>
         /// プレイヤーのTransform.
         /// </summary>
         [SerializeField] private Transform _playerTransform = default;
@@ -47,6 +52,20 @@ namespace CarTrickRush.UI
         /// スコア管理クラス.
         /// </summary>
         private ScoreManager ScoreManager => ManagerLocator.ScoreManager;
+
+        #endregion
+
+        #region ------------------ Public Methods ------------------
+
+        /// <summary>
+        /// ボーナス名と加算値をキュー表示に追加する (ゲームロジック側は後から接続).
+        /// </summary>
+        public void PushBonusScore(string bonusDisplayName, int addValue)
+        {
+            if (_bonusScoreFeedView == null) { return; }
+
+            _bonusScoreFeedView.Push(bonusDisplayName, addValue);
+        }
 
         #endregion
 
