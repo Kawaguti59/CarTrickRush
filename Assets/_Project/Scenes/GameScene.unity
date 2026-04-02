@@ -433,7 +433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.GameUiPresenter
   _scoreView: {fileID: 1773505932}
   _progressView: {fileID: 1976471489}
-  _bonusScoreFeedView: {fileID: 0}
+  _trickScoreFeedView: {fileID: 8300220011610961247}
   _playerTransform: {fileID: 1581431270}
   _startPoint: {fileID: 1912809008}
   _goalPoint: {fileID: 1373040727}

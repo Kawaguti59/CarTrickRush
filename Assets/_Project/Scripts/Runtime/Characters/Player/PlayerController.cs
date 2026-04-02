@@ -10,6 +10,7 @@ using CarTrickRush.Debugging;
 using CarTrickRush.Definitions;
 using CarTrickRush.GameScene;
 using CarTrickRush.Managers;
+using CarTrickRush.UI;
 
 namespace CarTrickRush.Characters.Player
 {
@@ -62,6 +63,11 @@ namespace CarTrickRush.Characters.Player
         /// トリックボーナスマスタ.
         /// </summary>
         [SerializeField] private TrickBonusMaster _bonusMaster = default;
+
+        /// <summary>
+        /// 回転スコアのベース値.
+        /// </summary>
+        [SerializeField] private int _rotationBaseScore = 15;
 
         /// <summary>
         /// プレイヤー見た目制御.
@@ -401,29 +407,72 @@ namespace CarTrickRush.Characters.Player
             #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
             #endif
-            var isBonus = TryMatchTrickBonus();
+            // トリックボーナス判定を行う.
+            var matchedBonus = TryMatchTrickBonus();
+            // トリックボーナスが一致したか.
+            var isBonus = matchedBonus != null;
             // トリック入力を適用して演出を再生する.
             _playerView.ApplyTrickRotation(input);
             _playerView.PlayRotationVfx(isBonus);
+            // サウンドを再生する.
             ManagerLocator.AudioManager?.PlaySe("Rotate");
             if (isBonus)
             {
+                // ボーナスサウンドを再生する.
                 ManagerLocator.AudioManager?.PlaySe("Bonus");
+            }
+
+            ApplyRotationScoreAndHud(input, matchedBonus);
+        }
+
+        /// <summary>
+        /// 回転スコアとトリックスコアHUDを反映する.
+        /// </summary>
+        private void ApplyRotationScoreAndHud(TrickInputType input, TrickBonusData matchedBonus)
+        {
+            var scoreManager = ManagerLocator.ScoreManager;
+            var gameUi = GameUIPresenter.Instance;
+
+            var baseScore = Mathf.Max(0, _rotationBaseScore);
+            if (baseScore > 0)
+            {
+                scoreManager?.AddScore(baseScore);
+                gameUi?.PushBonusScore(GetRotationDisplayName(input), baseScore);
+            }
+
+            if (matchedBonus != null)
+            {
+                var bonusScore = Mathf.Max(0, matchedBonus.Score);
+                if (bonusScore <= 0)
+                {
+                    return;
+                }
+                // トリックスコアを反映する.
+                scoreManager?.AddScore(bonusScore);
+                var label = string.IsNullOrEmpty(matchedBonus.BonusName)
+                    ? "Combo Bonus"
+                    : matchedBonus.BonusName;
+                gameUi?.PushBonusScore(label, bonusScore);
             }
         }
 
         /// <summary>
         /// トリックボーナス判定を行う.
         /// </summary>
-        /// <returns>トリックボーナスが一致したか.</returns>
-        private bool TryMatchTrickBonus()
+        /// <returns>一致したボーナス / なければnull.</returns>
+        private TrickBonusData TryMatchTrickBonus()
         {
+            if (_bonusMaster == null)
+            {
+                return null;
+            }
+
             var matchedBonus = _playerModel.EvaluateTrick(_bonusMaster.BonusList);
-            if (matchedBonus == null) { return false; }
+            if (matchedBonus == null) { return null; }
             #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DebugOverlay.ShowBonusLog(matchedBonus.BonusName, matchedBonus.Score, _playerModel.GetTrickInputsSnapshot());
             #endif
-            return true;
+            return matchedBonus;
         }
 
         /// <summary>
@@ -440,6 +489,21 @@ namespace CarTrickRush.Characters.Player
                 TrickInputType.RotateLeft => "[TrickInput] 左回転を実行",
                 TrickInputType.RotateRight => "[TrickInput] 右回転を実行",
                 _ => null
+            };
+        }
+
+        /// <summary>
+        /// 回転入力をスコアフィード用の短い表示名へ変換する.
+        /// </summary>
+        private static string GetRotationDisplayName(TrickInputType input)
+        {
+            return input switch
+            {
+                TrickInputType.RotateUp => "上回転",
+                TrickInputType.RotateDown => "下回転",
+                TrickInputType.RotateLeft => "左回転",
+                TrickInputType.RotateRight => "右回転",
+                _ => "回転"
             };
         }
 

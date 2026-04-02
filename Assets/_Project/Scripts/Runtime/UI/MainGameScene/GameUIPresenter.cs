@@ -15,6 +15,11 @@ namespace CarTrickRush.UI
         #region ------------------ Fields ------------------
 
         /// <summary>
+        /// アクティブなインスタンス.
+        /// </summary>
+        private static GameUIPresenter _instance = default;
+
+        /// <summary>
         /// スコア表示用のビュー.
         /// </summary>
         [SerializeField] private ScoreView _scoreView = default;
@@ -27,7 +32,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// ボーナススコアのキュー表示.
         /// </summary>
-        [SerializeField] private TrickScoreFeedView _bonusScoreFeedView = default;
+        [SerializeField] private TrickScoreFeedView _trickScoreFeedView = default;
 
         /// <summary>
         /// プレイヤーのTransform.
@@ -47,6 +52,11 @@ namespace CarTrickRush.UI
         #endregion
 
         #region ------------------ Properties ------------------
+
+        /// <summary>
+        /// ゲームUI仲介のインスタンス.
+        /// </summary>
+        public static GameUIPresenter Instance => _instance;
         
         /// <summary>
         /// スコア管理クラス.
@@ -62,14 +72,27 @@ namespace CarTrickRush.UI
         /// </summary>
         public void PushBonusScore(string bonusDisplayName, int addValue)
         {
-            if (_bonusScoreFeedView == null) { return; }
+            if (_trickScoreFeedView == null) { return; }
 
-            _bonusScoreFeedView.Push(bonusDisplayName, addValue);
+            _trickScoreFeedView.Push(bonusDisplayName, addValue);
         }
 
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
+
+        private void Awake()
+        {
+            _instance = this;
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
+        }
 
         private void OnEnable()
         {
