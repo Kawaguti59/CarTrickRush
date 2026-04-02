@@ -501,11 +501,11 @@ namespace CarTrickRush.Characters.Player
         {
             return input switch
             {
-                TrickInputType.RotateUp => "上回転",
-                TrickInputType.RotateDown => "下回転",
-                TrickInputType.RotateLeft => "左回転",
-                TrickInputType.RotateRight => "右回転",
-                _ => "回転"
+                TrickInputType.RotateUp => "Rotate Up",
+                TrickInputType.RotateDown => "Rotate Down",
+                TrickInputType.RotateLeft => "Rotate Left",
+                TrickInputType.RotateRight => "Rotate Right",
+                _ => "Rotate"
             };
         }
 

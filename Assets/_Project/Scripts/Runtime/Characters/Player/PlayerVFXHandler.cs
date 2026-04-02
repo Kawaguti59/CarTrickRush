@@ -112,7 +112,7 @@ namespace CarTrickRush.Characters.Player
         }
 
         /// <summary>
-        /// トリック失敗・激突演出用のヒットVFXを再生する.
+        /// トリック失敗・激突VFXを再生する.
         /// </summary>
         /// <param name="worldPosition">再生位置.</param>
         public void PlayTrickFailImpact(Vector3 worldPosition, Vector3 localScale)
