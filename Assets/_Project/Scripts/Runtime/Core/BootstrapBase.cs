@@ -9,6 +9,21 @@ namespace CarTrickRush.Core
     /// =========================================================================================
     public static class BootstrapBase
     {
+        #region ------------------ Fields ------------------
+
+        /// <summary>
+        /// Managerルートオブジェクト名.
+        /// </summary>
+        private const string ManagersRootName = "Managers";
+
+        /// <summary>
+        /// Managerルートのキャッシュ.
+        /// </summary>
+        private static GameObject _managersRoot = default;
+
+        #endregion
+
+        #region ------------------ Public Methods ------------------
         /// <summary>
         /// 必要なManagerを初期化する.
         /// </summary>
@@ -23,9 +38,15 @@ namespace CarTrickRush.Core
             CreateManager<CarTrickRush.Managers.AudioManager>("AudioManager");
         }
 
+        #endregion
+
+        #region ------------------ Private Methods ------------------
+
         /// <summary>
         /// 指定したManagerが存在しない場合のみ生成する.
         /// </summary>
+        /// <typeparam name="T">Managerの型.</typeparam>
+        /// <param name="objectName">Managerのオブジェクト名.</param>
         private static void CreateManager<T>(string objectName) where T : Component
         {
             if (Object.FindFirstObjectByType<T>() != null)
@@ -34,8 +55,34 @@ namespace CarTrickRush.Core
             }
 
             GameObject managerObject = new GameObject(objectName);
-            Object.DontDestroyOnLoad(managerObject);
             managerObject.AddComponent<T>();
+            managerObject.transform.SetParent(GetOrCreateManagersRoot().transform, false);
         }
+
+        /// <summary>
+        /// Managersルートを取得または生成する.
+        /// </summary>
+        private static GameObject GetOrCreateManagersRoot()
+        {
+            if (_managersRoot != null) { return _managersRoot; }
+
+            var root = GameObject.Find(ManagersRootName);
+            if (root != null)
+            {
+                if (root.transform.parent == null)
+                {
+                    Object.DontDestroyOnLoad(root);
+                    _managersRoot = root;
+                    return _managersRoot;
+                }
+            }
+
+            root = new GameObject(ManagersRootName);
+            Object.DontDestroyOnLoad(root);
+            _managersRoot = root;
+            return _managersRoot;
+        }
+
+        #endregion
     }
 }

@@ -93,7 +93,10 @@ namespace CarTrickRush.Managers
             }
 
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (transform.parent == null)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
             EnsureSources();
             ApplyBGMVolume();
             ApplySEVolume();
