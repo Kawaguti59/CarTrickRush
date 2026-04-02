@@ -66,10 +66,10 @@ namespace CarTrickRush.UI
         /// <param name="displayName">表示名.</param>
         /// <param name="addValue">加算値.</param>
         /// <param name="kind">スコア行の種別.</param>
-        /// <param name="isLast">最後の行かどうか.</param>
-        public void Push(string displayName, int addValue, TrickScoreRowKind kind, bool isLast = true)
+        /// <param name="endGroup">同一セットの最後かどうか.</param>
+        public void Push(string displayName, int addValue, TrickScoreRowKind kind, bool endGroup = true)
         {
-            var prefab = ResolvePrefab(kind);
+            var prefab = GetRowPrefab(kind);
             if (_rowParent == null || prefab == null) { return; }
 
             var limit = Mathf.Max(1, _maxRows);
@@ -94,7 +94,7 @@ namespace CarTrickRush.UI
             LayoutRebuilder.ForceRebuildLayoutImmediate(_rowParent);
             ApplySizeFactors(_setRowCount);
 
-            if (isLast)
+            if (endGroup)
             {
                 _setRowCount = 0;
             }
@@ -108,20 +108,20 @@ namespace CarTrickRush.UI
         [ContextMenu("Debug/Push Sample Normal")]
         private void DebugPushSampleNormal()
         {
-            Push("Sample", 100, TrickScoreRowKind.Normal, isLast: true);
+            Push("Sample", 100, TrickScoreRowKind.Normal, endGroup: true);
         }
 
         [ContextMenu("Debug/Push Sample Bonus")]
         private void DebugPushSampleBonus()
         {
-            Push("Bonus", 500, TrickScoreRowKind.Bonus, isLast: true);
+            Push("Bonus", 500, TrickScoreRowKind.Bonus, endGroup: true);
         }
 
         [ContextMenu("Debug/Push Sample Set (2 rows)")]
         private void DebugPushSampleSet()
         {
-            Push("Row A", 10, TrickScoreRowKind.Normal, isLast: false);
-            Push("Row B", 90, TrickScoreRowKind.Bonus, isLast: true);
+            Push("Row A", 10, TrickScoreRowKind.Normal, endGroup: false);
+            Push("Row B", 90, TrickScoreRowKind.Bonus, endGroup: true);
         }
 #endif
 
@@ -130,11 +130,11 @@ namespace CarTrickRush.UI
         #region ------------------ Private Methods ------------------
 
         /// <summary>
-        /// プレハブを解決する.
+        /// スコア行のプレハブを取得する.
         /// </summary>
         /// <param name="kind">スコア行の種別.</param>
         /// <returns>解決したプレハブ.</returns>
-        private TrickScoreRowView ResolvePrefab(TrickScoreRowKind kind)
+        private TrickScoreRowView GetRowPrefab(TrickScoreRowKind kind)
         {
             if (kind == TrickScoreRowKind.Bonus && _bonusRowPrefab != null)
             {
