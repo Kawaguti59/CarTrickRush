@@ -12,12 +12,16 @@ namespace CarTrickRush.Managers
     /// =========================================================================================
     public sealed class SaveManager : MonoBehaviour
     {
-        #region ------------------ Fields ------------------
+        #region ------------------ Constants ------------------
 
         /// <summary>
-        /// ベストスコアのキー.
+        /// ベストスコアの PlayerPrefs キー.
         /// </summary>
-        private const string BestScoreKey = "BEST_SCORE";
+        public const string BestScorePlayerPrefsKey = "BEST_SCORE";
+
+        #endregion
+
+        #region ------------------ Fields ------------------
 
         /// <summary>
         /// ディスクへ永続化するか（WebGL プレイヤーではオフ）.
@@ -62,7 +66,7 @@ namespace CarTrickRush.Managers
 
             if (!PersistBestScoreToDisk) { return; }
 
-            var bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
+            var bestScore = PlayerPrefs.GetInt(BestScorePlayerPrefsKey, 0);
             _userSaveData.SetBestScore(bestScore);
         }
 
@@ -73,7 +77,7 @@ namespace CarTrickRush.Managers
         {
             if (!PersistBestScoreToDisk) { return; }
 
-            PlayerPrefs.SetInt(BestScoreKey, _userSaveData?.BestScore ?? 0);
+            PlayerPrefs.SetInt(BestScorePlayerPrefsKey, _userSaveData?.BestScore ?? 0);
             PlayerPrefs.Save();
         }
 
