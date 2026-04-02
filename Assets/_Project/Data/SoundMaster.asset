@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2250bc4251e18c8499428038fc377ac4, type: 3}
+  m_Name: SoundMaster
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Data.SoundMaster
+  _bgmList:
+  - _id: 1000
+    _name: TitleBGM
+    _useTag: title
+    _clip: {fileID: 8300000, guid: 5773ccfc689c9d946bbb341175c12475, type: 3}
+  - _id: 1001
+    _name: GameBGM
+    _useTag: game
+    _clip: {fileID: 8300000, guid: 73e517a9f0a542c4c8e412008ede7ac0, type: 3}
+  _seList:
+  - _id: 2000
+    _name: ButtonClick
+    _useTag: common
+    _clip: {fileID: 8300000, guid: 3a2605a01b5ee34418fa1a74e50fe698, type: 3}
+  - _id: 2001
+    _name: 
+    _useTag: 
+    _clip: {fileID: 8300000, guid: 3a2605a01b5ee34418fa1a74e50fe698, type: 3}
+  - _id: 2002
+    _name: Rotate
+    _useTag: character
+    _clip: {fileID: 8300000, guid: 8ef82025e4949b74289708cbd83b127b, type: 3}
+  - _id: 2003
+    _name: OnePoint
+    _useTag: character
+    _clip: {fileID: 8300000, guid: 7ee30f09541c17147bdd34557b2c8c4d, type: 3}
+  - _id: 2004
+    _name: Explosion
+    _useTag: character
+    _clip: {fileID: 8300000, guid: 076186997bec3984e983c7d240e0c4e1, type: 3}

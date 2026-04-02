@@ -1,6 +1,8 @@
 using UnityEngine;
 
 using CarTrickRush.Core;
+using CarTrickRush.Data;
+using System;
 
 namespace CarTrickRush.Managers
 {
@@ -37,6 +39,11 @@ namespace CarTrickRush.Managers
         /// SE音量 (0〜1).
         /// </summary>
         [SerializeField] [Range(0f, 1f)] private float _seVolume = 1f;
+
+        /// <summary>
+        /// サウンドマスタ.
+        /// </summary>
+        [SerializeField] private CarTrickRush.Data.SoundMaster _master = default;
 
         #endregion
 
@@ -139,6 +146,90 @@ namespace CarTrickRush.Managers
             
             // 音量を適用して再生する.
             _seSource.PlayOneShot(clip, Mathf.Max(0f, volumeScale));
+        }
+
+        /// <summary>
+        /// ID指定でサウンドを再生する.
+        /// </summary>
+        public void Play(int id)
+        {
+            if (_master == null) { return; }
+            if (!_master.TryGetAny(id, out var data, out var isBgm)) { return; }
+            if (data == null || data.Clip == null) { return; }
+
+            if (isBgm)
+            {
+                PlayBgm(data.Clip);
+                return;
+            }
+
+            PlaySE(data.Clip);
+        }
+
+        /// <summary>
+        /// Name指定でサウンドを再生する.
+        /// </summary>
+        public void Play(string name)
+        {
+            if (_master == null) { return; }
+            if (!_master.TryGetAny(name, out var data, out var isBgm)) { return; }
+            if (data == null || data.Clip == null) { return; }
+
+            if (isBgm)
+            {
+                PlayBgm(data.Clip);
+                return;
+            }
+
+            PlaySE(data.Clip);
+        }
+
+        /// <summary>
+        /// ID指定でBGMを再生する.
+        /// </summary>
+        public void PlayBgm(int id, bool loop = true)
+        {
+            if (_master == null) { return; }
+            if (!_master.TryGetBgm(id, out var data)) { return; }
+            if (data == null || data.Clip == null) { return; }
+
+            PlayBgm(data.Clip, loop);
+        }
+
+        /// <summary>
+        /// ID指定でSEを再生する.
+        /// </summary>
+        public void PlaySe(int id, float volumeScale = 1f)
+        {
+            if (_master == null) { return; }
+            if (!_master.TryGetSe(id, out var data)) { return; }
+            if (data == null || data.Clip == null) { return; }
+
+            PlaySE(data.Clip, volumeScale);
+        }
+
+        /// <summary>
+        /// Name指定でBGMを再生する.
+        /// </summary>
+        public void PlayBgm(string name, bool loop = true)
+        {
+            if (_master == null) { return; }
+            if (!_master.TryGetBgm(name, out var data)) { return; }
+            if (data == null || data.Clip == null) { return; }
+
+            PlayBgm(data.Clip, loop);
+        }
+
+        /// <summary>
+        /// Name指定でSEを再生する.
+        /// </summary>
+        public void PlaySe(string name, float volumeScale = 1f)
+        {
+            if (_master == null) { return; }
+            if (!_master.TryGetSe(name, out var data)) { return; }
+            if (data == null || data.Clip == null) { return; }
+
+            PlaySE(data.Clip, volumeScale);
         }
 
         #endregion
