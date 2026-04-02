@@ -84,6 +84,7 @@ namespace CarTrickRush.GameScene
 
         private void Start()
         {
+            ManagerLocator.ScoreManager?.ResetScore();
             ManagerLocator.AudioManager?.PlayBgm("GameBGM");
         }
 

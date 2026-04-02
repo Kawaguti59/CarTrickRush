@@ -20,6 +20,12 @@ namespace CarTrickRush.Managers
         private const string BestScoreKey = "BEST_SCORE";
 
         /// <summary>
+        /// ディスクへ永続化するか（WebGL プレイヤーではオフ）.
+        /// </summary>
+        private static bool PersistBestScoreToDisk =>
+            Application.platform != RuntimePlatform.WebGLPlayer;
+
+        /// <summary>
         /// セーブデータ.
         /// </summary>
         private UserSaveData _userSaveData = default;
@@ -54,8 +60,10 @@ namespace CarTrickRush.Managers
         {
             _userSaveData = new UserSaveData();
 
+            if (!PersistBestScoreToDisk) { return; }
+
             var bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
-            _userSaveData?.SetBestScore(bestScore);
+            _userSaveData.SetBestScore(bestScore);
         }
 
         /// <summary>
@@ -63,7 +71,9 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void Save()
         {
-            PlayerPrefs.SetInt(BestScoreKey, (_userSaveData?.BestScore ?? 0));
+            if (!PersistBestScoreToDisk) { return; }
+
+            PlayerPrefs.SetInt(BestScoreKey, _userSaveData?.BestScore ?? 0);
             PlayerPrefs.Save();
         }
 
