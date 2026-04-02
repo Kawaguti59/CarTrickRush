@@ -2904,15 +2904,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.BonusScoreFeedView
   _rowParent: {fileID: 8300220011609787069}
   _normalRowPrefab: {fileID: 8300110011001100004, guid: a7f3c2d81eb94c5a9e86420b1a2c3d4e, type: 3}
-  _bonusRowPrefab: {fileID: 5887334192194053805, guid: 0e87d3bed88c104438c3a4d4c8268bfe, type: 3}
+  _bonusRowPrefab: {fileID: 8300110011001100004, guid: a7f3c2d81eb94c5a9e86420b1a2c3d4e, type: 3}
   _maxRows: 3
   _visibleDuration: 2
   _fadeDuration: 0.35
-  _stackRowHeight: 88
-  _stackSpacing: 8
-  _previousRowScale: 0.8
-  _slideDuration: 0.2
-  _slideFromAbove: 48
+  _previousRowLayoutFactor: 0.8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
