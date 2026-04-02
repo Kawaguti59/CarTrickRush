@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Cinemachine;
 
 using System.Collections;
 
@@ -33,6 +34,11 @@ namespace CarTrickRush.GameScene
         /// リザルトオーバーレイシーン名.
         /// </summary>
         [SerializeField] private string _resultOverlaySceneName = "ResultScene";
+
+        /// <summary>
+        /// ゲーム中のCinemachineカメラ.
+        /// </summary>
+        [SerializeField] private CinemachineCamera _gameplayCinemachineCamera = default;
 
         /// <summary>
         /// プレイヤー参照.
@@ -111,6 +117,20 @@ namespace CarTrickRush.GameScene
         #region ------------------ Private Methods ------------------
 
         /// <summary>
+        /// ゲームプレイ用カメラの追従・注視ターゲットを外す.
+        /// </summary>
+        private void StopGameplayCameraFollow()
+        {
+            if (_gameplayCinemachineCamera == null)
+            {
+                return;
+            }
+
+            _gameplayCinemachineCamera.Follow = null;
+            _gameplayCinemachineCamera.LookAt = null;
+        }
+
+        /// <summary>
         /// ゴール演出シーケンス.
         /// </summary>
         /// <returns>コルーチン.</returns>
@@ -118,6 +138,7 @@ namespace CarTrickRush.GameScene
         {
             _isGoalSequenceRunning = true;
 
+            StopGameplayCameraFollow();
             _playerController?.StartGoal();
 
             BuildResultData();

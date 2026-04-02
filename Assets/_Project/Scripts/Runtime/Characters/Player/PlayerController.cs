@@ -191,7 +191,11 @@ namespace CarTrickRush.Characters.Player
 
         private void FixedUpdate()
         {
-            if (IsGoal) { return; }
+            if (IsGoal)
+            {
+                ApplyForwardVelocity(_autoMoveSpeed * 2f);
+                return;
+            }
 
             _currentState?.FixedUpdate();
         }
@@ -280,9 +284,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void MoveForward()
         {
-            Vector3 velocity = _rigidbody.linearVelocity;
-            velocity.x = _autoMoveSpeed;
-            _rigidbody.linearVelocity = velocity;
+            ApplyForwardVelocity(_autoMoveSpeed);
         }
 
         /// <summary>
@@ -354,6 +356,17 @@ namespace CarTrickRush.Characters.Player
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// ワールドX方向の前進速度を設定する.
+        /// </summary>
+        /// <param name="forwardSpeed">前進速度.</param>
+        private void ApplyForwardVelocity(float forwardSpeed)
+        {
+            var velocity = _rigidbody.linearVelocity;
+            velocity.x = forwardSpeed;
+            _rigidbody.linearVelocity = velocity;
+        }
 
         /// <summary>
         /// ジャンプ処理.
