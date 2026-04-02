@@ -501,7 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58400d8bae4b5d49a4ac9bacd8353f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Managers.AudioManager
-  _bgmVolume: 1
+  _bgmVolume: 0.5
   _seVolume: 1
   _master: {fileID: 11400000, guid: 09960aa177751984292e12f304ebb1df, type: 2}
 --- !u!1660057539 &9223372036854775807
