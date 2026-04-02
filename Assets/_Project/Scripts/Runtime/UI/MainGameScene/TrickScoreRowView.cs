@@ -17,6 +17,11 @@ namespace CarTrickRush.UI
         #region ------------------ Fields ------------------
 
         /// <summary>
+        /// サイズ調整対象のオブジェクト.
+        /// </summary>
+        [SerializeField] private GameObject[] _layoutSizeTargetObjects = default;
+
+        /// <summary>
         /// ボーナス名のテキスト.
         /// </summary>
         [SerializeField] private TMP_Text _nameText = default;
@@ -36,9 +41,58 @@ namespace CarTrickRush.UI
         /// </summary>
         private Coroutine _lifecycleRoutine = default;
 
+        /// <summary>
+        /// レイアウトサイズの対象RectTransform.
+        /// </summary>
+        private RectTransform[] _layoutSizeTargetRects = default;
+
+        /// <summary>
+        /// レイアウトサイズの基準値.
+        /// </summary>
+        private Vector2[] _baseSizeDeltas = default;
+
+        /// <summary>
+        /// レイアウトサイズの基準値が取得されたかどうか.
+        /// </summary>
+        private bool _baseSizesCaptured = default;
+
+        #endregion
+
+        #region ------------------ MonoBehaviour Methods ------------------
+
+        private void Awake()
+        {
+            BuildLayoutSizeTargets();
+        }
+
         #endregion
 
         #region ------------------ Public Methods ------------------
+
+        /// <summary>
+        /// 対象 RectTransform の sizeDelta を, Awake 時点の基準に対して factor 倍する (1 = 最新行想定).
+        /// </summary>
+        public void SetRowLayoutSizeFactor(float factor)
+        {
+            BuildLayoutSizeTargets();
+            if (!_baseSizesCaptured)
+            {
+                CaptureBaseLayoutSizes();
+            }
+
+            factor = Mathf.Max(0.01f, factor);
+            if (_layoutSizeTargetRects == null) { return; }
+
+            for (var i = 0; i < _layoutSizeTargetRects.Length; i++)
+            {
+                var rt = _layoutSizeTargetRects[i];
+                if (rt == null) { continue; }
+
+                if (_baseSizeDeltas == null || i >= _baseSizeDeltas.Length) { continue; }
+
+                rt.sizeDelta = _baseSizeDeltas[i] * factor;
+            }
+        }
 
         /// <summary>
         /// 表示内容を設定し, 一定時間後にフェードアウトして破棄する.
@@ -64,6 +118,47 @@ namespace CarTrickRush.UI
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// レイアウトサイズの対象オブジェクトを取得する.
+        /// </summary>
+        private void BuildLayoutSizeTargets()
+        {
+            if (_layoutSizeTargetObjects == null || _layoutSizeTargetObjects.Length == 0)
+            {
+                _layoutSizeTargetRects = System.Array.Empty<RectTransform>();
+                return;
+            }
+
+            _layoutSizeTargetRects = new RectTransform[_layoutSizeTargetObjects.Length];
+            for (var i = 0; i < _layoutSizeTargetObjects.Length; i++)
+            {
+                var go = _layoutSizeTargetObjects[i];
+                _layoutSizeTargetRects[i] = go != null ? go.GetComponent<RectTransform>() : null;
+            }
+        }
+
+        /// <summary>
+        /// レイアウトサイズの基準値を取得する.
+        /// </summary>
+        private void CaptureBaseLayoutSizes()
+        {
+            if (_layoutSizeTargetRects == null || _layoutSizeTargetRects.Length == 0)
+            {
+                _baseSizeDeltas = System.Array.Empty<Vector2>();
+                _baseSizesCaptured = true;
+                return;
+            }
+
+            _baseSizeDeltas = new Vector2[_layoutSizeTargetRects.Length];
+            for (var i = 0; i < _layoutSizeTargetRects.Length; i++)
+            {
+                var rt = _layoutSizeTargetRects[i];
+                _baseSizeDeltas[i] = rt != null ? rt.sizeDelta : Vector2.zero;
+            }
+
+            _baseSizesCaptured = true;
+        }
 
         /// <summary>
         /// ライフサイクル用のコルーチン.

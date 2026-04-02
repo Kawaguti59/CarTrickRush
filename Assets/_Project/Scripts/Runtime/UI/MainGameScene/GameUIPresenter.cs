@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using CarTrickRush.Core;
+using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 
 namespace CarTrickRush.UI
@@ -68,13 +69,23 @@ namespace CarTrickRush.UI
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// ボーナス名と加算値をキュー表示に追加する (ゲームロジック側は後から接続).
+        /// 通常スコア行をフィードに追加する.
         /// </summary>
-        public void PushBonusScore(string bonusDisplayName, int addValue)
+        public void PushNormalTrickScore(string displayName, int addValue)
         {
             if (_trickScoreFeedView == null) { return; }
 
-            _trickScoreFeedView.Push(bonusDisplayName, addValue);
+            _trickScoreFeedView.Push(displayName, addValue, TrickScoreRowKind.Normal);
+        }
+
+        /// <summary>
+        /// ボーナススコア行をフィードに追加する.
+        /// </summary>
+        public void PushBonusTrickScore(string displayName, int addValue)
+        {
+            if (_trickScoreFeedView == null) { return; }
+
+            _trickScoreFeedView.Push(displayName, addValue, TrickScoreRowKind.Bonus);
         }
 
         #endregion

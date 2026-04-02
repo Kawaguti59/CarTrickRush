@@ -437,7 +437,7 @@ namespace CarTrickRush.Characters.Player
             if (baseScore > 0)
             {
                 scoreManager?.AddScore(baseScore);
-                gameUi?.PushBonusScore(GetRotationDisplayName(input), baseScore);
+                gameUi?.PushNormalTrickScore(GetRotationDisplayName(input), baseScore);
             }
 
             if (matchedBonus != null)
@@ -452,7 +452,7 @@ namespace CarTrickRush.Characters.Player
                 var label = string.IsNullOrEmpty(matchedBonus.BonusName)
                     ? "Combo Bonus"
                     : matchedBonus.BonusName;
-                gameUi?.PushBonusScore(label, bonusScore);
+                gameUi?.PushBonusTrickScore(label, bonusScore);
             }
         }
 

@@ -302,6 +302,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11b906e583c023b4daf99b156e0f45d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.BonusScoreRowView
+  _layoutSizeTargetObjects:
+  - {fileID: 8300110011001100001}
+  - {fileID: 8300110011001100100}
+  - {fileID: 8300110011001100200}
   _nameText: {fileID: 8937326749754746702}
   _valueText: {fileID: 4925660594750478046}
   _canvasGroup: {fileID: 8300110011001100003}
