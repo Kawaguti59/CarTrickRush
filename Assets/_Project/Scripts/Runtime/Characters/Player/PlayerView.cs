@@ -42,8 +42,25 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         [SerializeField] private float _blinkInterval = 0.12f;
 
+        /// <summary>
+        /// 点滅演出のコルーチン.
+        /// </summary>
         private Coroutine _blinkCoroutine = default;
+
+        /// <summary>
+        /// 点滅用Renderer.
+        /// </summary>  
         private Renderer[] _blinkRenderers = default;
+
+        /// <summary>
+        /// PlayerCar.controller Base Layer (body)のインデックス.
+        /// </summary>
+        private const int BaseLayerIndex = 0;
+
+        /// <summary>
+        /// PlayerCar.controller Wheels Layerのインデックス.
+        /// </summary>
+        private const int WheelsLayerIndex = 1;
 
         #endregion
 
@@ -109,8 +126,8 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayRun()
         {
-            if (_animator == null) { return; }
-            _animator.Play("Run");
+            PlayAnimatorState(BaseLayerIndex, "Idle");
+            PlayAnimatorState(WheelsLayerIndex, "Drive");
         }
 
         /// <summary>
@@ -118,8 +135,9 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayJump()
         {
-            if (_animator == null) { return; }
-            _animator.Play("Jump");
+            // No Jump clip on PlayerCar; keep body/wheels consistent while airborne.
+            PlayAnimatorState(BaseLayerIndex, "Idle");
+            PlayAnimatorState(WheelsLayerIndex, "Drive");
         }
 
         /// <summary>
@@ -127,8 +145,9 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayLand()
         {
-            if (_animator == null) { return; }
-            _animator.Play("Land");
+            // No Land clip; match ground locomotion until ChangeState runs PlayRun.
+            PlayAnimatorState(BaseLayerIndex, "Idle");
+            PlayAnimatorState(WheelsLayerIndex, "Drive");
         }
 
         /// <summary>
@@ -136,8 +155,8 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void PlayPenalty()
         {
-            if (_animator == null) { return; }
-            _animator.Play("Penalty");
+            PlayAnimatorState(BaseLayerIndex, "None");
+            PlayAnimatorState(WheelsLayerIndex, "Drive");
         }
 
         /// <summary>
@@ -202,7 +221,7 @@ namespace CarTrickRush.Characters.Player
             if (_animator == null) { return; }
             if (_trickAnimationNames != null)
             {
-                _animator?.Play(_trickAnimationNames[input]);
+                _animator.Play(_trickAnimationNames[input], BaseLayerIndex, 0f);
                 return;
             }
         }
@@ -232,6 +251,18 @@ namespace CarTrickRush.Characters.Player
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// 指定レイヤーでアニメーションを再生する.
+        /// </summary>
+        /// <param name="layerIndex">レイヤーのインデックス.</param>
+        /// <param name="stateName">アニメーションの名前.</param>
+        private void PlayAnimatorState(int layerIndex, string stateName)
+        {
+            if (_animator == null || string.IsNullOrEmpty(stateName)) { return; }
+            if (layerIndex < 0 || layerIndex >= _animator.layerCount) { return; }
+            _animator.Play(stateName, layerIndex, 0f);
+        }
 
         /// <summary>
         /// 点滅用Rendererをキャッシュする.
