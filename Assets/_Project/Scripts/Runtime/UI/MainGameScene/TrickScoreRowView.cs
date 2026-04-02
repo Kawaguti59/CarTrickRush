@@ -72,7 +72,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// 対象 RectTransform の sizeDelta を, Awake 時点の基準に対して factor 倍する (1 = 最新行想定).
         /// </summary>
-        public void SetRowLayoutSizeFactor(float factor)
+        public void ApplySizeFactor(float factor)
         {
             BuildLayoutSizeTargets();
             if (!_baseSizesCaptured)

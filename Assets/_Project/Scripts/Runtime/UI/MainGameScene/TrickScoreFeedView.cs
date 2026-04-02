@@ -49,25 +49,25 @@ namespace CarTrickRush.UI
         /// <summary>
         /// 前の行に適用する幅・高さの倍率.
         /// </summary>
-        [SerializeField] private float _previousRowLayoutFactor = 0.8f;
+        [SerializeField] private float _previousSetRowFactor = 0.8f;
 
         /// <summary>
         /// 現在のセットで追加した行数.
         /// </summary>
-        private int _batchRowCount = default;
+        private int _setRowCount = default;
 
         #endregion
 
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// 行を追加する (先頭が最新, 下に古い行が並ぶ).
+        /// トリックスコアをフィードに追加する.
         /// </summary>
-        /// <param name="endGroup">
-        /// false のときは同一セットの続き (例: 回転スコアの次にボーナス行). 最後の1回だけ true にすると,
-        /// そのセットで追加した全行が等倍, それより前の行だけが縮小倍率になる.
-        /// </param>
-        public void Push(string displayName, int addValue, TrickScoreRowKind kind, bool endGroup = true)
+        /// <param name="displayName">表示名.</param>
+        /// <param name="addValue">加算値.</param>
+        /// <param name="kind">スコア行の種別.</param>
+        /// <param name="isLast">最後の行かどうか.</param>
+        public void Push(string displayName, int addValue, TrickScoreRowKind kind, bool isLast = true)
         {
             var prefab = ResolvePrefab(kind);
             if (_rowParent == null || prefab == null) { return; }
@@ -88,15 +88,15 @@ namespace CarTrickRush.UI
             row.transform.SetAsFirstSibling();
             row.Show(displayName, addValue, _visibleDuration, _fadeDuration);
 
-            _batchRowCount++;
+            _setRowCount++;
 
             Canvas.ForceUpdateCanvases();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_rowParent);
-            RefreshRowLayoutSizeFactors(_batchRowCount);
+            ApplySizeFactors(_setRowCount);
 
-            if (endGroup)
+            if (isLast)
             {
-                _batchRowCount = 0;
+                _setRowCount = 0;
             }
         }
 
@@ -108,20 +108,20 @@ namespace CarTrickRush.UI
         [ContextMenu("Debug/Push Sample Normal")]
         private void DebugPushSampleNormal()
         {
-            Push("Sample", 100, TrickScoreRowKind.Normal, endGroup: true);
+            Push("Sample", 100, TrickScoreRowKind.Normal, isLast: true);
         }
 
         [ContextMenu("Debug/Push Sample Bonus")]
         private void DebugPushSampleBonus()
         {
-            Push("Bonus", 500, TrickScoreRowKind.Bonus, endGroup: true);
+            Push("Bonus", 500, TrickScoreRowKind.Bonus, isLast: true);
         }
 
         [ContextMenu("Debug/Push Sample Set (2 rows)")]
         private void DebugPushSampleSet()
         {
-            Push("Row A", 10, TrickScoreRowKind.Normal, endGroup: false);
-            Push("Row B", 90, TrickScoreRowKind.Bonus, endGroup: true);
+            Push("Row A", 10, TrickScoreRowKind.Normal, isLast: false);
+            Push("Row B", 90, TrickScoreRowKind.Bonus, isLast: true);
         }
 #endif
 
@@ -147,19 +147,19 @@ namespace CarTrickRush.UI
         /// <summary>
         /// 行のレイアウトサイズの倍率を更新する.
         /// </summary>
-        /// <param name="leadingFullScaleCount">先頭から等倍表示する行数.</param>
-        private void RefreshRowLayoutSizeFactors(int leadingFullScaleCount)
+        /// <param name="setRowCount">先頭から等倍表示する行数.</param>
+        private void ApplySizeFactors(int setRowCount)
         {
-            var compact = Mathf.Max(0.01f, _previousRowLayoutFactor);
+            var compact = Mathf.Max(0.01f, _previousSetRowFactor);
             var n = _rowParent.childCount;
-            var fullCount = Mathf.Clamp(leadingFullScaleCount, 0, n);
+            var fullCount = Mathf.Clamp(setRowCount, 0, n);
             for (var i = 0; i < n; i++)
             {
                 var rowView = _rowParent.GetChild(i).GetComponent<TrickScoreRowView>();
                 if (rowView == null) { continue; }
 
                 var factor = i < fullCount ? 1f : compact;
-                rowView.SetRowLayoutSizeFactor(factor);
+                rowView.ApplySizeFactor(factor);
             }
         }
 
