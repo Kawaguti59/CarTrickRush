@@ -27,7 +27,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// ボーナススコアのキュー表示.
         /// </summary>
-        [SerializeField] private BonusScoreFeedView _bonusScoreFeedView = default;
+        [SerializeField] private TrickScoreFeedView _bonusScoreFeedView = default;
 
         /// <summary>
         /// プレイヤーのTransform.

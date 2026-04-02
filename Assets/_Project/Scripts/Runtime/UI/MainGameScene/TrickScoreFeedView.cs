@@ -4,10 +4,10 @@ namespace CarTrickRush.UI
 {
     /// =========================================================================================
     /// <summary>
-    /// ボーナススコアのキュー表示.
+    /// トリックスコアのキュー表示.
     /// </summary>
     /// =========================================================================================
-    public sealed class BonusScoreFeedView : MonoBehaviour
+    public sealed class TrickScoreFeedView : MonoBehaviour
     {
         #region ------------------ Fields ------------------
 
@@ -19,7 +19,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// ボーナス行のプレハブ.
         /// </summary>
-        [SerializeField] private BonusScoreRowView _rowPrefab = default;
+        [SerializeField] private TrickScoreRowView _rowPrefab = default;
 
         /// <summary>
         /// 最大表示件数.

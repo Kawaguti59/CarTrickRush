@@ -8,11 +8,11 @@ namespace CarTrickRush.UI
 {
     /// =========================================================================================
     /// <summary>
-    /// ボーナススコアの行表示.
+    /// トリックスコアの行表示.
     /// </summary>
     /// =========================================================================================
     [RequireComponent(typeof(CanvasGroup))]
-    public sealed class BonusScoreRowView : MonoBehaviour
+    public sealed class TrickScoreRowView : MonoBehaviour
     {
         #region ------------------ Fields ------------------
 
