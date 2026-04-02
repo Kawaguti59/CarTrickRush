@@ -196,8 +196,7 @@ namespace CarTrickRush.UI
                 return true;
             }
 
-            var playerX = _playerTransform.position.x;
-            progressRate = Mathf.InverseLerp(startX, goalX, playerX);
+            progressRate = Mathf.InverseLerp(startX, goalX, _playerTransform.position.x);
 
             return true;
         }
