@@ -62,7 +62,7 @@ namespace CarTrickRush.UI
 
         private void Awake()
         {
-            BuildLayoutSizeTargets();
+            RebuildTargets();
         }
 
         #endregion
@@ -74,10 +74,10 @@ namespace CarTrickRush.UI
         /// </summary>
         public void ApplySizeFactor(float factor)
         {
-            BuildLayoutSizeTargets();
+            RebuildTargets();
             if (!_baseSizesCaptured)
             {
-                CaptureBaseLayoutSizes();
+                SnapshotBaseSizes();
             }
 
             factor = Mathf.Max(0.01f, factor);
@@ -120,9 +120,9 @@ namespace CarTrickRush.UI
         #region ------------------ Private Methods ------------------
 
         /// <summary>
-        /// レイアウトサイズの対象オブジェクトを取得する.
+        /// 対象のオブジェクトを取得する.
         /// </summary>
-        private void BuildLayoutSizeTargets()
+        private void RebuildTargets()
         {
             if (_layoutSizeTargetObjects == null || _layoutSizeTargetObjects.Length == 0)
             {
@@ -139,9 +139,9 @@ namespace CarTrickRush.UI
         }
 
         /// <summary>
-        /// レイアウトサイズの基準値を取得する.
+        /// 基準となるサイズを取得する.
         /// </summary>
-        private void CaptureBaseLayoutSizes()
+        private void SnapshotBaseSizes()
         {
             if (_layoutSizeTargetRects == null || _layoutSizeTargetRects.Length == 0)
             {

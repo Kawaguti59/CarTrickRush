@@ -73,14 +73,13 @@ namespace CarTrickRush.UI
         /// </summary>
         /// <param name="displayName">表示名.</param>
         /// <param name="addValue">加算値.</param>
-        /// <param name="isBonus">ボーナスかどうか.</param>
+        /// <param name="rowKind">行の種別.</param>
         /// <param name="endGroup">同一セットの最後かどうか.</param>
-        public void PushTrickScore(string displayName, int addValue, bool isBonus, bool endGroup = true)
+        public void PushTrickScore(string displayName, int addValue, TrickScoreRowKind rowKind, bool endGroup = true)
         {
             if (_trickScoreFeedView == null) { return; }
 
-            var kind = isBonus ? TrickScoreRowKind.Bonus : TrickScoreRowKind.Normal;
-            _trickScoreFeedView.Push(displayName, addValue, kind, endGroup);
+            _trickScoreFeedView.Push(displayName, addValue, rowKind, endGroup);
         }
 
         #endregion
