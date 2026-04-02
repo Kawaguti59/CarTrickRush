@@ -41,19 +41,21 @@ namespace CarTrickRush.UI
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// ボーナス行を追加する (末尾が最新).
+        /// ボーナス行を追加する.
         /// </summary>
         public void Push(string bonusDisplayName, int addValue)
         {
-            if (_rowParent == null || _rowPrefab == null)
-            {
-                return;
-            }
+            if (_rowParent == null || _rowPrefab == null) { return; }
 
             var limit = Mathf.Max(1, _maxRows);
-            while (_rowParent.childCount >= limit)
+            var maxChildrenBeforeAdd = limit - 1;
+            var removeCount = Mathf.Max(0, _rowParent.childCount - maxChildrenBeforeAdd);
+            for (var i = 0; i < removeCount; i++)
             {
+                if (_rowParent.childCount == 0) { break; }
+
                 var oldest = _rowParent.GetChild(0);
+                oldest.SetParent(null);
                 Destroy(oldest.gameObject);
             }
 
