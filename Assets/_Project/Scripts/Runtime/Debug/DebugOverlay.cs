@@ -28,7 +28,7 @@ namespace CarTrickRush.Debugging
         [SerializeField] private float _toggleInputWindow = 1.0f;
 
         private readonly List<LogEntry> _logs = new();
-        private bool _isVisible = true;
+        private bool _isVisible = false;
         private int _sequenceIndex = default;
         private float _sequenceExpireAt = default;
         private GUIStyle _labelStyle = default;
