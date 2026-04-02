@@ -375,7 +375,7 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// 左回転入力通知.
         /// </summary>
-        private void OnRotateLeft() => RequestTrick(TrickInputType.RotateLeft);   
+        private void OnRotateLeft() => RequestTrick(TrickInputType.RotateLeft);
 
         /// <summary>
         /// 上回転入力通知.
@@ -434,7 +434,7 @@ namespace CarTrickRush.Characters.Player
             var gameUi = GameUIPresenter.Instance;
 
             var baseScore = Mathf.Max(0, _rotationBaseScore);
-            var hasBonusHud = matchedBonus != null && Mathf.Max(0, matchedBonus.Score) > 0;
+            var hasBonusHud = (matchedBonus != null && Mathf.Max(0, matchedBonus.Score) > 0);
 
             if (baseScore > 0)
             {
@@ -444,7 +444,7 @@ namespace CarTrickRush.Characters.Player
                     baseScore,
                     TrickScoreRowKind.Normal,
                     endGroup: !hasBonusHud
-                    );
+                );
             }
 
             if (hasBonusHud)
@@ -515,7 +515,8 @@ namespace CarTrickRush.Characters.Player
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(
                 _groundCheckPoint.position,
-                _groundCheckPoint.position + Vector3.down * _groundCheckDistance);
+                _groundCheckPoint.position + Vector3.down * _groundCheckDistance
+            );
             #endif
         }
 
