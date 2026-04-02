@@ -35,7 +35,7 @@ MonoBehaviour:
     _useTag: character
     _clip: {fileID: 8300000, guid: 8ef82025e4949b74289708cbd83b127b, type: 3}
   - _id: 2003
-    _name: OnePoint
+    _name: Bonus
     _useTag: character
     _clip: {fileID: 8300000, guid: 7ee30f09541c17147bdd34557b2c8c4d, type: 3}
   - _id: 2004

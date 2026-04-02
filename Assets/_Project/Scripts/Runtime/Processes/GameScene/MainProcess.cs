@@ -76,6 +76,11 @@ namespace CarTrickRush.GameScene
             }
         }
 
+        private void Start()
+        {
+            ManagerLocator.AudioManager?.PlayBgm("GameBGM");
+        }
+
         #endregion
 
         #region ------------------ Public Methods ------------------

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 using System.Collections.Generic;
 
+using CarTrickRush.Core;
+
 namespace CarTrickRush.UI.Title
 {
     /// =========================================================================================
@@ -54,6 +56,8 @@ namespace CarTrickRush.UI.Title
 
         private void Start()
         {
+            ManagerLocator.AudioManager?.PlayBgm("TitleBGM");
+
             var eventSystem = EventSystem.current;
             if (eventSystem == null || _selectableButtons.Count == 0) { return; }
 
@@ -102,6 +106,7 @@ namespace CarTrickRush.UI.Title
         /// </summary>
         public void OnClickQuit()
         {
+            ManagerLocator.AudioManager?.PlaySe("ButtonClick");
             #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #else

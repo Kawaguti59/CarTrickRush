@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using CarTrickRush.Core;
 using CarTrickRush.Managers;
 
 namespace CarTrickRush.UI.Common
@@ -53,6 +54,8 @@ namespace CarTrickRush.UI.Common
         /// </summary>
         public void SceneLoad()
         {
+            ManagerLocator.AudioManager?.PlaySe("ButtonClick");
+
             if (string.IsNullOrWhiteSpace(_sceneName))
             {
                 #if UNITY_EDITOR || DEVELOPMENT_BUILD

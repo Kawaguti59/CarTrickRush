@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using CarTrickRush.Characters.Player.States;
 using CarTrickRush.Characters.Player.Interfaces;
+using CarTrickRush.Core;
 using CarTrickRush.Data;
 using CarTrickRush.Debugging;
 using CarTrickRush.Definitions;
@@ -96,11 +97,6 @@ namespace CarTrickRush.Characters.Player
         /// ゴール中か.
         /// </summary>
         private bool _isGoal = default;
-
-        /// <summary>
-        /// トリック失敗ヒットVFXを再生するか.
-        /// </summary>
-        private bool _isTrickFailImpactVfx = default;
 
         #endregion
 
@@ -223,7 +219,6 @@ namespace CarTrickRush.Characters.Player
             if (_playerView != null && _playerView.IsTrickRotationAnimationPlaying())
             {
                 _playerModel.ClearTrickInputs();
-                _isTrickFailImpactVfx = true;
                 ChangeState(_penaltyState);
                 return false;
             }
@@ -317,6 +312,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void StartPenalty()
         {
+            ManagerLocator.AudioManager?.PlaySe("Explosion");
             PlayTrickFailVfx();
             _playerView?.PlayPenalty();
             _playerView?.SetCarVisualActive(false);
@@ -405,9 +401,15 @@ namespace CarTrickRush.Characters.Player
             #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DebugOverlay.ShowRotationLog(GetRotationLogMessage(input));
             #endif
+            var isBonus = TryMatchTrickBonus();
             // トリック入力を適用して演出を再生する.
             _playerView.ApplyTrickRotation(input);
-            _playerView.PlayRotationVfx(TryMatchTrickBonus());
+            _playerView.PlayRotationVfx(isBonus);
+            ManagerLocator.AudioManager?.PlaySe("Rotate");
+            if (isBonus)
+            {
+                ManagerLocator.AudioManager?.PlaySe("Bonus");
+            }
         }
 
         /// <summary>
