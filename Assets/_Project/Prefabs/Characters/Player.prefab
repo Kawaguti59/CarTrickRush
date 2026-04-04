@@ -180,7 +180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Player.PlayerController
   _rigidbody: {fileID: 7854848453051675285}
   _groundCheckPoint: {fileID: 6504348447029453982}
-  _autoMoveSpeed: 8
+  _autoMoveSpeed: 16
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
