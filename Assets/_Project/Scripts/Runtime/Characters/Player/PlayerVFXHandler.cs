@@ -114,11 +114,10 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// トリック失敗・激突VFXを再生する.
         /// </summary>
-        /// <param name="worldPosition">再生位置.</param>
-        public void PlayTrickFailImpact(Vector3 worldPosition, Vector3 localScale)
+        /// <param name="position">再生位置.</param>
+        public void PlayTrickFailImpact(Vector3 position, Vector3 localScale)
         {
-            Transform parent = _spawnParent != null ? _spawnParent : null;
-            PlayOneShot(_trickFailImpactVfxPrefab, worldPosition, parent, _oneShotDestroyDelay, localScale);
+            PlayOneShot(_trickFailImpactVfxPrefab, position, null, _oneShotDestroyDelay, localScale);
         }
 
         #endregion
