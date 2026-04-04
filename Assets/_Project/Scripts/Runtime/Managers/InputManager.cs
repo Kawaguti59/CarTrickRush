@@ -22,9 +22,22 @@ namespace CarTrickRush.Managers
         private static InputManager _instance = default;
 
         /// <summary>
-        /// CarTrickRushInputActions の Player/Pause（有効化中のみ）.
+        /// CarTrickRushInputActions の Player マップ（バインド中のみ）.
+        /// </summary>
+        private InputActionMap _playerMap = default;
+
+        /// <summary>
+        /// Player/Pause（購読中のみ）.
         /// </summary>
         private InputAction _playerPauseAction = default;
+
+        /// <summary>
+        /// Player の回転アクション（購読中のみ）.
+        /// </summary>
+        private InputAction _rotateRightAction = default;
+        private InputAction _rotateLeftAction = default;
+        private InputAction _rotateUpAction = default;
+        private InputAction _rotateDownAction = default;
 
         #endregion
 
@@ -81,37 +94,6 @@ namespace CarTrickRush.Managers
             ManagerLocator.Register(this);
         }
 
-        private void Update()
-        {
-            if (AdditiveOverlayInputGate.IsBlocked)
-            {
-                return;
-            }
-
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard == null) { return; }
-
-            if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
-            {
-                InvokeRotateRight();
-            }
-
-            if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
-            {
-                InvokeRotateLeft();
-            }
-
-            if (keyboard.wKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame)
-            {
-                InvokeRotateUp();
-            }
-
-            if (keyboard.sKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame)
-            {
-                InvokeRotateDown();
-            }
-        }
-
         private void OnDestroy()
         {
             UnbindPlayerPauseAction();
@@ -122,7 +104,7 @@ namespace CarTrickRush.Managers
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// CarTrickRushInputActions の Player/Pause を有効化し、押下で InvokePause する.
+        /// CarTrickRushInputActions の Player マップを有効化する（ポーズ・回転は Input System 経由）.
         /// </summary>
         /// <param name="asset">Input Actions アセット.</param>
         public void BindPlayerPauseAction(InputActionAsset asset)
@@ -134,14 +116,44 @@ namespace CarTrickRush.Managers
             }
 
             var map = asset.FindActionMap("Player", throwIfNotFound: false);
-            _playerPauseAction = map?.FindAction("Pause", throwIfNotFound: false);
-            if (_playerPauseAction == null)
+            if (map == null)
             {
                 return;
             }
 
-            _playerPauseAction.performed += OnPlayerPausePerformed;
-            _playerPauseAction.Enable();
+            _playerMap = map;
+            _playerPauseAction = map.FindAction("Pause", throwIfNotFound: false);
+            _rotateRightAction = map.FindAction("RotateRight", throwIfNotFound: false);
+            _rotateLeftAction = map.FindAction("RotateLeft", throwIfNotFound: false);
+            _rotateUpAction = map.FindAction("RotateUp", throwIfNotFound: false);
+            _rotateDownAction = map.FindAction("RotateDown", throwIfNotFound: false);
+
+            if (_playerPauseAction != null)
+            {
+                _playerPauseAction.performed += OnPlayerPausePerformed;
+            }
+
+            if (_rotateRightAction != null)
+            {
+                _rotateRightAction.performed += OnRotateRight;
+            }
+
+            if (_rotateLeftAction != null)
+            {
+                _rotateLeftAction.performed += OnRotateLeft;
+            }
+
+            if (_rotateUpAction != null)
+            {
+                _rotateUpAction.performed += OnRotateUp;
+            }
+
+            if (_rotateDownAction != null)
+            {
+                _rotateDownAction.performed += OnRotateDown;
+            }
+
+            map.Enable();
         }
 
         /// <summary>
@@ -262,18 +274,45 @@ namespace CarTrickRush.Managers
         }
 
         /// <summary>
-        /// Player/Pause の購読と無効化を解除する.
+        /// Player マップの購読と無効化を解除する.
         /// </summary>
         private void UnbindPlayerPauseAction()
         {
-            if (_playerPauseAction == null)
+            if (_playerPauseAction != null)
             {
-                return;
+                _playerPauseAction.performed -= OnPlayerPausePerformed;
+                _playerPauseAction = null;
             }
 
-            _playerPauseAction.performed -= OnPlayerPausePerformed;
-            _playerPauseAction.Disable();
-            _playerPauseAction = null;
+            if (_rotateRightAction != null)
+            {
+                _rotateRightAction.performed -= OnRotateRight;
+                _rotateRightAction = null;
+            }
+
+            if (_rotateLeftAction != null)
+            {
+                _rotateLeftAction.performed -= OnRotateLeft;
+                _rotateLeftAction = null;
+            }
+
+            if (_rotateUpAction != null)
+            {
+                _rotateUpAction.performed -= OnRotateUp;
+                _rotateUpAction = null;
+            }
+
+            if (_rotateDownAction != null)
+            {
+                _rotateDownAction.performed -= OnRotateDown;
+                _rotateDownAction = null;
+            }
+
+            if (_playerMap != null)
+            {
+                _playerMap.Disable();
+                _playerMap = null;
+            }
         }
 
         #endregion
