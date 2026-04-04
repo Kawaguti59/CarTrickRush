@@ -1,0 +1,35 @@
+html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden }
+body { box-sizing: border-box }
+/* Do not use vh/vw here: inside an iframe they often refer to the top-level browser
+   viewport, not the embed — layout breaks and #unity-game-area can get the wrong height. */
+#unity-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+#unity-container.unity-desktop { left: auto; top: auto; transform: none }
+#unity-container.unity-mobile { position: fixed; left: 0; top: 0; width: 100%; height: 100%; max-height: none }
+#unity-game-area {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#unity-canvas { display: block; background: {{{ BACKGROUND_COLOR }}} }
+#unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none; z-index: 1 }
+#unity-logo { width: 154px; height: 130px; background: url('unity-logo-{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}.png') no-repeat center }
+#unity-progress-bar-empty { width: 141px; height: 18px; margin-top: 10px; margin-left: 6.5px; background: url('progress-bar-empty-{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}.png') no-repeat center }
+#unity-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}.png') no-repeat center }
+#unity-footer { position: relative; flex: 0 0 auto; overflow: hidden }
+#unity-footer::after { content: ""; display: table; clear: both }
+.unity-mobile #unity-footer { display: none }
+#unity-logo-title-footer { float:left; width: 102px; height: 38px; background: url('unity-logo-title-footer.png') no-repeat center }
+#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
+#unity-fullscreen-button { cursor:pointer; float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
+#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
