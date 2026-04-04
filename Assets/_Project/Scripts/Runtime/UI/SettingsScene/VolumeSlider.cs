@@ -9,15 +9,15 @@ namespace CarTrickRush.UI.Settings
 {
     /// =========================================================================================
     /// <summary>
-    /// 音量調整用スライダー.
+    /// 音量調整用スライダー管理クラス.
     /// </summary>
     /// =========================================================================================
-    public sealed class VolumeSlider : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
+    public sealed class VolumeSlider : MonoBehaviour
     {
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// スライダー.
+        /// 操作・フォーカス対象の Slider.
         /// </summary>
         [SerializeField] private Slider _slider = default;
 
@@ -27,7 +27,7 @@ namespace CarTrickRush.UI.Settings
         [SerializeField] private AudioVolumeKind _volumeKind = AudioVolumeKind.Master;
 
         /// <summary>
-        /// スライダーが選択中のときだけ表示するハイライト用 Image（子オブジェクトなどに付与）.
+        /// 選択中だけ見せたい装飾用 Image（Slider の親や行ルートを指定しないこと。非表示は <see cref="Image.enabled"/> のみ切り替える）.
         /// </summary>
         [SerializeField] private Image _highlightImage = default;
 
@@ -36,7 +36,12 @@ namespace CarTrickRush.UI.Settings
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// UI ナビゲーション用.
+        /// 操作・フォーカス対象の Slider.
+        /// </summary>
+        public Slider Slider => _slider;
+
+        /// <summary>
+        /// UI ナビゲーション用 Selectable.
         /// </summary>
         public Selectable AsSelectable => _slider;
 
@@ -51,11 +56,6 @@ namespace CarTrickRush.UI.Settings
 
         private void Awake()
         {
-            if (_slider == null)
-            {
-                _slider = GetComponentInChildren<Slider>(includeInactive: true);
-            }
-
             if (_slider == null) { return; }
 
             _slider.minValue = 0f;
@@ -63,34 +63,22 @@ namespace CarTrickRush.UI.Settings
             _slider.wholeNumbers = true;
             SyncFromAudioManager();
             _slider.onValueChanged.AddListener(OnSliderValueChanged);
-            RefreshSelectionHighlight(isInitial: true);
+            EnabledHighlightImage();
+            RefreshHighlightImage();
         }
 
         private void LateUpdate()
         {
-            RefreshSelectionHighlight(isInitial: false);
+            if (_slider == null) { return; }
+
+            RefreshHighlightImage();
         }
 
         private void OnDestroy()
         {
-            if (_slider != null)
-            {
-                _slider.onValueChanged.RemoveListener(OnSliderValueChanged);
-            }
-        }
+            if (_slider == null) { return; }
 
-        #endregion
-
-        #region ------------------ Interface Methods ------------------
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            SelectSelf();
-        }
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            SelectSelf();
+            _slider.onValueChanged.RemoveListener(OnSliderValueChanged);
         }
 
         #endregion
@@ -98,36 +86,27 @@ namespace CarTrickRush.UI.Settings
         #region ------------------ Private Methods ------------------
 
         /// <summary>
-        /// スライダーを選択する.
-        /// </summary>
-        private void SelectSelf()
-        {
-            if (_slider == null) { return; }
-
-            var eventSystem = EventSystem.current;
-            if (eventSystem == null) { return; }
-
-            eventSystem.SetSelectedGameObject(_slider.gameObject);
-        }
-
-        /// <summary>
-        /// 音量マネージャーからスライダーの値を同期する.
+        /// AudioManager の音量を Slider に同期する.
         /// </summary>
         private void SyncFromAudioManager()
         {
+            if (_slider == null) { return; }
+
             var audio = ManagerLocator.AudioManager;
-            if (audio == null || _slider == null) { return; }
+            if (audio == null) { return; }
 
             var normalized = audio.GetVolume(_volumeKind);
             _slider.SetValueWithoutNotify(Mathf.Round(normalized * 100f));
         }
 
         /// <summary>
-        /// スライダーの値が変更されたときの処理.
+        /// Slider の値が変更された時の処理.
         /// </summary>
-        /// <param name="value">スライダーの値.</param>
+        /// <param name="value">Slider の値.</param>
         private void OnSliderValueChanged(float value)
         {
+            if (_slider == null) { return; }
+
             var audio = ManagerLocator.AudioManager;
             if (audio == null) { return; }
 
@@ -135,19 +114,53 @@ namespace CarTrickRush.UI.Settings
         }
 
         /// <summary>
-        /// スライダーが選択中のときだけ表示するハイライト用 Imageを更新する.
+        /// ハイライト用 Image を確実に有効にする.
         /// </summary>
-        /// <param name="isInitial">初期化かどうか.</param> 
-        private void RefreshSelectionHighlight(bool isInitial)
+        private void EnabledHighlightImage()
         {
+            if (_highlightImage == null) { return; }
+
+            _highlightImage.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Slider の選択状態に合わせてハイライト用 Image の表示を切り替える.
+        /// </summary>
+        private void RefreshHighlightImage()
+        {
+            if (_highlightImage == null || _slider == null) { return; }
+
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { return; }
-            var selected = eventSystem != null && eventSystem.currentSelectedGameObject == _slider.gameObject;
-            if (!isInitial) { return; }
 
-            _highlightImage?.gameObject.SetActive(selected);
+            var selected = SettingsUiSelection.Matches(_slider, eventSystem.currentSelectedGameObject);
+            if (_highlightImage.enabled == selected) { return; }
+
+            _highlightImage.enabled = selected;
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// EventSystem の選択が指定 <see cref="Selectable"/>（Slider の子ハンドル等を含む）に属するか.
+    /// </summary>
+    internal static class SettingsUiSelection
+    {
+        internal static bool Matches(Selectable selectable, GameObject currentSelected)
+        {
+            if (selectable == null || currentSelected == null)
+            {
+                return false;
+            }
+
+            if (currentSelected == selectable.gameObject)
+            {
+                return true;
+            }
+
+            var rootSelectable = currentSelected.GetComponentInParent<Selectable>();
+            return rootSelectable == selectable;
+        }
     }
 }
