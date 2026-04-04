@@ -92,6 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VolumeSlider
   _slider: {fileID: 4646484483991333233}
   _volumeKind: 0
+  _highlightImage: {fileID: 1751714077220995521}
 --- !u!1 &3873747231930393388
 GameObject:
   m_ObjectHideFlags: 0

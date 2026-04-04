@@ -26,6 +26,11 @@ namespace CarTrickRush.UI.Settings
         /// </summary>
         [SerializeField] private AudioVolumeKind _volumeKind = AudioVolumeKind.Master;
 
+        /// <summary>
+        /// スライダーが選択中のときだけ表示するハイライト用 Image（子オブジェクトなどに付与）.
+        /// </summary>
+        [SerializeField] private Image _highlightImage = default;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -58,6 +63,12 @@ namespace CarTrickRush.UI.Settings
             _slider.wholeNumbers = true;
             SyncFromAudioManager();
             _slider.onValueChanged.AddListener(OnSliderValueChanged);
+            RefreshSelectionHighlight(isInitial: true);
+        }
+
+        private void LateUpdate()
+        {
+            RefreshSelectionHighlight(isInitial: false);
         }
 
         private void OnDestroy()
@@ -86,6 +97,9 @@ namespace CarTrickRush.UI.Settings
 
         #region ------------------ Private Methods ------------------
 
+        /// <summary>
+        /// スライダーを選択する.
+        /// </summary>
         private void SelectSelf()
         {
             if (_slider == null) { return; }
@@ -96,6 +110,9 @@ namespace CarTrickRush.UI.Settings
             eventSystem.SetSelectedGameObject(_slider.gameObject);
         }
 
+        /// <summary>
+        /// 音量マネージャーからスライダーの値を同期する.
+        /// </summary>
         private void SyncFromAudioManager()
         {
             var audio = ManagerLocator.AudioManager;
@@ -105,12 +122,30 @@ namespace CarTrickRush.UI.Settings
             _slider.SetValueWithoutNotify(Mathf.Round(normalized * 100f));
         }
 
+        /// <summary>
+        /// スライダーの値が変更されたときの処理.
+        /// </summary>
+        /// <param name="value">スライダーの値.</param>
         private void OnSliderValueChanged(float value)
         {
             var audio = ManagerLocator.AudioManager;
             if (audio == null) { return; }
 
             audio.SetVolume(_volumeKind, Mathf.Clamp01(value / 100f));
+        }
+
+        /// <summary>
+        /// スライダーが選択中のときだけ表示するハイライト用 Imageを更新する.
+        /// </summary>
+        /// <param name="isInitial">初期化かどうか.</param> 
+        private void RefreshSelectionHighlight(bool isInitial)
+        {
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) { return; }
+            var selected = eventSystem != null && eventSystem.currentSelectedGameObject == _slider.gameObject;
+            if (!isInitial) { return; }
+
+            _highlightImage?.gameObject.SetActive(selected);
         }
 
         #endregion

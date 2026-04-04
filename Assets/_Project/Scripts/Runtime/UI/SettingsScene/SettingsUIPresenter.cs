@@ -3,8 +3,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 using System.Collections;
+using System.Collections.Generic;
 
 using CarTrickRush.Core;
+using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 
 namespace CarTrickRush.UI.Settings
@@ -19,19 +21,9 @@ namespace CarTrickRush.UI.Settings
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// マスター音量スライダー.
+        /// 音量チャンネルと <see cref="VolumeSlider"/> の対応（リスト順が上下ナビの順）.
         /// </summary>
-        [SerializeField] private VolumeSlider _masterVolumeSlider = default;
-
-        /// <summary>
-        /// BGM音量スライダー.
-        /// </summary>
-        [SerializeField] private VolumeSlider _bgmVolumeSlider = default;
-
-        /// <summary>
-        /// SE音量スライダー.
-        /// </summary>
-        [SerializeField] private VolumeSlider _seVolumeSlider = default;
+        [SerializeField] private InspectableMap<AudioVolumeKind, VolumeSlider> _volumeSliders = new();
 
         /// <summary>
         /// 閉じるボタン.
@@ -74,9 +66,16 @@ namespace CarTrickRush.UI.Settings
         private void Awake()
         {
             SetInteractions(true);
-            BindPointerSelect(_masterVolumeSlider?.AsSelectable);
-            BindPointerSelect(_bgmVolumeSlider?.AsSelectable);
-            BindPointerSelect(_seVolumeSlider?.AsSelectable);
+            foreach (var pair in _volumeSliders.Pairs)
+            {
+                if (!IsValidVolumePair(pair))
+                {
+                    continue;
+                }
+
+                BindPointerSelect(pair.Value.AsSelectable);
+            }
+
             BindPointerSelect(_closeButton);
             ApplySelectableNavigationChain();
         }
@@ -101,9 +100,15 @@ namespace CarTrickRush.UI.Settings
             if (eventSystem == null) { return; }
 
             var selectedGameObject = eventSystem.currentSelectedGameObject;
-            if (TryMatchSelectable(selectedGameObject, _masterVolumeSlider?.AsSelectable)) { return; }
-            if (TryMatchSelectable(selectedGameObject, _bgmVolumeSlider?.AsSelectable)) { return; }
-            if (TryMatchSelectable(selectedGameObject, _seVolumeSlider?.AsSelectable)) { return; }
+            foreach (var pair in _volumeSliders.Pairs)
+            {
+                if (!IsValidVolumePair(pair))
+                {
+                    continue;
+                }
+
+                if (TryMatchSelectable(selectedGameObject, pair.Value.AsSelectable)) { return; }
+            }
 
             if (_closeButton != null && selectedGameObject == _closeButton.gameObject)
             {
@@ -160,9 +165,15 @@ namespace CarTrickRush.UI.Settings
         {
             _interactionsEnabled = enabled;
 
-            SetInteractable(_masterVolumeSlider?.AsSelectable, enabled);
-            SetInteractable(_bgmVolumeSlider?.AsSelectable, enabled);
-            SetInteractable(_seVolumeSlider?.AsSelectable, enabled);
+            foreach (var pair in _volumeSliders.Pairs)
+            {
+                if (!IsValidVolumePair(pair))
+                {
+                    continue;
+                }
+
+                SetInteractable(pair.Value.AsSelectable, enabled);
+            }
 
             if (_closeButton != null)
             {
@@ -189,19 +200,14 @@ namespace CarTrickRush.UI.Settings
         /// <returns>最初の選択可能なUI.</returns>
         private Selectable PickFirstSelectable()
         {
-            if (_masterVolumeSlider != null)
+            foreach (var pair in _volumeSliders.Pairs)
             {
-                return _masterVolumeSlider.AsSelectable;
-            }
+                if (!IsValidVolumePair(pair))
+                {
+                    continue;
+                }
 
-            if (_bgmVolumeSlider != null)
-            {
-                return _bgmVolumeSlider.AsSelectable;
-            }
-
-            if (_seVolumeSlider != null)
-            {
-                return _seVolumeSlider.AsSelectable;
+                return pair.Value.AsSelectable;
             }
 
             return _closeButton;
@@ -223,14 +229,26 @@ namespace CarTrickRush.UI.Settings
         /// </summary>
         private void ApplySelectableNavigationChain()
         {
-            var master = _masterVolumeSlider?.AsSelectable;
-            var bgm = _bgmVolumeSlider?.AsSelectable;
-            var se = _seVolumeSlider?.AsSelectable;
-            var close = _closeButton;
-
-            if (master != null && bgm != null && se != null && close != null)
+            var chain = new List<Selectable>();
+            foreach (var pair in _volumeSliders.Pairs)
             {
-                ChainVertical(master, bgm, se, close);
+                if (!IsValidVolumePair(pair))
+                {
+                    continue;
+                }
+
+                var selectable = pair.Value.AsSelectable;
+                if (selectable != null)
+                {
+                    chain.Add(selectable);
+                }
+            }
+
+            var close = _closeButton;
+            if (chain.Count > 0 && close != null)
+            {
+                chain.Add(close);
+                ChainVertical(chain.ToArray());
                 return;
             }
 
@@ -294,6 +312,16 @@ namespace CarTrickRush.UI.Settings
 
             eventSystem.SetSelectedGameObject(selectable.gameObject);
             _currentSelectable = selectable;
+        }
+
+        /// <summary>
+        /// マップがナビゲーションバインド対象として有効か.
+        /// </summary>
+        /// <param name="pair">マップのペア.</param>
+        /// <returns>マップがナビゲーションバインド対象として有効か.</returns>
+        private static bool IsValidVolumePair(InspectableMap<AudioVolumeKind, VolumeSlider>.InspectablePair pair)
+        {
+            return pair.Key != AudioVolumeKind.None && pair.Value != null;
         }
 
         #endregion

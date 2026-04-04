@@ -1003,9 +1003,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27cea71ed4a5a724a97c0d77f8a8602f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Settings.SettingsUIPresenter
-  _masterVolumeSlider: {fileID: 1838641551}
-  _bgmVolumeSlider: {fileID: 2030912566}
-  _seVolumeSlider: {fileID: 1771339115}
+  _volumeSliders:
+    _pairs:
+    - _key: 1
+      _value: {fileID: 2030912566}
+    - _key: 2
+      _value: {fileID: 1838641551}
+    - _key: 3
+      _value: {fileID: 1771339115}
   _closeButton: {fileID: 1968621092}
   _presenterView: {fileID: 1638402866}
 --- !u!114 &1638402866
@@ -1021,8 +1026,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Settings.SettingsUIPresenterView
   _animator: {fileID: 1399660354}
-  _introAnimatorStateName: 
-  _exitAnimatorStateName: 
 --- !u!1001 &1771339113
 PrefabInstance:
   m_ObjectHideFlags: 0
