@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 using CarTrickRush.Core;
 using CarTrickRush.Definitions;
+using CarTrickRush.Managers;
 
 namespace CarTrickRush.UI.Settings
 {
@@ -56,29 +57,37 @@ namespace CarTrickRush.UI.Settings
 
         private void Awake()
         {
-            if (_slider == null) { return; }
-
-            _slider.minValue = 0f;
-            _slider.maxValue = 100f;
-            _slider.wholeNumbers = true;
             SyncFromAudioManager();
-            _slider.onValueChanged.AddListener(OnSliderValueChanged);
-            EnabledHighlightImage();
             RefreshHighlightImage();
         }
 
         private void LateUpdate()
         {
             if (_slider == null) { return; }
-
             RefreshHighlightImage();
         }
 
         private void OnDestroy()
         {
+            _slider?.onValueChanged.RemoveListener(OnSliderValueChanged);
+        }
+
+        #endregion
+
+        #region ------------------ Public Methods ------------------
+        
+        /// <summary>
+        /// Slider の値が変更された時の処理.
+        /// </summary>
+        /// <param name="value">Slider の値.</param>
+        public void OnSliderValueChanged(float value)
+        {
             if (_slider == null) { return; }
 
-            _slider.onValueChanged.RemoveListener(OnSliderValueChanged);
+            var audio = ManagerLocator.AudioManager;
+            if (audio == null) { return; }
+
+            audio.SetVolume(_volumeKind, Mathf.Clamp01(value / 100f));
         }
 
         #endregion
@@ -97,30 +106,6 @@ namespace CarTrickRush.UI.Settings
 
             var normalized = audio.GetVolume(_volumeKind);
             _slider.SetValueWithoutNotify(Mathf.Round(normalized * 100f));
-        }
-
-        /// <summary>
-        /// Slider の値が変更された時の処理.
-        /// </summary>
-        /// <param name="value">Slider の値.</param>
-        private void OnSliderValueChanged(float value)
-        {
-            if (_slider == null) { return; }
-
-            var audio = ManagerLocator.AudioManager;
-            if (audio == null) { return; }
-
-            audio.SetVolume(_volumeKind, Mathf.Clamp01(value / 100f));
-        }
-
-        /// <summary>
-        /// ハイライト用 Image を確実に有効にする.
-        /// </summary>
-        private void EnabledHighlightImage()
-        {
-            if (_highlightImage == null) { return; }
-
-            _highlightImage.gameObject.SetActive(true);
         }
 
         /// <summary>

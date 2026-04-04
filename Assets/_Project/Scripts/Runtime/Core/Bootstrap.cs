@@ -26,7 +26,7 @@ namespace CarTrickRush.Core
         [SerializeField] private SceneTransitionCatalog _sceneTransitionCatalog = default;
 
         /// <summary>
-        /// CarTrickRushInputActions（Player/Pause を InputManager で有効化する）.
+        /// 入力アクションアセット.
         /// </summary>
         [SerializeField] private InputActionAsset _inputActionAsset = default;
 
