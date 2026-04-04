@@ -13,9 +13,24 @@ MonoBehaviour:
   m_Name: TrickBonusMaster
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Data.TrickBonusMaster
   _bonusList:
-  - _bonusName: Test
+  - _bonusName: Spiral Drift
     _score: 1000
-    _sequence: 0100000002000000
-  - _bonusName: Test2
-    _score: 10000
-    _sequence: 030000000100000002000000
+    _sequence: 010000000100000001000000
+  - _bonusName: Counter Spiral
+    _score: 800
+    _sequence: 020000000200000002000000
+  - _bonusName: Waggle Combo
+    _score: 900
+    _sequence: 01000000020000000100000002000000
+  - _bonusName: Compass
+    _score: 1300
+    _sequence: 03000000040000000200000001000000
+  - _bonusName: Left Roll
+    _score: 1200
+    _sequence: 02000000020000000400000004000000
+  - _bonusName: Right Roll
+    _score: 1200
+    _sequence: 01000000010000000400000004000000
+  - _bonusName: Bound Trick
+    _score: 2000
+    _sequence: 0100000002000000030000000300000004000000
