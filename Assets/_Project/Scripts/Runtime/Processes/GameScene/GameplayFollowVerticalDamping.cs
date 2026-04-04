@@ -128,13 +128,13 @@ namespace CarTrickRush.GameScene
 
         private void LateUpdate()
         {
-            if (_follow == null || _targetRigidbody == null)
-            {
-                return;
-            }
+            if (_follow == null || _targetRigidbody == null) { return; }
 
+            // 縦速度を取得する.
             var vy = _targetRigidbody.linearVelocity.y;
+            // 縦速度に応じて目標となる PositionDamping.y を計算する.
             var targetDamping = ComputeTargetDamping(vy);
+            // PositionDamping.y を目標値へ近づけるスムージング処理.
             _currentYDamping = Mathf.SmoothDamp(
                 _currentYDamping,
                 targetDamping,
@@ -143,9 +143,11 @@ namespace CarTrickRush.GameScene
                 Mathf.Infinity,
                 Time.deltaTime);
 
+            // 縦速度に応じて目標となる FollowOffset.y の追加値を計算する.  
             var targetFollowYExtra = vy < 0f
                 ? Mathf.Lerp(0f, _followYExtraWhenFalling, Mathf.Clamp01(-vy / Mathf.Max(0.01f, _followYExtraFullAtSpeed)))
                 : 0f;
+            // FollowOffset.y の追加値を目標値へ近づけるスムージング処理を行う.
             _currentFollowYExtra = Mathf.SmoothDamp(
                 _currentFollowYExtra,
                 targetFollowYExtra,
@@ -154,12 +156,17 @@ namespace CarTrickRush.GameScene
                 Mathf.Infinity,
                 Time.deltaTime);
 
+            // PositionDamping.y と FollowOffset.y の追加値を設定する.
             var ts = _follow.TrackerSettings;
+            // PositionDamping.y を設定する.
             var pd = ts.PositionDamping;
             pd.y = _currentYDamping;
+            // PositionDamping.y を設定する.
             ts.PositionDamping = pd;
+            // TrackerSettings を設定する.
             _follow.TrackerSettings = ts;
 
+            // FollowOffset.y の追加値を設定する.
             var offset = _baseFollowOffset;
             offset.y += _currentFollowYExtra;
             _follow.FollowOffset = offset;

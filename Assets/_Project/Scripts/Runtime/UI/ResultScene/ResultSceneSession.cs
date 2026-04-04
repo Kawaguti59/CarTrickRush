@@ -12,7 +12,7 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// 遷移直前に呼ぶ。スコア反映後の表示用ベストと、ニューレコードかを渡す.
+        /// 保留中のリザルトデータ.
         /// </summary>   
         private static ResultData _pendingData = default;
 
@@ -31,8 +31,10 @@ namespace CarTrickRush.UI.Result
         #region ------------------ Public Methods ------------------
 
         /// <summary>
-        /// 遷移直前に呼ぶ。スコア反映後の表示用ベストと、ニューレコードかを渡す.
+        /// リザルトデータを設定する.
         /// </summary>
+        /// <param name="data">リザルトデータ.</param>
+        /// <param name="isNewRecord">ニューレコードかどうか.</param>
         public static void SetPending(ResultData data, bool isNewRecord)
         {
             _pendingData = data;
@@ -41,7 +43,11 @@ namespace CarTrickRush.UI.Result
         }
 
         /// <summary>
-        /// 保留があれば取り出してクリアする。無ければ false.
+        /// 保留中のリザルトデータを取り出してクリアする.
+        /// </summary>
+        /// <param name="data">リザルトデータ.</param>
+        /// <param name="isNewRecord">ニューレコードかどうか.</param>
+        /// <returns>保留中のリザルトデータがあるかどうか.</returns>
         /// </summary>
         public static bool TryConsume(out ResultData data, out bool isNewRecord)
         {
@@ -61,7 +67,7 @@ namespace CarTrickRush.UI.Result
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         /// <summary>
-        /// 保留が無いときだけデバッグ用データを入れる（単体で Result シーンを開く場合など）.
+        /// 保留中のリザルトデータが無いときだけデバッグ用データを設定する.
         /// </summary>
         public static void AssignDebugPlaceholderIfEmpty()
         {
