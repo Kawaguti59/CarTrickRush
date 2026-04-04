@@ -2,7 +2,7 @@ using UnityEngine;
 
 using CarTrickRush.Core;
 using CarTrickRush.Data;
-using System;
+using CarTrickRush.Definitions;
 
 namespace CarTrickRush.Managers
 {
@@ -31,6 +31,11 @@ namespace CarTrickRush.Managers
         private AudioSource _seSource = default;
 
         /// <summary>
+        /// マスター音量 (0〜1). <see cref="AudioListener.volume"/> に反映する.
+        /// </summary>
+        [SerializeField] [Range(0f, 1f)] private float _masterVolume = 1f;
+
+        /// <summary>
         /// BGM音量 (0〜1).
         /// </summary>
         [SerializeField] [Range(0f, 1f)] private float _bgmVolume = 1f;
@@ -55,16 +60,17 @@ namespace CarTrickRush.Managers
         public static AudioManager Instance => _instance;
 
         /// <summary>
+        /// マスター音量 (0〜1).
+        /// </summary>
+        public float MasterVolume => _masterVolume;
+
+        /// <summary>
         /// BGM音量 (0〜1).
         /// </summary>
         public float BgmVolume
         {
             get => _bgmVolume;
-            set
-            {
-                _bgmVolume = Mathf.Clamp01(value);
-                ApplyBGMVolume();
-            }
+            set => SetVolume(AudioVolumeKind.Bgm, value);
         }
 
         /// <summary>
@@ -73,11 +79,7 @@ namespace CarTrickRush.Managers
         public float SeVolume
         {
             get => _seVolume;
-            set
-            {
-                _seVolume = Mathf.Clamp01(value);
-                ApplySEVolume();
-            }
+            set => SetVolume(AudioVolumeKind.Se, value);
         }
 
         #endregion
@@ -98,6 +100,7 @@ namespace CarTrickRush.Managers
                 DontDestroyOnLoad(gameObject);
             }
             EnsureSources();
+            ApplyMasterVolume();
             ApplyBGMVolume();
             ApplySEVolume();
             ManagerLocator.Register(this);
@@ -106,6 +109,47 @@ namespace CarTrickRush.Managers
         #endregion
 
         #region ------------------ Public Methods ------------------
+
+        /// <summary>
+        /// 種類に応じて音量を設定する (0〜1).
+        /// </summary>
+        /// <param name="kind">変更する音量の種類.</param>
+        /// <param name="normalizedVolume">正規化された音量.</param>
+        public void SetVolume(AudioVolumeKind kind, float normalizedVolume)
+        {
+            var value = Mathf.Clamp01(normalizedVolume);
+            switch (kind)
+            {
+                case AudioVolumeKind.Master:
+                    _masterVolume = value;
+                    ApplyMasterVolume();
+                    break;
+                case AudioVolumeKind.Bgm:
+                    _bgmVolume = value;
+                    ApplyBGMVolume();
+                    break;
+                case AudioVolumeKind.Se:
+                    _seVolume = value;
+                    ApplySEVolume();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 種類に応じた現在音量 (0〜1) を返す.
+        /// </summary>
+        /// <param name="kind">音量の種類.</param>
+        /// <returns>正規化音量.</returns>
+        public float GetVolume(AudioVolumeKind kind)
+        {
+            return kind switch
+            {
+                AudioVolumeKind.Master => _masterVolume,
+                AudioVolumeKind.Bgm => _bgmVolume,
+                AudioVolumeKind.Se => _seVolume,
+                _ => 0f,
+            };
+        }
 
         /// <summary>
         /// BGMを再生する.
@@ -238,6 +282,14 @@ namespace CarTrickRush.Managers
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// マスター音量を適用する.
+        /// </summary>
+        private void ApplyMasterVolume()
+        {
+            AudioListener.volume = _masterVolume;
+        }
 
         /// <summary>
         /// AudioSourceを確保する.

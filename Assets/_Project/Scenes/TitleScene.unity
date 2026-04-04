@@ -562,8 +562,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -400}
-  m_SizeDelta: {x: 800, y: 170}
+  m_AnchoredPosition: {x: 0, y: -360}
+  m_SizeDelta: {x: 800, y: 310}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1080698620
 MonoBehaviour:
@@ -625,7 +625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_AnchorMin.x
@@ -633,7 +633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_SizeDelta.x
@@ -673,11 +673,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 400
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -215
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -697,7 +697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1930167475168888154, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6365830860609969985, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_text
@@ -717,7 +717,7 @@ PrefabInstance:
       objectReference: {fileID: 2104563449}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -730,6 +730,18 @@ PrefabInstance:
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SceneLoad
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CarTrickRush.UI.Common.SceneNavigationOnClick, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -847,7 +859,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4e8f91a2b3d564e8a7f0c1d2e3b4a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Common.SceneNavigationOnClick
-  _sceneName: Settings
+  _sceneName: SettingsScene
   _loadMode: 1
   _transitionSetId: 0
 --- !u!1001 &1764058472

@@ -900,6 +900,7 @@ GameObject:
   - component: {fileID: 1638402862}
   - component: {fileID: 1638402861}
   - component: {fileID: 1638402865}
+  - component: {fileID: 1638402866}
   m_Layer: 5
   m_Name: SettingsCanvas
   m_TagString: Untagged
@@ -1001,7 +1002,27 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27cea71ed4a5a724a97c0d77f8a8602f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SettingsUIPresenter
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Settings.SettingsUIPresenter
+  _masterVolumeSlider: {fileID: 1838641551}
+  _bgmVolumeSlider: {fileID: 2030912566}
+  _seVolumeSlider: {fileID: 1771339115}
+  _closeButton: {fileID: 1968621092}
+  _presenterView: {fileID: 1638402866}
+--- !u!114 &1638402866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638402859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372ee4c1acd425b4d926c5de7bac68fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Settings.SettingsUIPresenterView
+  _animator: {fileID: 1399660354}
+  _introAnimatorStateName: 
+  _exitAnimatorStateName: 
 --- !u!1001 &1771339113
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1017,6 +1038,10 @@ PrefabInstance:
     - target: {fileID: 1634547401201236840, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
       propertyPath: m_Name
       value: SEVolumeBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 1917750384638653109, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+      propertyPath: _volumeKind
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4646484483991333233, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
       propertyPath: m_TargetGraphic
@@ -1120,6 +1145,28 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7040431626352153776, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
   m_PrefabInstance: {fileID: 1771339113}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1771339115 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1917750384638653109, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+  m_PrefabInstance: {fileID: 1771339113}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac536d534337bd843905393f1372d525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeSlider
+--- !u!114 &1838641551 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1917750384638653109, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+  m_PrefabInstance: {fileID: 508061715625218420}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac536d534337bd843905393f1372d525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeSlider
 --- !u!1 &1868464838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1302,6 +1349,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4864638297877201927, guid: c7b0c87e25292c445abc92191acc649d, type: 3}
   m_PrefabInstance: {fileID: 1968621089}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1968621092 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4520835037719190203, guid: c7b0c87e25292c445abc92191acc649d, type: 3}
+  m_PrefabInstance: {fileID: 1968621089}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &2030912564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1313,6 +1371,10 @@ PrefabInstance:
     - target: {fileID: 1634547401201236840, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
       propertyPath: m_Name
       value: BGMVolumeBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 1917750384638653109, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+      propertyPath: _volumeKind
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4646484483991333233, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
       propertyPath: m_TargetGraphic
@@ -1416,6 +1478,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7040431626352153776, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
   m_PrefabInstance: {fileID: 2030912564}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2030912566 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1917750384638653109, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+  m_PrefabInstance: {fileID: 2030912564}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac536d534337bd843905393f1372d525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeSlider
 --- !u!1001 &508061715625218420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1431,6 +1504,14 @@ PrefabInstance:
     - target: {fileID: 1634547401201236840, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
       propertyPath: m_Name
       value: MasterVolumeBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 1751714077220995521, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1917750384638653109, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
+      propertyPath: _volumeKind
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4646484483991333233, guid: 8969b2eac1acf8942949f73544f1f48b, type: 3}
       propertyPath: m_TargetGraphic
