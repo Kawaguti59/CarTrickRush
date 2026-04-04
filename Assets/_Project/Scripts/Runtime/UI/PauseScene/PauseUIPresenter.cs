@@ -179,18 +179,16 @@ namespace CarTrickRush.UI.Pause
             eventTrigger.triggers.Add(pointerDownEntry);
         }
 
+        /// <summary>
+        /// ボタンを選択する.
+        /// </summary>
+        /// <param name="button">選択するボタン.</param>
         private void SelectButton(Button button)
         {
-            if (!_interactionsEnabled || button == null)
-            {
-                return;
-            }
+            if (!_interactionsEnabled || button == null) { return; }
 
             var eventSystem = EventSystem.current;
-            if (eventSystem == null)
-            {
-                return;
-            }
+            if (eventSystem == null) { return; }
 
             eventSystem.SetSelectedGameObject(button.gameObject);
             _currentButton = button;
