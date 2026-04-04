@@ -298,6 +298,7 @@ GameObject:
   - component: {fileID: 305803975}
   - component: {fileID: 305803976}
   - component: {fileID: 305803977}
+  - component: {fileID: 305803978}
   m_Layer: 0
   m_Name: VCAM_Gameplay
   m_TagString: Untagged
@@ -314,7 +315,7 @@ Transform:
   m_GameObject: {fileID: 305803974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -58.27189, y: 3.23, z: 30.159103}
+  m_LocalPosition: {x: -56.02189, y: 2.88, z: 30.159103}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -377,11 +378,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 1, y: 2.75, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 0, z: -10}
+  FollowOffset: {x: 2.25, y: -0.35, z: -10}
+--- !u!114 &305803978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305803974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c8a9f2e1d0b4c3a9876543210abcdef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.GameScene.GameplayFollowVerticalDamping
+  _cinemachineCamera: {fileID: 305803976}
+  _follow: {fileID: 305803977}
+  _targetRigidbody: {fileID: 7263615675763905438}
+  _positionDampingYNeutral: 1.1
+  _positionDampingYAscending: 2.75
+  _positionDampingYFalling: 0.1
+  _riseFullAtSpeed: 3
+  _fallFullAtSpeed: 5.5
+  _dampingSmoothTime: 0.2
+  _followYExtraWhenFalling: -1
+  _followYExtraFullAtSpeed: 8
+  _followYExtraSmoothTime: 0.14
 --- !u!1001 &318453909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4396,7 +4421,7 @@ Transform:
   m_GameObject: {fileID: 2063202148}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -59.5062, y: 3.23, z: 17.784733}
+  m_LocalPosition: {x: -57.2562, y: 2.88, z: 17.784733}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4754,6 +4779,22 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41dfcfa2c39eab744af1e731513581ae, type: 3}
+--- !u!54 &7263615675763905438 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 7854848453051675285, guid: 41dfcfa2c39eab744af1e731513581ae, type: 3}
+  m_PrefabInstance: {fileID: 7263615675763905437}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7263615675763905439 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5931138649947814439, guid: 41dfcfa2c39eab744af1e731513581ae, type: 3}
+  m_PrefabInstance: {fileID: 7263615675763905437}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819f5f3215b16514cb48483633f92941, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Player.PlayerController
 --- !u!1001 &7835226911670229132
 PrefabInstance:
   m_ObjectHideFlags: 0
