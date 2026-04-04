@@ -21,7 +21,7 @@ namespace CarTrickRush.UI.Settings
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// 音量チャンネルと <see cref="VolumeSlider"/> の対応（リスト順が上下ナビの順）.
+        /// 音量スライダーの対応.
         /// </summary>
         [SerializeField] private InspectableMap<AudioVolumeKind, VolumeSlider> _volumeSliders = new();
 
@@ -61,7 +61,7 @@ namespace CarTrickRush.UI.Settings
 
         private void Awake()
         {
-            ApplySelectableNavigationChain();
+            CollectOwnedSelectables();
             BindPointerSelects();
             SetInteractions(true);
         }
@@ -183,10 +183,8 @@ namespace CarTrickRush.UI.Settings
         }
 
         /// <summary>
-        /// ボタン・スライダー操作が有効かどうかを設定する.
+        /// Selectable の interactable を設定する.
         /// </summary>
-        /// <param name="selectable">対象の Selectable.</param>
-        /// <param name="enabled">有効かどうか.</param>
         private static void SetInteractable(Selectable selectable, bool enabled)
         {
             if (selectable != null)
@@ -196,15 +194,12 @@ namespace CarTrickRush.UI.Settings
         }
 
         /// <summary>
-        /// ボタン・スライダー操作が有効かどうかを設定する.
+        /// 所有している Selectable を取得する.
         /// </summary>
-        /// <param name="selectable">対象の Selectable.</param>
-        /// <param name="enabled">有効かどうか.</param>
-        private void ApplySelectableNavigationChain()
+        private void CollectOwnedSelectables()
         {
             _ownedSelectables.Clear();
 
-            var chain = new List<Selectable>();
             foreach (var pair in _volumeSliders.Pairs)
             {
                 if (!IsValidVolumePair(pair))
@@ -215,7 +210,6 @@ namespace CarTrickRush.UI.Settings
                 var selectable = pair.Value.AsSelectable;
                 if (selectable != null)
                 {
-                    chain.Add(selectable);
                     _ownedSelectables.Add(selectable);
                 }
             }
@@ -223,41 +217,6 @@ namespace CarTrickRush.UI.Settings
             if (_closeButton != null)
             {
                 _ownedSelectables.Add(_closeButton);
-            }
-
-            var close = _closeButton;
-            if (chain.Count > 0 && close != null)
-            {
-                chain.Add(close);
-                ChainVertical(chain.ToArray());
-                return;
-            }
-
-            if (close != null)
-            {
-                var navigation = new Navigation { mode = Navigation.Mode.Explicit };
-                navigation.selectOnUp = close;
-                navigation.selectOnDown = close;
-                navigation.selectOnLeft = close;
-                navigation.selectOnRight = close;
-                close.navigation = navigation;
-            }
-        }
-
-        /// <summary>
-        /// 垂直方向のナビゲーションを設定する.
-        /// </summary>
-        /// <param name="items">対象の Selectable.</param>
-        private static void ChainVertical(params Selectable[] items)
-        {
-            for (var i = 0; i < items.Length; i++)
-            {
-                var navigation = new Navigation { mode = Navigation.Mode.Explicit };
-                navigation.selectOnUp = i > 0 ? items[i - 1] : items[0];
-                navigation.selectOnDown = i < items.Length - 1 ? items[i + 1] : items[^1];
-                navigation.selectOnLeft = items[i];
-                navigation.selectOnRight = items[i];
-                items[i].navigation = navigation;
             }
         }
 
