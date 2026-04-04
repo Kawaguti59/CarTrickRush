@@ -21,6 +21,11 @@ namespace CarTrickRush.Managers
         /// </summary>
         private static InputManager _instance = default;
 
+        /// <summary>
+        /// CarTrickRushInputActions の Player/Pause（有効化中のみ）.
+        /// </summary>
+        private InputAction _playerPauseAction = default;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -105,16 +110,39 @@ namespace CarTrickRush.Managers
             {
                 InvokeRotateDown();
             }
+        }
 
-            if (keyboard.escapeKey.wasPressedThisFrame)
-            {
-                InvokePause();
-            }
+        private void OnDestroy()
+        {
+            UnbindPlayerPauseAction();
         }
 
         #endregion
 
         #region ------------------ Public Methods ------------------
+
+        /// <summary>
+        /// CarTrickRushInputActions の Player/Pause を有効化し、押下で InvokePause する.
+        /// </summary>
+        /// <param name="asset">Input Actions アセット.</param>
+        public void BindPlayerPauseAction(InputActionAsset asset)
+        {
+            UnbindPlayerPauseAction();
+            if (asset == null)
+            {
+                return;
+            }
+
+            var map = asset.FindActionMap("Player", throwIfNotFound: false);
+            _playerPauseAction = map?.FindAction("Pause", throwIfNotFound: false);
+            if (_playerPauseAction == null)
+            {
+                return;
+            }
+
+            _playerPauseAction.performed += OnPlayerPausePerformed;
+            _playerPauseAction.Enable();
+        }
 
         /// <summary>
         /// 右回転を実行する.
@@ -219,6 +247,35 @@ namespace CarTrickRush.Managers
             {
                 InputManager.Instance.InvokePause();
             }
+        }
+
+        #endregion
+
+        #region ------------------ Private Methods ------------------
+
+        private void OnPlayerPausePerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+            {
+                return;
+            }
+
+            InvokePause();
+        }
+
+        /// <summary>
+        /// Player/Pause の購読と無効化を解除する.
+        /// </summary>
+        private void UnbindPlayerPauseAction()
+        {
+            if (_playerPauseAction == null)
+            {
+                return;
+            }
+
+            _playerPauseAction.performed -= OnPlayerPausePerformed;
+            _playerPauseAction.Disable();
+            _playerPauseAction = null;
         }
 
         #endregion

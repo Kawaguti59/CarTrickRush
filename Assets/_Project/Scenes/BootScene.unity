@@ -182,6 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Core.Bootstrap
   _firstSceneName: TitleScene
   _sceneTransitionCatalog: {fileID: 11400000, guid: d3e021e3ad3629741b767f428f496902, type: 2}
+  _inputActionAsset: {fileID: -944628639613478452, guid: 878da0d7c68121e4a99e7df80a27427f, type: 3}
 --- !u!4 &1091546379
 Transform:
   m_ObjectHideFlags: 0

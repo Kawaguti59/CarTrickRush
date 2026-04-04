@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 using CarTrickRush.Data;
 using CarTrickRush.Managers;
@@ -24,6 +25,11 @@ namespace CarTrickRush.Core
         /// </summary>
         [SerializeField] private SceneTransitionCatalog _sceneTransitionCatalog = default;
 
+        /// <summary>
+        /// CarTrickRushInputActions（Player/Pause を InputManager で有効化する）.
+        /// </summary>
+        [SerializeField] private InputActionAsset _inputActionAsset = default;
+
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
@@ -35,6 +41,8 @@ namespace CarTrickRush.Core
             {
                 ManagerLocator.SceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
             }
+
+            ManagerLocator.InputManager?.BindPlayerPauseAction(_inputActionAsset);
         }
 
         private void Start()

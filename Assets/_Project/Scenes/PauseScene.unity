@@ -1139,29 +1139,76 @@ PrefabInstance:
       objectReference: {fileID: 1630507893}
     - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2017300857}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SceneLoad
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CarTrickRush.UI.Common.SceneNavigationOnClick, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1930167475168888154, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2017300857}
   m_SourcePrefab: {fileID: 100100000, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
 --- !u!114 &2017300854 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7218688930325795884, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
   m_PrefabInstance: {fileID: 2017300853}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2017300855}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &2017300855 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1930167475168888154, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
+  m_PrefabInstance: {fileID: 2017300853}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2017300856 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1806645026416102032, guid: 91c86ad83020ae040a208b051b77a6e8, type: 3}
   m_PrefabInstance: {fileID: 2017300853}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2017300857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017300855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4e8f91a2b3d564e8a7f0c1d2e3b4a59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.Common.SceneNavigationOnClick
+  _sceneName: GameScene
+  _loadMode: 0
+  _transitionSetId: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

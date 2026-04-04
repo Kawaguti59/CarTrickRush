@@ -86,6 +86,22 @@ namespace CarTrickRush.GameScene
             }
         }
 
+        private void OnEnable()
+        {
+            if (ManagerLocator.InputManager != null)
+            {
+                ManagerLocator.InputManager.PausePerformed += HandlePausePerformed;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (ManagerLocator.InputManager != null)
+            {
+                ManagerLocator.InputManager.PausePerformed -= HandlePausePerformed;
+            }
+        }
+
         private void Start()
         {
             ManagerLocator.ScoreManager?.ResetScore();
@@ -167,6 +183,14 @@ namespace CarTrickRush.GameScene
             SceneLoadManager.LoadSceneAdditive(_resultOverlaySceneName);
 
             _isGoalSequenceRunning = false;
+        }
+
+        /// <summary>
+        /// ポーズ画面を開く.
+        /// </summary>
+        private void HandlePausePerformed()
+        {
+            OpenPauseOverlay();
         }
 
         /// <summary>
