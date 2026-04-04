@@ -171,17 +171,24 @@ namespace CarTrickRush.GameScene
         /// <returns>コルーチン.</returns>
         private IEnumerator GoalSequenceCoroutine()
         {
+            // ゴール演出実行中フラグを設定する.
             _isGoalSequenceRunning = true;
 
+            // ゴール効果音を再生する.
+            ManagerLocator.AudioManager?.PlaySe("GoalCheer");
+
+            // カメラの追従を解除する.
             StopGameplayCameraFollow();
             _playerController?.StartGoal();
 
+            // リザルトデータを構築する.
             BuildResultData();
 
+            // リザルトオーバーレイシーンを読み込む.
             yield return new WaitForSeconds(_resultOverlayDelay);
-
             SceneLoadManager.LoadSceneAdditive(_resultOverlaySceneName);
 
+            // ゴール演出実行中フラグを解除する.
             _isGoalSequenceRunning = false;
         }
 

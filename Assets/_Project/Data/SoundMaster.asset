@@ -42,3 +42,7 @@ MonoBehaviour:
     _name: Explosion
     _useTag: character
     _clip: {fileID: 8300000, guid: 076186997bec3984e983c7d240e0c4e1, type: 3}
+  - _id: 2005
+    _name: GoalCheer
+    _useTag: character
+    _clip: {fileID: 8300000, guid: fe31d42db87ff4a48a80673b88d382b4, type: 3}
