@@ -189,8 +189,6 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void InvokePause()
         {
-            if (AdditiveOverlayInputGate.IsBlocked) { return; }
-
             PausePerformed?.Invoke();
         }
 

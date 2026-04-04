@@ -193,10 +193,16 @@ namespace CarTrickRush.GameScene
         }
 
         /// <summary>
-        /// ポーズ画面を開く.
+        /// ポーズ画面を開く／既に開いていれば閉じる.
         /// </summary>
         private void HandlePausePerformed()
         {
+            if (SceneLoadManager.IsSceneLoaded(_pauseOverlaySceneName))
+            {
+                SceneLoadManager.UnloadScene(_pauseOverlaySceneName);
+                return;
+            }
+
             OpenPauseOverlay();
         }
 
