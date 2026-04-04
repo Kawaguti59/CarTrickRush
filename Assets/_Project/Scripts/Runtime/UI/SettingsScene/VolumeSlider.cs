@@ -118,34 +118,26 @@ namespace CarTrickRush.UI.Settings
             var eventSystem = EventSystem.current;
             if (eventSystem == null) { return; }
 
-            var selected = SettingsUiSelection.Matches(_slider, eventSystem.currentSelectedGameObject);
+            var current = eventSystem.currentSelectedGameObject;
+            var selected = false;
+            if (current != null)
+            {
+                if (current == _slider.gameObject)
+                {
+                    selected = true;
+                }
+                else
+                {
+                    var rootSelectable = current.GetComponentInParent<Selectable>();
+                    selected = rootSelectable == _slider;
+                }
+            }
+
             if (_highlightImage.enabled == selected) { return; }
 
             _highlightImage.enabled = selected;
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// EventSystem の選択が指定 <see cref="Selectable"/>（Slider の子ハンドル等を含む）に属するか.
-    /// </summary>
-    internal static class SettingsUiSelection
-    {
-        internal static bool Matches(Selectable selectable, GameObject currentSelected)
-        {
-            if (selectable == null || currentSelected == null)
-            {
-                return false;
-            }
-
-            if (currentSelected == selectable.gameObject)
-            {
-                return true;
-            }
-
-            var rootSelectable = currentSelected.GetComponentInParent<Selectable>();
-            return rootSelectable == selectable;
-        }
     }
 }
