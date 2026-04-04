@@ -31,11 +31,6 @@ namespace CarTrickRush.GameScene
         [SerializeField] private float _resultOverlayDelay = 1.5f;
 
         /// <summary>
-        /// リザルトオーバーレイシーン名.
-        /// </summary>
-        [SerializeField] private string _resultOverlaySceneName = "ResultScene";
-
-        /// <summary>
         /// ゲーム中のCinemachineカメラ.
         /// </summary>
         [SerializeField] private CinemachineCamera _gameplayCinemachineCamera = default;
@@ -50,6 +45,15 @@ namespace CarTrickRush.GameScene
         /// </summary>
         private bool _isGoalSequenceRunning = default;
 
+        /// <summary>
+        /// リザルトオーバーレイシーン名.
+        /// </summary>
+        private string _resultOverlaySceneName = "ResultScene";
+
+        /// <summary>
+        /// ポーズオーバーレイシーン名.
+        /// </summary>
+        private string _pauseOverlaySceneName = "PauseScene";
         #endregion
 
         #region ------------------ Properties ------------------
@@ -101,6 +105,20 @@ namespace CarTrickRush.GameScene
             if (playerController == null) { return; }
 
             _playerController = playerController;
+        }
+
+        /// <summary>
+        /// ポーズシーンを開く.
+        /// </summary>
+        public void OpenPauseOverlay()
+        {
+            if (_isGoalSequenceRunning) { return; }
+
+            if (SceneLoadManager.IsSceneLoaded(_resultOverlaySceneName)) { return; }
+
+            if (SceneLoadManager.IsSceneLoaded(_pauseOverlaySceneName)) { return; }
+
+            SceneLoadManager.LoadSceneAdditive(_pauseOverlaySceneName);
         }
 
         /// <summary>
