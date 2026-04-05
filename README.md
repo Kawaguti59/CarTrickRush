@@ -23,9 +23,9 @@
 
 ### 設計
 
-- **Manager / Presenter / View** を意識した責務分離  
-- **ManagerLocator** による依存の集約  
-- **状態管理（State パターン）** によるプレイヤー制御  
+- **MVC（Model–View–Controller）** — **プレイヤー**は `PlayerModel`（状態・トリック入力など）、`PlayerView`（見た目・アニメ・VFX）、`PlayerController`（制御）の三分離。**UI**は `GameUIPresenter` など **Presenter** 命名のクラスが **View** を更新しているが、**MVC の Controller 層**に相当する役割（参照先は **Manager** や ScriptableObject）  
+- **Manager による横断的管理** — スコア・シーン・入力・時間などを **各種 Manager** に集約し、**ManagerLocator** で依存を引き渡し  
+- **状態管理（State パターン）** — プレイヤーの地上 / 空中 / ペナルティなどを状態クラスで切り替え（上記 MVC 構成と併用）  
 - **シーン分割 + 追加読み込み** による UI 管理（ポーズ・設定など）
 
 ### UI / UX
