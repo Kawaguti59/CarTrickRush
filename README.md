@@ -22,9 +22,6 @@
 ## 技術的な特徴
 
 ### 設計
-## 技術的な特徴
-
-### 設計
 
 - **オブジェクト系は MVC ベースで責務分離**  
   キャラクターなどのゲームオブジェクトは、状態・データを **Model**、見た目や演出を **View**、入力や遷移制御を **Controller** として分離。  
@@ -82,8 +79,27 @@
 
 ## Demo
 
+### スクリーンショット
+
 | ![画面サンプル 1](./demo/sample01.png) | ![画面サンプル 2](./demo/sample02.png) |
 | :---: | :---: |
+
+### 動画
+
+GitHub 上ではブラウザ再生できます。表示されない環境のときは [demovideo1.mp4](./demo/demovideo1.mp4) / [demovideo2.mp4](./demo/demovideo2.mp4) から開いてください。
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <video src="./demo/demovideo1.mp4" controls playsinline width="100%"></video>
+      <br /><sub>デモ動画 1</sub>
+    </td>
+    <td align="center" width="50%">
+      <video src="./demo/demovideo2.mp4" controls playsinline width="100%"></video>
+      <br /><sub>デモ動画 2</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
