@@ -27,9 +27,9 @@ namespace CarTrickRush.UI.Settings
         /// </summary>
         public void PlayIntro()
         {
-            if (_animator == null || string.IsNullOrEmpty("Intro")) { return; }
+            if (_animator == null || string.IsNullOrEmpty("Show")) { return; }
 
-            _animator.Play("Intro", layer: 0, normalizedTime: 0f);
+            _animator.Play("Show", layer: 0, normalizedTime: 0f);
         }
 
         /// <summary>
@@ -38,12 +38,12 @@ namespace CarTrickRush.UI.Settings
         /// <returns>コルーチン.</returns>
         public IEnumerator PlayExitRoutine()
         {
-            if (_animator == null || string.IsNullOrEmpty("Exit"))
+            if (_animator == null || string.IsNullOrEmpty("Hide"))
             {
                 yield break;
             }
 
-            _animator.Play("Exit", layer: 0, normalizedTime: 0f);
+            _animator.Play("Hide", layer: 0, normalizedTime: 0f);
             yield return null;
             yield return new WaitUntil(ExitAnimationFinished);
         }
@@ -64,7 +64,7 @@ namespace CarTrickRush.UI.Settings
             }
 
             var state = _animator.GetCurrentAnimatorStateInfo(0);
-            return state.IsName("Exit") && state.normalizedTime >= 1f && !_animator.IsInTransition(0);
+            return state.IsName("Hide") && state.normalizedTime >= 1f && !_animator.IsInTransition(0);
         }
 
         #endregion

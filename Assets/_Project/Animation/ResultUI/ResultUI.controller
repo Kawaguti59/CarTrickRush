@@ -35,7 +35,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: IntroNewRecord
+  m_Name: ShowNewRecord
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -60,7 +60,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ResultUIIntro
+  m_Name: ResultUI
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
@@ -83,7 +83,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Intro
+  m_Name: Show
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []

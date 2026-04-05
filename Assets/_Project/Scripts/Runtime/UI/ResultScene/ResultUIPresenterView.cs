@@ -36,7 +36,7 @@ namespace CarTrickRush.UI.Result
 
         public void PlayIntro(bool newRecord)
         {
-            var animationName = newRecord ? "IntroNewRecord" : "Intro";
+            var animationName = newRecord ? "ShowNewRecord" : "Show";
             _animator?.Play(animationName, layer: 0, normalizedTime: 0.0f);
         }
 
