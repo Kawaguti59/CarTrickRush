@@ -22,12 +22,26 @@
 ## 技術的な特徴
 
 ### 設計
+## 技術的な特徴
 
-- **キャラクターなどオブジェクト系は MVC（Model–View–Controller）** — 状態・データは **Model**、見た目・演出は **View**、入力や遷移の制御は **Controller**。プレイヤーは `PlayerModel` / `PlayerView` / `PlayerController` の三分離  
-- **UI は Presenter と View で管理** — 各シーン・画面の **Presenter**（例: `GameUIPresenter`、`TitleUIPresenter`）が **View** を更新し、表示とロジックを分離。参照するデータは **Manager** や ScriptableObject から取得  
-- **Manager による横断的管理** — スコア・シーン・入力・時間などを **各種 Manager** に集約し、**ManagerLocator** で依存を引き渡し  
-- **状態管理（State パターン）** — プレイヤーの地上 / 空中 / ペナルティなどを状態クラスで切り替え（オブジェクト側の MVC と併用）  
-- **シーン分割 + 追加読み込み** による UI 管理（ポーズ・設定など）
+### 設計
+
+- **オブジェクト系は MVC ベースで責務分離**  
+  キャラクターなどのゲームオブジェクトは、状態・データを **Model**、見た目や演出を **View**、入力や遷移制御を **Controller** として分離。  
+  例として、プレイヤーは `PlayerModel` / `PlayerView` / `PlayerController` で構成
+
+- **UI は Presenter / View 構成で管理**  
+  各シーン・画面では Presenter が View を更新し、表示とロジックを分離。  
+  UIが参照するデータは Manager や ScriptableObject から取得
+
+- **横断的な処理は Manager に集約**  
+  スコア・シーン遷移・入力・時間など、複数箇所から参照される処理は各種 Manager に分離。  
+  参照取得は `ManagerLocator` で整理し、シーン側の依存をまとめて管理
+
+- **シーン分割 + Additive 読み込みによるUI管理**  
+  ポーズ画面や設定画面は追加読み込みで管理し、ゲーム本体と独立したUI制御を実現
+
+用途ごとに設計パターンを使い分けることで、短期開発でも保守性と拡張性を両立する構成を目指しました。
 
 ### UI / UX
 
