@@ -662,7 +662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.UI.GameUiPresenter
   _scoreView: {fileID: 1773505932}
   _progressView: {fileID: 1976471489}
-  _trickScoreFeedView: {fileID: 8300220011610961247}
+  _trickScoreUIPresenter: {fileID: 8300220011610961247}
   _playerTransform: {fileID: 1581431270}
   _startPoint: {fileID: 1912809008}
   _goalPoint: {fileID: 1373040727}
@@ -5009,7 +5009,6 @@ MonoBehaviour:
   _bonusRowPrefab: {fileID: 8300110011001100004, guid: a7f3c2d81eb94c5a9e86420b1a2c3d4e, type: 3}
   _maxRows: 3
   _visibleDuration: 2
-  _fadeDuration: 0.35
   _previousSetRowFactor: 0.8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

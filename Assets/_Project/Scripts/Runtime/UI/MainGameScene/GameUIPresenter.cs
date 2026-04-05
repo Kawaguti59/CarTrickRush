@@ -33,7 +33,7 @@ namespace CarTrickRush.UI
         /// <summary>
         /// ボーナススコアのキュー表示.
         /// </summary>
-        [SerializeField] private TrickScoreFeedView _trickScoreFeedView = default;
+        [SerializeField] private TrickScoreUIPresenter _trickScoreUIPresenter = default;
 
         /// <summary>
         /// プレイヤーのTransform.
@@ -77,9 +77,9 @@ namespace CarTrickRush.UI
         /// <param name="endGroup">同一セットの最後かどうか.</param>
         public void PushTrickScore(string displayName, int addValue, TrickScoreRowKind rowKind, bool endGroup = true)
         {
-            if (_trickScoreFeedView == null) { return; }
+            if (_trickScoreUIPresenter == null) { return; }
 
-            _trickScoreFeedView.Push(displayName, addValue, rowKind, endGroup);
+            _trickScoreUIPresenter.Push(displayName, addValue, rowKind, endGroup);
         }
 
         #endregion

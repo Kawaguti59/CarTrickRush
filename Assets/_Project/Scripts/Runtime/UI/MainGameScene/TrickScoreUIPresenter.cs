@@ -8,10 +8,10 @@ namespace CarTrickRush.UI
 {
     /// =========================================================================================
     /// <summary>
-    /// トリックスコアのフィード表示.
+    /// トリックスコアのUI表示.
     /// </summary>
     /// =========================================================================================
-    public sealed class TrickScoreFeedView : MonoBehaviour
+    public sealed class TrickScoreUIPresenter : MonoBehaviour
     {
         #region ------------------ Fields ------------------
 
