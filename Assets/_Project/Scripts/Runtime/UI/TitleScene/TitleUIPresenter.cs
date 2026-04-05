@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 using CarTrickRush.Core;
+using CarTrickRush.UI.Common;
 
 namespace CarTrickRush.UI.Title
 {
@@ -106,7 +107,7 @@ namespace CarTrickRush.UI.Title
         /// </summary>
         public void OnClickQuit()
         {
-            ManagerLocator.AudioManager?.PlaySe("ButtonClick");
+            UIButtonClickSound.Play();
             #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #else

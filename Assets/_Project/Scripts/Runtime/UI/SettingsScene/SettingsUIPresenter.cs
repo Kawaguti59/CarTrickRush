@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using CarTrickRush.Core;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
+using CarTrickRush.UI.Common;
 
 namespace CarTrickRush.UI.Settings
 {
@@ -106,7 +107,7 @@ namespace CarTrickRush.UI.Settings
         {
             if (_closing) { return; }
 
-            ManagerLocator.AudioManager?.PlaySe("ButtonClick");
+            UIButtonClickSound.Play();
             _closing = true;
             SetInteractions(false);
             StartCoroutine(CloseRoutine());

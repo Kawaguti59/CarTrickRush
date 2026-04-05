@@ -71,6 +71,12 @@ namespace CarTrickRush.Managers
         /// </summary>
         private static SceneLoadManager Instance => _instance;
 
+        /// <summary>
+        /// シングル遷移が進行中か.
+        /// </summary>
+        public static bool IsSingleLoadTransitionRunning =>
+            Instance != null && Instance._singleLoadTransitionRunning;
+
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------

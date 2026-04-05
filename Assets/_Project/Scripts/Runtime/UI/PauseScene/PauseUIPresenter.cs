@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using CarTrickRush.Core;
 using CarTrickRush.Managers;
+using CarTrickRush.UI.Common;
 
 namespace CarTrickRush.UI.Pause
 {
@@ -124,8 +125,10 @@ namespace CarTrickRush.UI.Pause
         /// </summary>
         public void OnClickClosePause()
         {
-            ManagerLocator.AudioManager?.PlaySe("ButtonClick");
+            if (!SceneLoadManager.IsSceneLoaded("PauseScene")) { return; }
+
             SceneLoadManager.UnloadScene("PauseScene");
+            UIButtonClickSound.Play();
         }
 
         #endregion

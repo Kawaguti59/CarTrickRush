@@ -54,8 +54,6 @@ namespace CarTrickRush.UI.Common
         /// </summary>
         public void SceneLoad()
         {
-            ManagerLocator.AudioManager?.PlaySe("ButtonClick");
-
             if (string.IsNullOrWhiteSpace(_sceneName))
             {
                 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -68,11 +66,15 @@ namespace CarTrickRush.UI.Common
             {
                 // 単一シーン読み込み
                 case LoadMode.Single:
+                    if (SceneLoadManager.IsSingleLoadTransitionRunning) { return; }
                     SceneLoadManager.LoadScene(_sceneName, _transitionSetId);
+                    UIButtonClickSound.Play();
                     break;
                 // 加算読み込み
                 case LoadMode.Additive:
+                    if (SceneLoadManager.IsSceneLoaded(_sceneName)) { return; }
                     SceneLoadManager.LoadSceneAdditive(_sceneName);
+                    UIButtonClickSound.Play();
                     break;
                 default:
                     #if UNITY_EDITOR || DEVELOPMENT_BUILD
