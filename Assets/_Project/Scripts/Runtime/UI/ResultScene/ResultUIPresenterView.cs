@@ -18,6 +18,24 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         [SerializeField] private Animator _animator = default;
 
+        /// <summary>
+        /// 新記録かどうか.
+        /// </summary>
+        private bool _isNewRecord;
+
+        #endregion
+
+        #region ------------------ Public Methods ------------------
+
+        /// <summary>
+        /// 新記録かどうかを設定する.
+        /// </summary>
+        /// <param name="isNewRecord">新記録かどうか.</param>
+        public void SetIsNewRecord(bool isNewRecord)
+        {
+            _isNewRecord = isNewRecord;
+        }
+
         #endregion
 
         #region ------------------ Interface Methods ------------------
@@ -26,18 +44,14 @@ namespace CarTrickRush.UI.Result
         {
         }
 
-        public void Show() 
-        { 
+        public void Show()
+        {
+            var animationName = _isNewRecord ? "ShowNewRecord" : "Show";
+            _animator?.Play(animationName, layer: 0, normalizedTime: 0.0f);
         }
 
         public void Hide()
-        { 
-        }
-
-        public void PlayIntro(bool newRecord)
         {
-            var animationName = newRecord ? "ShowNewRecord" : "Show";
-            _animator?.Play(animationName, layer: 0, normalizedTime: 0.0f);
         }
 
         public bool IsPlaying()

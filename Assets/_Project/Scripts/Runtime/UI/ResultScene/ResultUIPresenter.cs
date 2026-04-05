@@ -144,7 +144,7 @@ namespace CarTrickRush.UI.Result
         {
             if (_resultUIPresenterView != null)
             {
-                _resultUIPresenterView.PlayIntro(_isNewRecord);
+                _resultUIPresenterView.Show();
                 yield return null;
                 while (_resultUIPresenterView.IsPlaying())
                 {
@@ -181,6 +181,7 @@ namespace CarTrickRush.UI.Result
 
             if (!ResultSceneSession.TryConsume(out var resultData, out _isNewRecord))
             {
+                _resultUIPresenterView?.SetIsNewRecord(_isNewRecord);
                 return;
             }
 
@@ -190,6 +191,7 @@ namespace CarTrickRush.UI.Result
 
             _lineBeforeNewRecord.SetActive(_isNewRecord);
             _newRecordRoot.SetActive(_isNewRecord);
+            _resultUIPresenterView?.SetIsNewRecord(_isNewRecord);
         }
 
         /// <summary>

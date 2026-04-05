@@ -1,6 +1,6 @@
 using UnityEngine;
 
-using System.Collections;
+using CarTrickRush.Core.View;
 
 namespace CarTrickRush.UI.Settings
 {
@@ -9,7 +9,7 @@ namespace CarTrickRush.UI.Settings
     /// 設定画面の表示アニメーションを制御するクラス.
     /// </summary>
     /// =========================================================================================
-    public sealed class SettingsUIPresenterView : MonoBehaviour
+    public sealed class SettingsUIPresenterView : MonoBehaviour, IView
     {
         #region ------------------ Fields ------------------
 
@@ -20,14 +20,18 @@ namespace CarTrickRush.UI.Settings
 
         #endregion
 
-        #region ------------------ Public Methods ------------------
+        #region ------------------ Interface Methods ------------------
+
+        public void Initialize()
+        {
+        }
 
         /// <summary>
         /// 開始アニメーションを再生する.
         /// </summary>
-        public void PlayIntro()
+        public void Show()
         {
-            if (_animator == null || string.IsNullOrEmpty("Show")) { return; }
+            if (_animator == null) { return; }
 
             _animator.Play("Show", layer: 0, normalizedTime: 0f);
         }
@@ -35,36 +39,32 @@ namespace CarTrickRush.UI.Settings
         /// <summary>
         /// 終了アニメーションを再生する.
         /// </summary>
-        /// <returns>コルーチン.</returns>
-        public IEnumerator PlayExitRoutine()
+        public void Hide()
         {
-            if (_animator == null || string.IsNullOrEmpty("Hide"))
-            {
-                yield break;
-            }
+            if (_animator == null) { return; }
 
             _animator.Play("Hide", layer: 0, normalizedTime: 0f);
-            yield return null;
-            yield return new WaitUntil(ExitAnimationFinished);
         }
 
-        #endregion
-
-        #region ------------------ Private Methods ------------------
-
-        /// <summary>
-        /// 終了アニメーションが終了したか.
-        /// </summary>
-        /// <returns>終了アニメーションが終了したかどうか.</returns>
-        private bool ExitAnimationFinished()
+        public bool IsPlaying()
         {
             if (_animator == null)
             {
-                return true;
+                return false;
             }
 
             var state = _animator.GetCurrentAnimatorStateInfo(0);
-            return state.IsName("Hide") && state.normalizedTime >= 1f && !_animator.IsInTransition(0);
+            if (state.IsName("Hide"))
+            {
+                return state.normalizedTime < 1f || _animator.IsInTransition(0);
+            }
+
+            if (state.IsName("Show"))
+            {
+                return state.normalizedTime < 1f || _animator.IsInTransition(0);
+            }
+
+            return false;
         }
 
         #endregion

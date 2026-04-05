@@ -68,7 +68,7 @@ namespace CarTrickRush.UI.Settings
 
         private void Start()
         {
-            _presenterView?.PlayIntro();
+            _presenterView?.Show();
             StartCoroutine(InitializeSelectionCoroutine());
         }
 
@@ -124,7 +124,12 @@ namespace CarTrickRush.UI.Settings
         {
             if (_presenterView != null)
             {
-                yield return _presenterView.PlayExitRoutine();
+                _presenterView.Hide();
+                yield return null;
+                while (_presenterView.IsPlaying())
+                {
+                    yield return null;
+                }
             }
 
             SceneLoadManager.UnloadScene("SettingsScene");
