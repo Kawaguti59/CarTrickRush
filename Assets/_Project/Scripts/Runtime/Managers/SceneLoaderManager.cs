@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
+using CarTrickRush.UI.Common;
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -355,6 +357,11 @@ namespace CarTrickRush.Managers
             {
                 var eventSystem = systems[index];
                 if (eventSystem == null || eventSystem.gameObject.scene == overlayScene)
+                {
+                    continue;
+                }
+
+                if (eventSystem.GetComponent<PersistentEventSystem>() != null)
                 {
                     continue;
                 }
