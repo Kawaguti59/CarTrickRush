@@ -4,6 +4,8 @@ using UnityEngine;
 
 using TMPro;
 
+using CarTrickRush.Core.View;
+
 namespace CarTrickRush.UI
 {
     /// =========================================================================================
@@ -11,8 +13,7 @@ namespace CarTrickRush.UI
     /// トリックスコアの行表示.
     /// </summary>
     /// =========================================================================================
-    [RequireComponent(typeof(CanvasGroup))]
-    public sealed class TrickScoreRowView : MonoBehaviour
+    public sealed class TrickScoreRowView : MonoBehaviour, IView
     {
         #region ------------------ Fields ------------------
 
@@ -32,14 +33,19 @@ namespace CarTrickRush.UI
         [SerializeField] private TMP_Text _valueText = default;
 
         /// <summary>
-        /// CanvasGroup.
+        /// アニメーター.
         /// </summary>
-        [SerializeField] private CanvasGroup _canvasGroup = default;
+        [SerializeField] private Animator _animator = default;
 
         /// <summary>
         /// ライフサイクル用のコルーチン.
         /// </summary>
         private Coroutine _lifecycleRoutine = default;
+
+        /// <summary>
+        /// 表示が続く時間.
+        /// </summary>
+        private float _visibleDuration = default;
 
         /// <summary>
         /// レイアウトサイズの対象RectTransform.
@@ -62,6 +68,11 @@ namespace CarTrickRush.UI
 
         private void Awake()
         {
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+
             RebuildTargets();
         }
 
@@ -95,9 +106,27 @@ namespace CarTrickRush.UI
         }
 
         /// <summary>
-        /// 表示内容を設定し, 一定時間後にフェードアウトして破棄する.
+        /// 表示内容と表示時間を設定する.
         /// </summary>
-        public void Show(string displayName, int addValue, float visibleDuration, float fadeDuration)
+        /// <param name="displayName">表示名.</param>
+        /// <param name="addValue">加算値.</param>
+        /// <param name="visibleDuration">表示時間.</param>
+        public void Setup(string displayName, int addValue, float visibleDuration)
+        {
+            _nameText.text = displayName;
+            _valueText.text = $"+{Mathf.Max(0, addValue):N0}";
+            _visibleDuration = visibleDuration;
+        }
+
+        #endregion
+
+        #region ------------------ Interface Methods ------------------
+
+        public void Initialize()
+        {
+        }
+
+        public void Show()
         {
             if (_lifecycleRoutine != null)
             {
@@ -105,14 +134,30 @@ namespace CarTrickRush.UI
                 _lifecycleRoutine = null;
             }
 
-            _nameText.text = displayName;
-            _valueText.text = $"+{Mathf.Max(0, addValue):N0}";
+            if (_animator != null)
+            {
+                _animator.Play("Show", layer: 0, normalizedTime: 0f);
+            }
 
-            _canvasGroup.alpha = 1f;
-            _canvasGroup.blocksRaycasts = false;
-            _canvasGroup.interactable = false;
+            _lifecycleRoutine = StartCoroutine(LifecycleRoutine());
+        }
 
-            _lifecycleRoutine = StartCoroutine(LifecycleRoutine(visibleDuration, fadeDuration));
+        public void Hide()
+        {
+            if (_animator == null) { return; }
+
+            _animator.Play("Hide", layer: 0, normalizedTime: 0f);
+        }
+
+        public bool IsPlaying()
+        {
+            if (_animator == null)
+            {
+                return false;
+            }
+
+            var state = _animator.GetCurrentAnimatorStateInfo(0);
+            return state.normalizedTime < 1f || _animator.IsInTransition(0);
         }
 
         #endregion
@@ -163,26 +208,24 @@ namespace CarTrickRush.UI
         /// <summary>
         /// ライフサイクル用のコルーチン.
         /// </summary>
-        /// <param name="visibleDuration">表示時間.</param>
-        /// <param name="fadeDuration">フェード時間.</param>
         /// <returns>コルーチン.</returns>
-        private IEnumerator LifecycleRoutine(float visibleDuration, float fadeDuration)
+        private IEnumerator LifecycleRoutine()
         {
-            if (visibleDuration > 0f)
+            if (_visibleDuration > 0f)
             {
-                yield return new WaitForSeconds(visibleDuration);
+                yield return new WaitForSeconds(_visibleDuration);
             }
 
-            fadeDuration = Mathf.Max(0.01f, fadeDuration);
-            var elapsed = 0f;
-            while (elapsed < fadeDuration)
+            if (_animator != null)
             {
-                elapsed += Time.deltaTime;
-                _canvasGroup.alpha = 1f - Mathf.Clamp01(elapsed / fadeDuration);
+                Hide();
                 yield return null;
+                while (IsPlaying())
+                {
+                    yield return null;
+                }
             }
 
-            _canvasGroup.alpha = 0f;
             Destroy(gameObject);
         }
 

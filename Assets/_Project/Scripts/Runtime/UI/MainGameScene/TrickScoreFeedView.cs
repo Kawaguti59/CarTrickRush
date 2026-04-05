@@ -42,11 +42,6 @@ namespace CarTrickRush.UI
         [SerializeField] private float _visibleDuration = 2f;
 
         /// <summary>
-        /// フェード時間.
-        /// </summary>
-        [SerializeField] private float _fadeDuration = 0.35f;
-
-        /// <summary>
         /// 前の行に適用する幅・高さの倍率.
         /// </summary>
         [SerializeField] private float _previousSetRowFactor = 0.8f;
@@ -86,7 +81,8 @@ namespace CarTrickRush.UI
 
             var row = Instantiate(prefab, _rowParent);
             row.transform.SetAsFirstSibling();
-            row.Show(displayName, addValue, _visibleDuration, _fadeDuration);
+            row.Setup(displayName, addValue, _visibleDuration);
+            row.Show();
 
             _setRowCount++;
 
@@ -99,31 +95,6 @@ namespace CarTrickRush.UI
                 _setRowCount = 0;
             }
         }
-
-        #endregion
-
-        #region ------------------ Editor / Debug ------------------
-
-#if UNITY_EDITOR
-        [ContextMenu("Debug/Push Sample Normal")]
-        private void DebugPushSampleNormal()
-        {
-            Push("Sample", 100, TrickScoreRowKind.Normal, endGroup: true);
-        }
-
-        [ContextMenu("Debug/Push Sample Bonus")]
-        private void DebugPushSampleBonus()
-        {
-            Push("Bonus", 500, TrickScoreRowKind.Bonus, endGroup: true);
-        }
-
-        [ContextMenu("Debug/Push Sample Set (2 rows)")]
-        private void DebugPushSampleSet()
-        {
-            Push("Row A", 10, TrickScoreRowKind.Normal, endGroup: false);
-            Push("Row B", 90, TrickScoreRowKind.Bonus, endGroup: true);
-        }
-#endif
 
         #endregion
 
