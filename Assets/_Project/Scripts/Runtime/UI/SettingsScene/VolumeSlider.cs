@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 using CarTrickRush.Core;
@@ -32,6 +33,16 @@ namespace CarTrickRush.UI.Settings
         /// </summary>
         [SerializeField] private Image _highlightImage = default;
 
+        /// <summary>
+        /// 連続調整の単位.
+        /// </summary>
+        [SerializeField] private float _holdAdjustUnitsPerSecond = 100f;
+
+        /// <summary>
+        /// 左スティックの無効ゾーン（これ未満は無視）.
+        /// </summary>
+        [SerializeField] [Range(0f, 1f)] private float _gamepadStickDeadzone = 0.35f;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -61,6 +72,11 @@ namespace CarTrickRush.UI.Settings
             RefreshHighlightImage();
         }
 
+        private void Update()
+        {
+            ApplyHoldAdjustIfSelected();
+        }
+
         private void LateUpdate()
         {
             if (_slider == null) { return; }
@@ -87,12 +103,106 @@ namespace CarTrickRush.UI.Settings
             var audio = ManagerLocator.AudioManager;
             if (audio == null) { return; }
 
-            audio.SetVolume(_volumeKind, Mathf.Clamp01(value / 100f));
+            var stepped = Mathf.Round(value);
+            audio.SetVolume(_volumeKind, Mathf.Clamp01(stepped / 100f));
         }
 
         #endregion
 
         #region ------------------ Private Methods ------------------
+
+        /// <summary>
+        /// フォーカス中に矢印／A・D／パッドで押しっぱなし連続変化.
+        /// </summary>
+        private void ApplyHoldAdjustIfSelected()
+        {
+            if (_slider == null || !_slider.interactable || !_slider.IsActive()) { return; }
+
+            if (!IsSliderSelectionFocused()) { return; }
+
+            var axis = ReadHorizontalAdjustInput();
+            if (Mathf.Approximately(axis, 0f)) { return; }
+
+            var sign = SliderHorizontalDirectionSign(_slider);
+            var delta = axis * sign * Mathf.Max(0f, _holdAdjustUnitsPerSecond) * Time.unscaledDeltaTime;
+            var next = Mathf.Clamp(_slider.value + delta, _slider.minValue, _slider.maxValue);
+            _slider.value = next;
+        }
+
+        private bool IsSliderSelectionFocused()
+        {
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+            {
+                return false;
+            }
+
+            var current = eventSystem.currentSelectedGameObject;
+            if (current == null)
+            {
+                return false;
+            }
+
+            if (current == _slider.gameObject)
+            {
+                return true;
+            }
+
+            var root = current.GetComponentInParent<Slider>();
+            return root == _slider;
+        }
+
+        private static float SliderHorizontalDirectionSign(Slider slider)
+        {
+            var reverse = slider.direction == Slider.Direction.RightToLeft
+                || slider.direction == Slider.Direction.TopToBottom;
+            return reverse ? -1f : 1f;
+        }
+
+        private float ReadHorizontalAdjustInput()
+        {
+            var pad = Gamepad.current;
+            if (pad != null)
+            {
+                if (pad.dpad.left.isPressed && !pad.dpad.right.isPressed)
+                {
+                    return -1f;
+                }
+
+                if (pad.dpad.right.isPressed && !pad.dpad.left.isPressed)
+                {
+                    return 1f;
+                }
+            }
+
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
+            {
+                var left = keyboard.leftArrowKey.isPressed || keyboard.aKey.isPressed;
+                var right = keyboard.rightArrowKey.isPressed || keyboard.dKey.isPressed;
+                if (left && !right)
+                {
+                    return -1f;
+                }
+
+                if (right && !left)
+                {
+                    return 1f;
+                }
+            }
+
+            if (pad != null)
+            {
+                var x = pad.leftStick.x.ReadValue();
+                var dead = Mathf.Clamp01(_gamepadStickDeadzone);
+                if (Mathf.Abs(x) > dead)
+                {
+                    return Mathf.Clamp(x, -1f, 1f);
+                }
+            }
+
+            return 0f;
+        }
 
         /// <summary>
         /// AudioManager の音量を Slider に同期する.
