@@ -1028,9 +1028,9 @@ MonoBehaviour:
   _volumeSliders:
     _pairs:
     - _key: 1
-      _value: {fileID: 2030912566}
-    - _key: 2
       _value: {fileID: 1838641551}
+    - _key: 2
+      _value: {fileID: 2030912566}
     - _key: 3
       _value: {fileID: 1771339115}
   _closeButton: {fileID: 1968621092}
