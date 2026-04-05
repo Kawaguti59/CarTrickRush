@@ -86,7 +86,9 @@
 
 ### 動画
 
-<video src="./demo/demovideo1.mp4" controls playsinline width="100%"></video>
+![デモ動画 1](./demo/demovideo1.gif)
+
+![デモ動画 2](./demo/demovideo2.gif)
 
 ---
 
