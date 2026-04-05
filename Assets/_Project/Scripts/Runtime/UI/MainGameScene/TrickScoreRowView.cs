@@ -145,19 +145,13 @@ namespace CarTrickRush.UI
         public void Hide()
         {
             if (_animator == null) { return; }
-
             _animator.Play("Hide", layer: 0, normalizedTime: 0f);
         }
 
         public bool IsPlaying()
         {
-            if (_animator == null)
-            {
-                return false;
-            }
-
-            var state = _animator.GetCurrentAnimatorStateInfo(0);
-            return state.normalizedTime < 1f || _animator.IsInTransition(0);
+            if (_animator == null) { return false; }
+            return _animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
         }
 
         #endregion

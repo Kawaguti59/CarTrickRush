@@ -42,29 +42,13 @@ namespace CarTrickRush.UI.Settings
         public void Hide()
         {
             if (_animator == null) { return; }
-
             _animator.Play("Hide", layer: 0, normalizedTime: 0f);
         }
 
         public bool IsPlaying()
         {
-            if (_animator == null)
-            {
-                return false;
-            }
-
-            var state = _animator.GetCurrentAnimatorStateInfo(0);
-            if (state.IsName("Hide"))
-            {
-                return state.normalizedTime < 1f || _animator.IsInTransition(0);
-            }
-
-            if (state.IsName("Show"))
-            {
-                return state.normalizedTime < 1f || _animator.IsInTransition(0);
-            }
-
-            return false;
+            if (_animator == null) { return false; }
+            return _animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
         }
 
         #endregion
