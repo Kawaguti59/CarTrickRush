@@ -140,6 +140,4 @@
 
 ## ライセンス・使用素材
 
-- **BGM / SE**: [魔王魂](https://maou.audio/), [OtoLogic](https://otologic.jp), [効果音ラボ](https://soundeffect-lab.info), [Springin' Sound Stock](https://www.springin.org/sound-stock/)  
-
-（サードパーティアセットのライセンスは各フォルダの表記に従ってください。）
+- **BGM / SE**: [魔王魂](https://maou.audio/), [OtoLogic](https://otologic.jp), [効果音ラボ](https://soundeffect-lab.info)
