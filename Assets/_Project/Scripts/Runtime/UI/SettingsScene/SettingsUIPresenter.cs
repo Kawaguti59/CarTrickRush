@@ -52,6 +52,11 @@ namespace CarTrickRush.UI.Settings
         private Selectable _currentSelectable = default;
 
         /// <summary>
+        /// 意図した UI から外れた検知時刻.
+        /// </summary>
+        private float _lostOwnedFocusSinceUnscaled = -1f;
+
+        /// <summary>
         /// 所有している Selectable.
         /// </summary>
         private readonly List<Selectable> _ownedSelectables = new();
@@ -84,15 +89,23 @@ namespace CarTrickRush.UI.Settings
             var selectedGameObject = eventSystem.currentSelectedGameObject;
             if (TryResolveOwnedSelectable(selectedGameObject, out var owned))
             {
+                _lostOwnedFocusSinceUnscaled = -1f;
                 _currentSelectable = owned;
                 return;
             }
 
-            // 選択を失った場合は再選択
+            // 選択を失った場合は再選択.
             if (_currentSelectable != null
                 && selectedGameObject != _currentSelectable.gameObject)
             {
-                eventSystem.SetSelectedGameObject(_currentSelectable.gameObject);
+                if (UISelectionDelay.ShouldRestoreNow(ref _lostOwnedFocusSinceUnscaled, hasValidFocus: false))
+                {
+                    eventSystem.SetSelectedGameObject(_currentSelectable.gameObject);
+                }
+            }
+            else
+            {
+                _lostOwnedFocusSinceUnscaled = -1f;
             }
         }
 

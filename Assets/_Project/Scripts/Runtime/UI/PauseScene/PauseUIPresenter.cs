@@ -35,6 +35,11 @@ namespace CarTrickRush.UI.Pause
         private Button _currentButton = default;
 
         /// <summary>
+        /// 選択が外れた検知時刻.
+        /// </summary>
+        private float _lostFocusSinceUnscaled = -1f;
+
+        /// <summary>
         /// オーバーレイ表示前の timeScale.
         /// </summary>
         private float _timeScaleBeforePause = 1f;
@@ -105,6 +110,7 @@ namespace CarTrickRush.UI.Pause
 
                 if (selectedGameObject == button.gameObject)
                 {
+                    _lostFocusSinceUnscaled = -1f;
                     _currentButton = button;
                     return;
                 }
@@ -112,7 +118,14 @@ namespace CarTrickRush.UI.Pause
 
             if (selectedGameObject == null && _currentButton != null)
             {
-                eventSystem.SetSelectedGameObject(_currentButton.gameObject);
+                if (UISelectionDelay.ShouldRestoreNow(ref _lostFocusSinceUnscaled, hasValidFocus: false))
+                {
+                    eventSystem.SetSelectedGameObject(_currentButton.gameObject);
+                }
+            }
+            else if (selectedGameObject != null)
+            {
+                _lostFocusSinceUnscaled = -1f;
             }
         }
 

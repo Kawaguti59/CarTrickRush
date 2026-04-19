@@ -8,6 +8,7 @@ using TMPro;
 
 using CarTrickRush.Data;
 using CarTrickRush.Managers;
+using CarTrickRush.UI.Common;
 
 namespace CarTrickRush.UI.Result
 {
@@ -80,6 +81,11 @@ namespace CarTrickRush.UI.Result
         /// </summary>
         private Button _currentButton = default;
 
+        /// <summary>
+        /// 選択が外れた検知時刻.
+        /// </summary>
+        private float _lostFocusSinceUnscaled = -1f;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -117,19 +123,28 @@ namespace CarTrickRush.UI.Result
             var selectedGameObject = eventSystem.currentSelectedGameObject;
             if (selectedGameObject == _retryButton.gameObject)
             {
+                _lostFocusSinceUnscaled = -1f;
                 _currentButton = _retryButton;
                 return;
             }
 
             if (selectedGameObject == _backToTitleButton.gameObject)
             {
+                _lostFocusSinceUnscaled = -1f;
                 _currentButton = _backToTitleButton;
                 return;
             }
 
             if (selectedGameObject == null && _currentButton != null)
             {
-                eventSystem.SetSelectedGameObject(_currentButton.gameObject);
+                if (UISelectionDelay.ShouldRestoreNow(ref _lostFocusSinceUnscaled, hasValidFocus: false))
+                {
+                    eventSystem.SetSelectedGameObject(_currentButton.gameObject);
+                }
+            }
+            else if (selectedGameObject != null)
+            {
+                _lostFocusSinceUnscaled = -1f;
             }
         }
 

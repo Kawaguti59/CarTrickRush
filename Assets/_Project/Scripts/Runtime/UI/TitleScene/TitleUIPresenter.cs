@@ -33,6 +33,11 @@ namespace CarTrickRush.UI.Title
         /// </summary>
         private Button _currentButton = default;
 
+        /// <summary>
+        /// 選択が外れた検知時刻.
+        /// </summary>
+        private float _lostFocusSinceUnscaled = -1f;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -79,14 +84,17 @@ namespace CarTrickRush.UI.Title
             {
                 // ゲーム開始ボタン.
                 case GameObject gameObject when gameObject == _selectableButtons[0].gameObject:
+                    _lostFocusSinceUnscaled = -1f;
                     _currentButton = _selectableButtons[0];
                     return;
                 // 設定ボタン.
                 case GameObject gameObject when gameObject == _selectableButtons[1].gameObject:
+                    _lostFocusSinceUnscaled = -1f;
                     _currentButton = _selectableButtons[1];
                     return;
                 // 終了ボタン.
                 case GameObject gameObject when gameObject == _selectableButtons[2].gameObject:
+                    _lostFocusSinceUnscaled = -1f;
                     _currentButton = _selectableButtons[2];
                     return;
             }
@@ -94,7 +102,14 @@ namespace CarTrickRush.UI.Title
             // 選択解除時は現在のボタンを選択する.
             if (selectedGameObject == null && _currentButton != null)
             {
-                eventSystem.SetSelectedGameObject(_currentButton.gameObject);
+                if (UISelectionDelay.ShouldRestoreNow(ref _lostFocusSinceUnscaled, hasValidFocus: false))
+                {
+                    eventSystem.SetSelectedGameObject(_currentButton.gameObject);
+                }
+            }
+            else if (selectedGameObject != null)
+            {
+                _lostFocusSinceUnscaled = -1f;
             }
         }
 
