@@ -99,12 +99,6 @@
 1. [Car Trick Rush（Unity Room）](https://unityroom.com/games/car-trick-rush) を開き、ページの手順でプレイしてください。  
 2. WebGL が動作するデスクトップブラウザ（Chrome / Edge / Firefox など）を推奨します。  
 
-### Unity エディタ
-
-1. リポジトリを Clone または ZIP で取得してください。  
-2. **Unity 6（6000.3 系）** をインストールし、本フォルダをプロジェクトとして開いてください。  
-3. **`BootScene`**（開発用は **`BootSceneDebug`**）から再生し、ゲームを開始できます。  
-
 ---
 
 ## 動作環境
