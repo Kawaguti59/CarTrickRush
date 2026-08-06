@@ -77,3 +77,4 @@ crashlytics-build.properties
 # Editor local config (not shared via repo)
 .cursor/
 .vscode/
+Assets/ThirdParty/
