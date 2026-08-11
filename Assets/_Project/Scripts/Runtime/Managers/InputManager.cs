@@ -15,21 +15,33 @@ namespace CarTrickRush.Managers
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// CarTrickRushInputActions の Player マップ（バインド中のみ）.
+        /// CarTrickRushInputActions の Player マップ.
         /// </summary>
         private InputActionMap _playerMap = default;
 
         /// <summary>
-        /// Player/Pause（購読中のみ）.
+        /// Player/Pause.
         /// </summary>
         private InputAction _playerPauseAction = default;
 
         /// <summary>
-        /// Player の回転アクション（購読中のみ）.
+        /// Player/RotateRight.
         /// </summary>
         private InputAction _rotateRightAction = default;
+
+        /// <summary>
+        /// Player/RotateLeft.
+        /// </summary>
         private InputAction _rotateLeftAction = default;
+
+        /// <summary>
+        /// Player/RotateUp.
+        /// </summary>
         private InputAction _rotateUpAction = default;
+
+        /// <summary>
+        /// Player/RotateDown.
+        /// </summary>
         private InputAction _rotateDownAction = default;
 
         /// <summary>
