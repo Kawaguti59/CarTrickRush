@@ -47,6 +47,14 @@ namespace CarTrickRush.Runtime.Core.VContainer
 
             builder.RegisterBuildCallback(resolver =>
             {
+                resolver.Resolve<AudioManager>();
+                resolver.Resolve<GameManager>();
+                resolver.Resolve<SceneLoadManager>();
+                resolver.Resolve<InputManager>();
+                resolver.Resolve<TimeManager>();
+                resolver.Resolve<SaveManager>();
+                resolver.Resolve<ScoreManager>();
+
                 foreach (Transform child in transform)
                 {
                     resolver.InjectGameObject(child.gameObject);
