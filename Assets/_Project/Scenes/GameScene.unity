@@ -5051,9 +5051,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 880002000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ece920cccc8385743bf030905cbc6b03, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c4e9a2b1d8f5634e0b2a7c9d1e4f6a8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Runtime.Core.VContainer.CommonLifetimeScope
+  m_EditorClassIdentifier: Assembly-CSharp::CarTrickRush.Runtime.Core.VContainer.GameLifetimeScope
   parentReference:
     TypeName: CarTrickRush.Runtime.Core.VContainer.RootLifetimeScope
   autoRun: 1
