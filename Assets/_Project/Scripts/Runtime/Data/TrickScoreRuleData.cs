@@ -15,12 +15,12 @@ namespace CarTrickRush.Data
         /// <summary>
         /// ルール名.
         /// </summary>
-        [SerializeField] private string _ruleName;
+        [SerializeField] private string _ruleName = default;
 
         /// <summary>
         /// スコア値.
         /// </summary>
-        [SerializeField] private int _score;
+        [SerializeField] private int _score = default;
 
         #endregion
 

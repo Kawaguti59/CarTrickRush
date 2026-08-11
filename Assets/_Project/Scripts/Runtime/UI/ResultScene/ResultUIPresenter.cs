@@ -2,7 +2,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using System.Collections;
+using System.Threading;
+
+using Cysharp.Threading.Tasks;
 
 using TMPro;
 
@@ -109,7 +111,7 @@ namespace CarTrickRush.UI.Result
 
         private void Start()
         {
-            StartCoroutine(InitializeCoroutine());
+            InitializeAsync(destroyCancellationToken).Forget();
         }
 
         private void LateUpdate()
@@ -155,34 +157,47 @@ namespace CarTrickRush.UI.Result
         /// <summary>
         /// イントロがあれば終了まで待ち、操作可能にして初期フォーカスを当てる.
         /// </summary>
-        private IEnumerator InitializeCoroutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid InitializeAsync(CancellationToken cancellationToken)
         {
             if (_resultUIPresenterView != null)
             {
                 _resultUIPresenterView.Show();
-                yield return null;
-                while (_resultUIPresenterView.IsPlaying())
-                {
-                    yield return null;
-                }
+                await UniTask.Yield(cancellationToken);
+                await WaitWhileViewPlaying(_resultUIPresenterView, cancellationToken);
             }
 
-            yield return StartCoroutine(SetupButtonCoroutine());
+            await SetupButtonAsync(cancellationToken);
         }
 
         /// <summary>
         /// ボタンの初期設定を行う.
         /// </summary>
-        private IEnumerator SetupButtonCoroutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTask SetupButtonAsync(CancellationToken cancellationToken)
         {
             SetInteractionsEnabled(true);
-            yield return null;
+            await UniTask.Yield(cancellationToken);
 
             var eventSystem = EventSystem.current;
-            if (eventSystem == null || _initialSelectedButton == null) { yield break; }
+            if (eventSystem == null || _initialSelectedButton == null) { return; }
 
             eventSystem.SetSelectedGameObject(_initialSelectedButton.gameObject);
             _currentButton = _initialSelectedButton;
+        }
+
+        /// <summary>
+        /// View のアニメーション終了を待つ.
+        /// </summary>
+        /// <param name="view">対象 View.</param>
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private static async UniTask WaitWhileViewPlaying(ResultUIPresenterView view, CancellationToken cancellationToken)
+        {
+            while (view.IsPlaying())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await UniTask.Yield(cancellationToken);
+            }
         }
 
         /// <summary>

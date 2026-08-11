@@ -1,7 +1,8 @@
 using UnityEngine;
 using Unity.Cinemachine;
 
-using System.Collections;
+using Cysharp.Threading.Tasks;
+using R3;
 
 using CarTrickRush.Characters.Player;
 using CarTrickRush.Core;
@@ -54,6 +55,11 @@ namespace CarTrickRush.GameScene
         /// ポーズオーバーレイシーン名.
         /// </summary>
         private string _pauseOverlaySceneName = "PauseScene";
+
+        /// <summary>
+        /// 入力購読の破棄管理.
+        /// </summary>
+        private CompositeDisposable _inputSubscriptions = default;
         #endregion
 
         #region ------------------ Properties ------------------
@@ -88,18 +94,19 @@ namespace CarTrickRush.GameScene
 
         private void OnEnable()
         {
-            if (ManagerLocator.InputManager != null)
-            {
-                ManagerLocator.InputManager.PausePerformed += HandlePausePerformed;
-            }
+            _inputSubscriptions?.Dispose();
+            _inputSubscriptions = new CompositeDisposable();
+
+            var inputManager = ManagerLocator.InputManager;
+            if (inputManager == null) { return; }
+
+            inputManager.PausePerformed.Subscribe(_ => HandlePausePerformed()).AddTo(_inputSubscriptions);
         }
 
         private void OnDisable()
         {
-            if (ManagerLocator.InputManager != null)
-            {
-                ManagerLocator.InputManager.PausePerformed -= HandlePausePerformed;
-            }
+            _inputSubscriptions?.Dispose();
+            _inputSubscriptions = null;
         }
 
         private void Start()
@@ -144,7 +151,7 @@ namespace CarTrickRush.GameScene
         {
             if (_isGoalSequenceRunning) { return; }
 
-            StartCoroutine(GoalSequenceCoroutine());
+            GoalSequenceAsync(destroyCancellationToken).Forget();
         }
 
         #endregion
@@ -168,8 +175,8 @@ namespace CarTrickRush.GameScene
         /// <summary>
         /// ゴール演出シーケンス.
         /// </summary>
-        /// <returns>コルーチン.</returns>
-        private IEnumerator GoalSequenceCoroutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid GoalSequenceAsync(System.Threading.CancellationToken cancellationToken)
         {
             // ゴール演出実行中フラグを設定する.
             _isGoalSequenceRunning = true;
@@ -185,7 +192,9 @@ namespace CarTrickRush.GameScene
             BuildResultData();
 
             // リザルトオーバーレイシーンを読み込む.
-            yield return new WaitForSeconds(_resultOverlayDelay);
+            await UniTask.Delay(
+                System.TimeSpan.FromSeconds(_resultOverlayDelay),
+                cancellationToken: cancellationToken);
             SceneLoadManager.LoadSceneAdditive(_resultOverlaySceneName);
 
             // ゴール演出実行中フラグを解除する.

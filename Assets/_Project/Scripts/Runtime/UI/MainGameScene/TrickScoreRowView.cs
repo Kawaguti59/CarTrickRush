@@ -1,4 +1,6 @@
-using System.Collections;
+using System.Threading;
+
+using Cysharp.Threading.Tasks;
 
 using UnityEngine;
 
@@ -38,9 +40,9 @@ namespace CarTrickRush.UI
         [SerializeField] private Animator _animator = default;
 
         /// <summary>
-        /// ライフサイクル用のコルーチン.
+        /// ライフサイクル用のキャンセル制御.
         /// </summary>
-        private Coroutine _lifecycleRoutine = default;
+        private CancellationTokenSource _lifecycleCancellation = default;
 
         /// <summary>
         /// 表示が続く時間.
@@ -74,6 +76,11 @@ namespace CarTrickRush.UI
             }
 
             RebuildTargets();
+        }
+
+        private void OnDestroy()
+        {
+            StopLifecycle();
         }
 
         #endregion
@@ -128,18 +135,15 @@ namespace CarTrickRush.UI
 
         public void Show()
         {
-            if (_lifecycleRoutine != null)
-            {
-                StopCoroutine(_lifecycleRoutine);
-                _lifecycleRoutine = null;
-            }
+            StopLifecycle();
 
             if (_animator != null)
             {
                 _animator.Play("Show", layer: 0, normalizedTime: 0f);
             }
 
-            _lifecycleRoutine = StartCoroutine(LifecycleRoutine());
+            _lifecycleCancellation = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+            LifecycleAsync(_lifecycleCancellation.Token).Forget();
         }
 
         public void Hide()
@@ -200,27 +204,42 @@ namespace CarTrickRush.UI
         }
 
         /// <summary>
-        /// ライフサイクル用のコルーチン.
+        /// ライフサイクル処理.
         /// </summary>
-        /// <returns>コルーチン.</returns>
-        private IEnumerator LifecycleRoutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid LifecycleAsync(CancellationToken cancellationToken)
         {
             if (_visibleDuration > 0f)
             {
-                yield return new WaitForSeconds(_visibleDuration);
+                await UniTask.Delay(
+                    System.TimeSpan.FromSeconds(_visibleDuration),
+                    cancellationToken: cancellationToken);
             }
 
             if (_animator != null)
             {
                 Hide();
-                yield return null;
+                await UniTask.Yield(cancellationToken);
                 while (IsPlaying())
                 {
-                    yield return null;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await UniTask.Yield(cancellationToken);
                 }
             }
 
             Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// ライフサイクル処理を停止する.
+        /// </summary>
+        private void StopLifecycle()
+        {
+            if (_lifecycleCancellation == null) { return; }
+
+            _lifecycleCancellation.Cancel();
+            _lifecycleCancellation.Dispose();
+            _lifecycleCancellation = null;
         }
 
         #endregion

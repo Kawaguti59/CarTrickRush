@@ -19,12 +19,12 @@ namespace CarTrickRush.Data
         /// <summary>
         /// トリックボーナス名.
         /// </summary>
-        [SerializeField] private string _bonusName;
+        [SerializeField] private string _bonusName = default;
 
         /// <summary>
         /// トリックボーナススコア.
         /// </summary>
-        [SerializeField] private int _score;
+        [SerializeField] private int _score = default;
 
         /// <summary>
         /// トリックボーナス入力シーケンス.
