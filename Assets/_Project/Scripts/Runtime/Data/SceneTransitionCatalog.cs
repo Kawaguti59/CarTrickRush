@@ -18,17 +18,17 @@ namespace CarTrickRush.Data
         /// <summary>
         /// セットID.
         /// </summary>
-        [SerializeField] private int _id;
+        [SerializeField] private int _id = default;
 
         /// <summary>
         /// フェードアウト用マスク.
         /// </summary>
-        [SerializeField] private Texture2D _fadeOutMask;
+        [SerializeField] private Texture2D _fadeOutMask = default;
 
         /// <summary>
         /// フェードイン用マスク.
         /// </summary>
-        [SerializeField] private Texture2D _fadeInMask;
+        [SerializeField] private Texture2D _fadeInMask = default;
 
         /// <summary>
         /// 覆う時間（秒）.
