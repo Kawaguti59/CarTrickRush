@@ -1,6 +1,6 @@
 using UnityEngine;
 
-using System;
+using R3;
 
 using CarTrickRush.Core;
 using CarTrickRush.Data;
@@ -21,6 +21,11 @@ namespace CarTrickRush.Managers
         /// </summary>
         private GameSessionData _gameSessionData = default;
 
+        /// <summary>
+        /// 現在のスコア.
+        /// </summary>
+        private readonly ReactiveProperty<int> _score = new(0);
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -28,16 +33,12 @@ namespace CarTrickRush.Managers
         /// <summary>
         /// 現在のスコア.
         /// </summary>
-        public int CurrentScore => _gameSessionData?.CurrentScore ?? 0;
-
-        #endregion
-
-        #region ------------------ Events ------------------
+        public int CurrentScore => _score.CurrentValue;
 
         /// <summary>
-        /// スコア変更時イベント.
+        /// スコア変更通知.
         /// </summary>
-        public event Action<int> ScoreChanged;
+        public ReadOnlyReactiveProperty<int> Score => _score;
 
         #endregion
 
@@ -48,6 +49,12 @@ namespace CarTrickRush.Managers
             ManagerLocator.Register(this);
             _gameSessionData = new GameSessionData();
             _gameSessionData.Reset();
+            _score.Value = _gameSessionData.CurrentScore;
+        }
+
+        private void OnDestroy()
+        {
+            _score.Dispose();
         }
 
         #endregion
@@ -62,7 +69,7 @@ namespace CarTrickRush.Managers
             if (_gameSessionData == null) { return; }
 
             _gameSessionData.SetScore(0);
-            ScoreChanged?.Invoke(_gameSessionData.CurrentScore);
+            _score.Value = _gameSessionData.CurrentScore;
         }
 
         /// <summary>
@@ -75,8 +82,7 @@ namespace CarTrickRush.Managers
 
             var nextScore = _gameSessionData.CurrentScore + Mathf.Max(0, value);
             _gameSessionData.SetScore(nextScore);
-
-            ScoreChanged?.Invoke(_gameSessionData.CurrentScore);
+            _score.Value = _gameSessionData.CurrentScore;
         }
 
         /// <summary>

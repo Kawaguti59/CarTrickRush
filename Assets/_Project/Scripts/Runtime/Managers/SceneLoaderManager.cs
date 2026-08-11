@@ -4,8 +4,10 @@ using UnityEngine.EventSystems;
 
 using CarTrickRush.UI.Common;
 
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+
+using Cysharp.Threading.Tasks;
 
 using CarTrickRush.Core;
 using CarTrickRush.Data;
@@ -164,7 +166,7 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            Instance.StartCoroutine(Instance.LoadSceneWithRuleFadeRoutine(sceneName, entry));
+            Instance.LoadSceneWithRuleFadeAsync(sceneName, entry, Instance.destroyCancellationToken).Forget();
         }
 
         /// <summary>
@@ -191,7 +193,7 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            Instance.StartCoroutine(Instance.LoadSceneAdditiveCoroutine(sceneName, blockUnderlyingInput));
+            Instance.LoadSceneAdditiveAsync(sceneName, blockUnderlyingInput, Instance.destroyCancellationToken).Forget();
         }
 
         /// <summary>
@@ -214,7 +216,7 @@ namespace CarTrickRush.Managers
 
             if (!IsSceneLoaded(sceneName)) { return; }
 
-            Instance.StartCoroutine(Instance.UnloadSceneCoroutine(sceneName));
+            Instance.UnloadSceneAsync(sceneName, Instance.destroyCancellationToken).Forget();
         }
 
         /// <summary>
@@ -270,8 +272,11 @@ namespace CarTrickRush.Managers
         /// </summary>
         /// <param name="sceneName">遷移先シーン名.</param>
         /// <param name="entry">カタログエントリ.</param>
-        /// <returns>コルーチン.</returns>
-        private IEnumerator LoadSceneWithRuleFadeRoutine(string sceneName, SceneTransitionSetEntry entry)
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid LoadSceneWithRuleFadeAsync(
+            string sceneName,
+            SceneTransitionSetEntry entry,
+            CancellationToken cancellationToken)
         {
             _singleLoadTransitionRunning = true;
             ClearAdditiveOverlayStateForSingleLoad();
@@ -283,78 +288,77 @@ namespace CarTrickRush.Managers
                 Debug.LogError("SceneLoadManager: ルールフェード用シェーダーが無効のため即時遷移します.");
                 SceneManager.LoadScene(sceneName);
                 _singleLoadTransitionRunning = false;
-                yield break;
+                return;
             }
 
             overlay.Configure(entry.FadeOutMask, entry.Softness);
             overlay.SetProgress(0f);
             overlay.Show();
 
-            yield return overlay.AnimateProgress(0f, 1f, entry.CoverDuration);
+            await overlay.AnimateProgressAsync(0f, 1f, entry.CoverDuration, cancellationToken);
 
             var holdBeforeLoad = Mathf.Max(0f, _minFullBlackHoldDuration);
             if (holdBeforeLoad > 0f)
             {
-                yield return new WaitForSecondsRealtime(holdBeforeLoad);
+                await UniTask.Delay(
+                    System.TimeSpan.FromSeconds(holdBeforeLoad),
+                    ignoreTimeScale: true,
+                    cancellationToken: cancellationToken);
             }
 
             var asyncOperation = SceneManager.LoadSceneAsync(sceneName);
             if (asyncOperation == null)
             {
-                Debug.LogError($"SceneLoadManager.LoadSceneWithRuleFadeRoutine failed. sceneName:{sceneName}");
+                Debug.LogError($"SceneLoadManager.LoadSceneWithRuleFadeAsync failed. sceneName:{sceneName}");
                 overlay.Hide();
                 _singleLoadTransitionRunning = false;
-                yield break;
+                return;
             }
 
-            while (asyncOperation.isDone == false)
-            {
-                yield return null;
-            }
-
-            yield return null;
+            await WaitForAsyncOperation(asyncOperation, cancellationToken);
+            await UniTask.Yield(cancellationToken);
 
             overlay.Configure(entry.FadeInMask, entry.Softness);
             overlay.SetProgress(1f);
-            yield return overlay.AnimateProgress(1f, 0f, entry.RevealDuration);
+            await overlay.AnimateProgressAsync(1f, 0f, entry.RevealDuration, cancellationToken);
             overlay.Hide();
 
             _singleLoadTransitionRunning = false;
         }
 
         /// <summary>
-        /// 加算読み込みコルーチン.
+        /// 加算読み込み.
         /// </summary>
         /// <param name="sceneName">読み込むシーン名.</param>
         /// <param name="blockUnderlyingInput">元シーンの操作を無効にするか.</param>
-        /// <returns>コルーチン.</returns>
-        private IEnumerator LoadSceneAdditiveCoroutine(string sceneName, bool blockUnderlyingInput)
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid LoadSceneAdditiveAsync(
+            string sceneName,
+            bool blockUnderlyingInput,
+            CancellationToken cancellationToken)
         {
             var asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
             if (asyncOperation == null)
             {
-                Debug.LogError($"SceneLoadManager.LoadSceneAdditiveCoroutine failed. sceneName:{sceneName}");
-                yield break;
+                Debug.LogError($"SceneLoadManager.LoadSceneAdditiveAsync failed. sceneName:{sceneName}");
+                return;
             }
 
-            while (!asyncOperation.isDone)
-            {
-                yield return null;
-            }
+            await WaitForAsyncOperation(asyncOperation, cancellationToken);
 
             if (!blockUnderlyingInput)
             {
                 _disabledEventSystemLayers.Push(new List<EventSystem>());
                 _inputGateLayers.Push(false);
-                yield break;
+                return;
             }
 
             var overlayScene = SceneManager.GetSceneByName(sceneName);
             if (!overlayScene.IsValid())
             {
-                Debug.LogError($"SceneLoadManager.LoadSceneAdditiveCoroutine: scene not found after load. sceneName:{sceneName}");
-                yield break;
+                Debug.LogError($"SceneLoadManager.LoadSceneAdditiveAsync: scene not found after load. sceneName:{sceneName}");
+                return;
             }
 
             var disabled = new List<EventSystem>();
@@ -385,25 +389,36 @@ namespace CarTrickRush.Managers
         }
 
         /// <summary>
-        /// シーンアンロードコルーチン.
+        /// シーンアンロード.
         /// </summary>
         /// <param name="sceneName">アンロードするシーン名.</param>
-        /// <returns>コルーチン.</returns>
-        private IEnumerator UnloadSceneCoroutine(string sceneName)
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid UnloadSceneAsync(string sceneName, CancellationToken cancellationToken)
         {
             var asyncOperation = SceneManager.UnloadSceneAsync(sceneName);
 
             if (asyncOperation == null)
             {
-                yield break;
+                return;
             }
 
-            while (asyncOperation.isDone == false)
-            {
-                yield return null;
-            }
+            await WaitForAsyncOperation(asyncOperation, cancellationToken);
 
             RestoreOneAdditiveOverlayLayer();
+        }
+
+        /// <summary>
+        /// AsyncOperation の完了を待つ.
+        /// </summary>
+        /// <param name="asyncOperation">非同期操作.</param>
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private static async UniTask WaitForAsyncOperation(AsyncOperation asyncOperation, CancellationToken cancellationToken)
+        {
+            while (!asyncOperation.isDone)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await UniTask.Yield(cancellationToken);
+            }
         }
 
         /// <summary>

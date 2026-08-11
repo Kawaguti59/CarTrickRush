@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+
+using Cysharp.Threading.Tasks;
 
 using CarTrickRush.Core;
 using CarTrickRush.Definitions;
@@ -75,7 +77,7 @@ namespace CarTrickRush.UI.Settings
         private void Start()
         {
             _presenterView?.Show();
-            StartCoroutine(InitializeSelectionCoroutine());
+            InitializeSelectionAsync(destroyCancellationToken).Forget();
         }
 
         private void LateUpdate()
@@ -123,7 +125,7 @@ namespace CarTrickRush.UI.Settings
             UIButtonClickSound.Play();
             _closing = true;
             SetInteractions(false);
-            StartCoroutine(CloseRoutine());
+            CloseAsync(destroyCancellationToken).Forget();
         }
 
         #endregion
@@ -133,17 +135,14 @@ namespace CarTrickRush.UI.Settings
         /// <summary>
         /// 設定画面を閉じる.
         /// </summary>
-        /// <returns>コルーチン.</returns>
-        private IEnumerator CloseRoutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid CloseAsync(CancellationToken cancellationToken)
         {
             if (_presenterView != null)
             {
                 _presenterView.Hide();
-                yield return null;
-                while (_presenterView.IsPlaying())
-                {
-                    yield return null;
-                }
+                await UniTask.Yield(cancellationToken);
+                await WaitWhileViewPlaying(_presenterView, cancellationToken);
             }
 
             SceneLoadManager.UnloadScene("SettingsScene");
@@ -152,29 +151,44 @@ namespace CarTrickRush.UI.Settings
         /// <summary>
         /// 初回フレーム後に EventSystem の選択を先頭に合わせる.
         /// </summary>
-        private IEnumerator InitializeSelectionCoroutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid InitializeSelectionAsync(CancellationToken cancellationToken)
         {
-            yield return null;
+            await UniTask.Yield(cancellationToken);
 
             if (!_canOperate || _closing)
             {
-                yield break;
+                return;
             }
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null || _ownedSelectables.Count == 0)
             {
-                yield break;
+                return;
             }
 
             var initial = _ownedSelectables[0];
             if (initial == null || !initial.interactable)
             {
-                yield break;
+                return;
             }
 
             eventSystem.SetSelectedGameObject(initial.gameObject);
             _currentSelectable = initial;
+        }
+
+        /// <summary>
+        /// View のアニメーション終了を待つ.
+        /// </summary>
+        /// <param name="view">対象 View.</param>
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private static async UniTask WaitWhileViewPlaying(SettingsUIPresenterView view, CancellationToken cancellationToken)
+        {
+            while (view.IsPlaying())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await UniTask.Yield(cancellationToken);
+            }
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-using System;
+using R3;
 
 using CarTrickRush.Core;
 
@@ -39,6 +39,31 @@ namespace CarTrickRush.Managers
         private InputAction _rotateUpAction = default;
         private InputAction _rotateDownAction = default;
 
+        /// <summary>
+        /// 右回転通知.
+        /// </summary>
+        private readonly Subject<Unit> _rotateRightPerformed = new();
+
+        /// <summary>
+        /// 左回転通知.
+        /// </summary>
+        private readonly Subject<Unit> _rotateLeftPerformed = new();
+
+        /// <summary>
+        /// 上回転通知.
+        /// </summary>
+        private readonly Subject<Unit> _rotateUpPerformed = new();
+
+        /// <summary>
+        /// 下回転通知.
+        /// </summary>
+        private readonly Subject<Unit> _rotateDownPerformed = new();
+
+        /// <summary>
+        /// ポーズ通知.
+        /// </summary>
+        private readonly Subject<Unit> _pausePerformed = new();
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -48,34 +73,30 @@ namespace CarTrickRush.Managers
         /// </summary>
         public static InputManager Instance => _instance;
 
-        #endregion
-
-        #region ------------------ Events ------------------
-
         /// <summary>
-        /// 右回転を実行するイベント.
-        /// </summary>  
-        public event Action RotateRightPerformed;
-
-        /// <summary>
-        /// 左回転を実行するイベント.
+        /// 右回転を実行する通知.
         /// </summary>
-        public event Action RotateLeftPerformed;
+        public Observable<Unit> RotateRightPerformed => _rotateRightPerformed;
 
         /// <summary>
-        /// 上回転を実行するイベント.
+        /// 左回転を実行する通知.
         /// </summary>
-        public event Action RotateUpPerformed;
+        public Observable<Unit> RotateLeftPerformed => _rotateLeftPerformed;
 
         /// <summary>
-        /// 下回転を実行するイベント.
+        /// 上回転を実行する通知.
         /// </summary>
-        public event Action RotateDownPerformed;
+        public Observable<Unit> RotateUpPerformed => _rotateUpPerformed;
 
         /// <summary>
-        /// ポーズを実行するイベント.
+        /// 下回転を実行する通知.
         /// </summary>
-        public event Action PausePerformed;
+        public Observable<Unit> RotateDownPerformed => _rotateDownPerformed;
+
+        /// <summary>
+        /// ポーズを実行する通知.
+        /// </summary>
+        public Observable<Unit> PausePerformed => _pausePerformed;
 
         #endregion
 
@@ -97,6 +118,11 @@ namespace CarTrickRush.Managers
         private void OnDestroy()
         {
             UnbindPlayerPauseAction();
+            _rotateRightPerformed.Dispose();
+            _rotateLeftPerformed.Dispose();
+            _rotateUpPerformed.Dispose();
+            _rotateDownPerformed.Dispose();
+            _pausePerformed.Dispose();
         }
 
         #endregion
@@ -163,7 +189,7 @@ namespace CarTrickRush.Managers
         {
             if (AdditiveOverlayInputGate.IsBlocked) { return; }
 
-            RotateRightPerformed?.Invoke();
+            _rotateRightPerformed.OnNext(Unit.Default);
         }
 
         /// <summary>
@@ -173,7 +199,7 @@ namespace CarTrickRush.Managers
         {
             if (AdditiveOverlayInputGate.IsBlocked) { return; }
 
-            RotateLeftPerformed?.Invoke();
+            _rotateLeftPerformed.OnNext(Unit.Default);
         }
 
         /// <summary>
@@ -183,7 +209,7 @@ namespace CarTrickRush.Managers
         {
             if (AdditiveOverlayInputGate.IsBlocked) { return; }
 
-            RotateUpPerformed?.Invoke();
+            _rotateUpPerformed.OnNext(Unit.Default);
         }
 
         /// <summary>
@@ -193,7 +219,7 @@ namespace CarTrickRush.Managers
         {
             if (AdditiveOverlayInputGate.IsBlocked) { return; }
 
-            RotateDownPerformed?.Invoke();
+            _rotateDownPerformed.OnNext(Unit.Default);
         }
 
         /// <summary>
@@ -201,7 +227,7 @@ namespace CarTrickRush.Managers
         /// </summary>
         public void InvokePause()
         {
-            PausePerformed?.Invoke();
+            _pausePerformed.OnNext(Unit.Default);
         }
 
         /// <summary>

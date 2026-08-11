@@ -1,6 +1,8 @@
 using UnityEngine;
 
-using System.Collections;
+using System.Threading;
+
+using Cysharp.Threading.Tasks;
 
 using CarTrickRush.Characters.Player.Interfaces;
 using CarTrickRush.Core;
@@ -43,9 +45,9 @@ namespace CarTrickRush.Characters.Player
         [SerializeField] private float _blinkInterval = 0.12f;
 
         /// <summary>
-        /// 点滅演出のコルーチン.
+        /// 点滅演出のキャンセル制御.
         /// </summary>
-        private Coroutine _blinkCoroutine = default;
+        private CancellationTokenSource _blinkCancellation = default;
 
         /// <summary>
         /// 点滅用Renderer.
@@ -168,7 +170,8 @@ namespace CarTrickRush.Characters.Player
             if (_visualRoot == null) { return; }
 
             CacheBlinkRenderers();
-            _blinkCoroutine = StartCoroutine(BlinkRoutine());
+            _blinkCancellation = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+            BlinkAsync(_blinkCancellation.Token).Forget();
         }
 
         /// <summary>
@@ -278,10 +281,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         private void StopBlinkInternal()
         {
-            if (_blinkCoroutine != null)
+            if (_blinkCancellation != null)
             {
-                StopCoroutine(_blinkCoroutine);
-                _blinkCoroutine = default;
+                _blinkCancellation.Cancel();
+                _blinkCancellation.Dispose();
+                _blinkCancellation = null;
             }
 
             SetAllBlinkRenderersEnabled(true);
@@ -308,12 +312,13 @@ namespace CarTrickRush.Characters.Player
         /// <summary>
         /// 点滅演出を実行する.
         /// </summary>
-        private IEnumerator BlinkRoutine()
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        private async UniTaskVoid BlinkAsync(CancellationToken cancellationToken)
         {
-            var wait = new WaitForSeconds(Mathf.Max(0.02f, _blinkInterval));
+            var intervalSeconds = Mathf.Max(0.02f, _blinkInterval);
             var visible = true;
 
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 visible = !visible;
                 if (_blinkRenderers != null)
@@ -328,7 +333,9 @@ namespace CarTrickRush.Characters.Player
                     }
                 }
 
-                yield return wait;
+                await UniTask.Delay(
+                    System.TimeSpan.FromSeconds(intervalSeconds),
+                    cancellationToken: cancellationToken);
             }
         }
 

@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using R3;
+
 using CarTrickRush.Core;
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
@@ -49,6 +51,11 @@ namespace CarTrickRush.UI
         /// ゴール地点のTransform.
         /// </summary>
         [SerializeField] private Transform _goalPoint = default;
+
+        /// <summary>
+        /// スコア購読の破棄管理.
+        /// </summary>
+        private CompositeDisposable _scoreSubscriptions = default;
 
         #endregion
 
@@ -116,7 +123,8 @@ namespace CarTrickRush.UI
 
         private void OnDisable()
         {
-            UnsubscribeEvents();
+            _scoreSubscriptions?.Dispose();
+            _scoreSubscriptions = null;
         }
 
         #endregion
@@ -128,19 +136,12 @@ namespace CarTrickRush.UI
         /// </summary>
         private void SubscribeEvents()
         {
+            _scoreSubscriptions?.Dispose();
+            _scoreSubscriptions = new CompositeDisposable();
+
             if (ScoreManager == null) { return; }
 
-            ScoreManager.ScoreChanged += OnScoreChanged;
-        }
-
-        /// <summary>
-        /// イベント購読を解除する.
-        /// </summary>
-        private void UnsubscribeEvents()
-        {
-            if (ScoreManager == null) { return; }
-
-            ScoreManager.ScoreChanged -= OnScoreChanged;
+            ScoreManager.Score.Subscribe(OnScoreChanged).AddTo(_scoreSubscriptions);
         }
 
         /// <summary>

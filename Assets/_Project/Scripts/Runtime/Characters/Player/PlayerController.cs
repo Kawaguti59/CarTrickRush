@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using R3;
+
 using System.Collections.Generic;
 
 using CarTrickRush.Characters.Player.States;
@@ -104,6 +106,11 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         private bool _isGoal = default;
 
+        /// <summary>
+        /// 入力購読の破棄管理.
+        /// </summary>
+        private CompositeDisposable _inputSubscriptions = default;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -202,18 +209,20 @@ namespace CarTrickRush.Characters.Player
 
         private void OnEnable()
         {
-            InputManager.Instance.RotateRightPerformed += OnRotateRight;
-            InputManager.Instance.RotateLeftPerformed += OnRotateLeft;
-            InputManager.Instance.RotateUpPerformed += OnRotateUp;
-            InputManager.Instance.RotateDownPerformed += OnRotateDown;
+            _inputSubscriptions?.Dispose();
+            _inputSubscriptions = new CompositeDisposable();
+
+            var inputManager = InputManager.Instance;
+            inputManager.RotateRightPerformed.Subscribe(_ => OnRotateRight()).AddTo(_inputSubscriptions);
+            inputManager.RotateLeftPerformed.Subscribe(_ => OnRotateLeft()).AddTo(_inputSubscriptions);
+            inputManager.RotateUpPerformed.Subscribe(_ => OnRotateUp()).AddTo(_inputSubscriptions);
+            inputManager.RotateDownPerformed.Subscribe(_ => OnRotateDown()).AddTo(_inputSubscriptions);
         }
 
         private void OnDisable()
         {
-            InputManager.Instance.RotateRightPerformed -= OnRotateRight;
-            InputManager.Instance.RotateLeftPerformed -= OnRotateLeft;
-            InputManager.Instance.RotateUpPerformed -= OnRotateUp;
-            InputManager.Instance.RotateDownPerformed -= OnRotateDown;
+            _inputSubscriptions?.Dispose();
+            _inputSubscriptions = null;
         }
 
         #endregion

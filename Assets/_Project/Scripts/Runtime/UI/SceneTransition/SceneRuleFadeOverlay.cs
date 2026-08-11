@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using System.Collections;
+using System.Threading;
+
+using Cysharp.Threading.Tasks;
 
 namespace CarTrickRush.UI.SceneTransition
 {
@@ -229,20 +231,21 @@ namespace CarTrickRush.UI.SceneTransition
         /// <param name="from">開始値.</param>
         /// <param name="to">終了値.</param>
         /// <param name="duration">秒（unscaled）.</param>
-        /// <returns>コルーチン.</returns>
-        public IEnumerator AnimateProgress(float from, float to, float duration)
+        /// <param name="cancellationToken">キャンセルトークン.</param>
+        public async UniTask AnimateProgressAsync(float from, float to, float duration, CancellationToken cancellationToken = default)
         {
-            if (_materialInstance == null) { yield break; }
+            if (_materialInstance == null) { return; }
 
             duration = Mathf.Max(0.0001f, duration);
             var elapsed = 0f;
             while (elapsed < duration)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 elapsed += Time.unscaledDeltaTime;
                 var normalizedTime = Mathf.Clamp01(elapsed / duration);
                 var lerpedProgress = Mathf.Lerp(from, to, normalizedTime);
                 _materialInstance.SetFloat(ProgressId, lerpedProgress);
-                yield return null;
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
 
             _materialInstance.SetFloat(ProgressId, Mathf.Clamp01(to));
