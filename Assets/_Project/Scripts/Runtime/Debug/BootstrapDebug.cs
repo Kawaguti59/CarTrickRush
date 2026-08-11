@@ -11,6 +11,7 @@ namespace CarTrickRush.Core
     /// デバッグ起動用のBoot処理を行うクラス.
     /// </summary>
     /// =========================================================================================
+    [DefaultExecutionOrder(100)]
     public sealed class BootstrapDebug : MonoBehaviour
     {
         #region ------------------ Fields ------------------
@@ -31,7 +32,6 @@ namespace CarTrickRush.Core
 
         private void Awake()
         {
-            BootstrapBase.InitializeManagers();
             if (_sceneTransitionCatalog != null && ManagerLocator.SceneLoadManager != null)
             {
                 ManagerLocator.SceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
