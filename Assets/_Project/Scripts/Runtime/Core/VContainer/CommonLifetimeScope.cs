@@ -1,3 +1,5 @@
+using UnityEngine;
+
 using VContainer;
 using VContainer.Unity;
 
@@ -8,6 +10,7 @@ namespace CarTrickRush.Runtime.Core.VContainer
     /// 共通ライフタイムスコープ.
     /// </summary>
     /// =========================================================================================
+    [DefaultExecutionOrder(-100)]
     public sealed class CommonLifetimeScope : LifetimeScope
     {
         #region ------------------ Methods ------------------

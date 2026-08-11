@@ -1,6 +1,5 @@
 using UnityEngine;
 
-using CarTrickRush.Core;
 using CarTrickRush.Data;
 
 namespace CarTrickRush.Managers
@@ -49,7 +48,6 @@ namespace CarTrickRush.Managers
 
         private void Awake()
         {
-            ManagerLocator.Register(this);
             Load();
         }
 

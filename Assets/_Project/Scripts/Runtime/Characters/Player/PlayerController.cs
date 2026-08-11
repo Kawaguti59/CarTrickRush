@@ -1,12 +1,12 @@
 using UnityEngine;
 
 using R3;
+using VContainer;
 
 using System.Collections.Generic;
 
 using CarTrickRush.Characters.Player.States;
 using CarTrickRush.Characters.Player.Interfaces;
-using CarTrickRush.Core;
 using CarTrickRush.Data;
 using CarTrickRush.Debugging;
 using CarTrickRush.Definitions;
@@ -111,6 +111,31 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         private CompositeDisposable _inputSubscriptions = default;
 
+        private MainProcess _mainProcess = default;
+        private InputManager _inputManager = default;
+        private AudioManager _audioManager = default;
+        private ScoreManager _scoreManager = default;
+        private GameUIPresenter _gameUiPresenter = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(
+            MainProcess mainProcess,
+            InputManager inputManager,
+            AudioManager audioManager,
+            ScoreManager scoreManager,
+            GameUIPresenter gameUiPresenter)
+        {
+            _mainProcess = mainProcess;
+            _inputManager = inputManager;
+            _audioManager = audioManager;
+            _scoreManager = scoreManager;
+            _gameUiPresenter = gameUiPresenter;
+        }
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -185,7 +210,7 @@ namespace CarTrickRush.Characters.Player
             // 初期状態に遷移.
             ChangeState(_groundState);
             // ゲームマネージャーにプレイヤーを登録する.
-            MainProcess.Instance?.RegisterPlayer(this);
+            _mainProcess?.RegisterPlayer(this);
         }
 
         private void Update()
@@ -212,11 +237,12 @@ namespace CarTrickRush.Characters.Player
             _inputSubscriptions?.Dispose();
             _inputSubscriptions = new CompositeDisposable();
 
-            var inputManager = InputManager.Instance;
-            inputManager.RotateRightPerformed.Subscribe(_ => OnRotateRight()).AddTo(_inputSubscriptions);
-            inputManager.RotateLeftPerformed.Subscribe(_ => OnRotateLeft()).AddTo(_inputSubscriptions);
-            inputManager.RotateUpPerformed.Subscribe(_ => OnRotateUp()).AddTo(_inputSubscriptions);
-            inputManager.RotateDownPerformed.Subscribe(_ => OnRotateDown()).AddTo(_inputSubscriptions);
+            if (_inputManager == null) { return; }
+
+            _inputManager.RotateRightPerformed.Subscribe(_ => OnRotateRight()).AddTo(_inputSubscriptions);
+            _inputManager.RotateLeftPerformed.Subscribe(_ => OnRotateLeft()).AddTo(_inputSubscriptions);
+            _inputManager.RotateUpPerformed.Subscribe(_ => OnRotateUp()).AddTo(_inputSubscriptions);
+            _inputManager.RotateDownPerformed.Subscribe(_ => OnRotateDown()).AddTo(_inputSubscriptions);
         }
 
         private void OnDisable()
@@ -329,7 +355,7 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         public void StartPenalty()
         {
-            ManagerLocator.AudioManager?.PlaySe("Explosion");
+            _audioManager?.PlaySe("Explosion");
             PlayTrickFailVfx();
             _playerView?.PlayPenalty();
             _playerView?.SetCarVisualActive(false);
@@ -437,11 +463,11 @@ namespace CarTrickRush.Characters.Player
             _playerView.ApplyTrickRotation(input);
             _playerView.PlayRotationVfx(isBonus);
             // サウンドを再生する.
-            ManagerLocator.AudioManager?.PlaySe("Rotate");
+            _audioManager?.PlaySe("Rotate");
             if (isBonus)
             {
                 // ボーナスサウンドを再生する.
-                ManagerLocator.AudioManager?.PlaySe("Bonus");
+                _audioManager?.PlaySe("Bonus");
             }
 
             ApplyRotationScoreAndHud(input, matchedBonus);
@@ -452,8 +478,8 @@ namespace CarTrickRush.Characters.Player
         /// </summary>
         private void ApplyRotationScoreAndHud(TrickInputType input, TrickBonusData matchedBonus)
         {
-            var scoreManager = ManagerLocator.ScoreManager;
-            var gameUi = GameUIPresenter.Instance;
+            var scoreManager = _scoreManager;
+            var gameUi = _gameUiPresenter;
 
             var baseScore = Mathf.Max(0, _rotationBaseScore);
             var hasBonusHud = (matchedBonus != null && Mathf.Max(0, matchedBonus.Score) > 0);

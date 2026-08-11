@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 using CarTrickRush.Core;
 using CarTrickRush.Definitions;
@@ -62,6 +63,27 @@ namespace CarTrickRush.UI.Settings
         /// 所有している Selectable.
         /// </summary>
         private readonly List<Selectable> _ownedSelectables = new();
+
+        /// <summary>
+        /// シーン読み込みマネージャー.
+        /// </summary>
+        private SceneLoadManager _sceneLoadManager = default;
+
+        /// <summary>
+        /// ボタンクリック SE プレイヤー.
+        /// </summary>
+        private ButtonClickSoundPlayer _buttonClickSoundPlayer = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(SceneLoadManager sceneLoadManager, ButtonClickSoundPlayer buttonClickSoundPlayer)
+        {
+            _sceneLoadManager = sceneLoadManager;
+            _buttonClickSoundPlayer = buttonClickSoundPlayer;
+        }
 
         #endregion
 
@@ -122,7 +144,7 @@ namespace CarTrickRush.UI.Settings
         {
             if (_closing) { return; }
 
-            UIButtonClickSound.Play();
+            _buttonClickSoundPlayer.Play();
             _closing = true;
             SetInteractions(false);
             CloseAsync(destroyCancellationToken).Forget();
@@ -145,7 +167,7 @@ namespace CarTrickRush.UI.Settings
                 await WaitWhileViewPlaying(_presenterView, cancellationToken);
             }
 
-            SceneLoadManager.UnloadScene("SettingsScene");
+            _sceneLoadManager.UnloadScene("SettingsScene");
         }
 
         /// <summary>

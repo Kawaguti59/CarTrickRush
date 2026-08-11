@@ -4,8 +4,9 @@ using Unity.Cinemachine;
 using Cysharp.Threading.Tasks;
 using R3;
 
+using VContainer;
+
 using CarTrickRush.Characters.Player;
-using CarTrickRush.Core;
 using CarTrickRush.Data;
 using CarTrickRush.Managers;
 using CarTrickRush.UI.Result;
@@ -20,11 +21,6 @@ namespace CarTrickRush.GameScene
     public sealed class MainProcess : MonoBehaviour
     {
         #region ------------------ Fields ------------------
-
-        /// <summary>
-        /// インスタンス.
-        /// </summary>
-        private static MainProcess _instance = default;
 
         /// <summary>
         /// リザルトオーバーレイ表示遅延.
@@ -60,47 +56,44 @@ namespace CarTrickRush.GameScene
         /// 入力購読の破棄管理.
         /// </summary>
         private CompositeDisposable _inputSubscriptions = default;
+
+        private InputManager _inputManager = default;
+        private ScoreManager _scoreManager = default;
+        private SaveManager _saveManager = default;
+        private AudioManager _audioManager = default;
+        private SceneLoadManager _sceneLoadManager = default;
+
         #endregion
 
-        #region ------------------ Properties ------------------
+        #region ------------------ VContainer Methods ------------------
 
-        /// <summary>
-        /// インスタンス.
-        /// </summary>
-        public static MainProcess Instance => _instance;
+        [Inject]
+        void Construct(
+            InputManager inputManager,
+            ScoreManager scoreManager,
+            SaveManager saveManager,
+            AudioManager audioManager,
+            SceneLoadManager sceneLoadManager)
+        {
+            _inputManager = inputManager;
+            _scoreManager = scoreManager;
+            _saveManager = saveManager;
+            _audioManager = audioManager;
+            _sceneLoadManager = sceneLoadManager;
+        }
 
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
-
-        private void Awake()
-        {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            _instance = this;
-        }
-
-        private void OnDestroy()
-        {
-            if (_instance == this)
-            {
-                _instance = null;
-            }
-        }
 
         private void OnEnable()
         {
             _inputSubscriptions?.Dispose();
             _inputSubscriptions = new CompositeDisposable();
 
-            var inputManager = ManagerLocator.InputManager;
-            if (inputManager == null) { return; }
+            if (_inputManager == null) { return; }
 
-            inputManager.PausePerformed.Subscribe(_ => HandlePausePerformed()).AddTo(_inputSubscriptions);
+            _inputManager.PausePerformed.Subscribe(_ => HandlePausePerformed()).AddTo(_inputSubscriptions);
         }
 
         private void OnDisable()
@@ -111,8 +104,8 @@ namespace CarTrickRush.GameScene
 
         private void Start()
         {
-            ManagerLocator.ScoreManager?.ResetScore();
-            ManagerLocator.AudioManager?.PlayBgm("GameBGM");
+            _scoreManager?.ResetScore();
+            _audioManager?.PlayBgm("GameBGM");
         }
 
         #endregion
@@ -141,7 +134,7 @@ namespace CarTrickRush.GameScene
 
             if (SceneLoadManager.IsSceneLoaded(_pauseOverlaySceneName)) { return; }
 
-            SceneLoadManager.LoadSceneAdditive(_pauseOverlaySceneName);
+            _sceneLoadManager.LoadSceneAdditive(_pauseOverlaySceneName);
         }
 
         /// <summary>
@@ -182,7 +175,7 @@ namespace CarTrickRush.GameScene
             _isGoalSequenceRunning = true;
 
             // ゴール効果音を再生する.
-            ManagerLocator.AudioManager?.PlaySe("GoalCheer");
+            _audioManager?.PlaySe("GoalCheer");
 
             // カメラの追従を解除する.
             StopGameplayCameraFollow();
@@ -195,7 +188,7 @@ namespace CarTrickRush.GameScene
             await UniTask.Delay(
                 System.TimeSpan.FromSeconds(_resultOverlayDelay),
                 cancellationToken: cancellationToken);
-            SceneLoadManager.LoadSceneAdditive(_resultOverlaySceneName);
+            _sceneLoadManager.LoadSceneAdditive(_resultOverlaySceneName);
 
             // ゴール演出実行中フラグを解除する.
             _isGoalSequenceRunning = false;
@@ -208,7 +201,7 @@ namespace CarTrickRush.GameScene
         {
             if (SceneLoadManager.IsSceneLoaded(_pauseOverlaySceneName))
             {
-                SceneLoadManager.UnloadScene(_pauseOverlaySceneName);
+                _sceneLoadManager.UnloadScene(_pauseOverlaySceneName);
                 return;
             }
 
@@ -220,15 +213,12 @@ namespace CarTrickRush.GameScene
         /// </summary>
         private void BuildResultData()
         {
-            var scoreManager = ManagerLocator.ScoreManager;
-            var saveManager = ManagerLocator.SaveManager;
-
-            var currentScore = scoreManager != null ? scoreManager.CurrentScore : 0;
-            var previousBestScore = saveManager != null ? saveManager.BestScore : 0;
+            var currentScore = _scoreManager != null ? _scoreManager.CurrentScore : 0;
+            var previousBestScore = _saveManager != null ? _saveManager.BestScore : 0;
             var isNewRecord = currentScore > previousBestScore;
             var resolvedBestScore = isNewRecord ? currentScore : previousBestScore;
 
-            saveManager?.UpdateBestScore(currentScore);
+            _saveManager?.UpdateBestScore(currentScore);
 
             var data = new ResultData(currentScore, resolvedBestScore);
             ResultSceneSession.SetPending(data, isNewRecord);

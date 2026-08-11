@@ -2,7 +2,6 @@ using UnityEngine;
 
 using R3;
 
-using CarTrickRush.Core;
 using CarTrickRush.Data;
 
 namespace CarTrickRush.Managers
@@ -46,7 +45,6 @@ namespace CarTrickRush.Managers
 
         private void Awake()
         {
-            ManagerLocator.Register(this);
             _gameSessionData = new GameSessionData();
             _gameSessionData.Reset();
             _score.Value = _gameSessionData.CurrentScore;

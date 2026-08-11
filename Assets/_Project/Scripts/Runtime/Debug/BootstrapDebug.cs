@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using VContainer;
+
 using CarTrickRush.Data;
 using CarTrickRush.Managers;
 
@@ -28,16 +30,17 @@ namespace CarTrickRush.Core
 
         #endregion
 
-        #region ------------------ MonoBehaviour Methods ------------------
+        #region ------------------ VContainer Methods ------------------
 
-        private void Awake()
+        [Inject]
+        void Construct(SceneLoadManager sceneLoadManager, InputManager inputManager)
         {
-            if (_sceneTransitionCatalog != null && ManagerLocator.SceneLoadManager != null)
+            if (_sceneTransitionCatalog != null)
             {
-                ManagerLocator.SceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
+                sceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
             }
 
-            ManagerLocator.InputManager?.BindPlayerPauseAction(_inputActionAsset);
+            inputManager.BindPlayerPauseAction(_inputActionAsset);
         }
 
         #endregion
