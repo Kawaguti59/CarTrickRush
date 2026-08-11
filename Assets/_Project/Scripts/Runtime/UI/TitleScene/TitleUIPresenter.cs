@@ -4,7 +4,9 @@ using UnityEngine.UI;
 
 using System.Collections.Generic;
 
-using CarTrickRush.Core;
+using VContainer;
+
+using CarTrickRush.Managers;
 using CarTrickRush.UI.Common;
 
 namespace CarTrickRush.UI.Title
@@ -38,6 +40,27 @@ namespace CarTrickRush.UI.Title
         /// </summary>
         private float _lostFocusSinceUnscaled = -1f;
 
+        /// <summary>
+        /// 音量マネージャー.
+        /// </summary>
+        private AudioManager _audioManager = default;
+
+        /// <summary>
+        /// ボタンクリック SE プレイヤー.
+        /// </summary>
+        private ButtonClickSoundPlayer _buttonClickSoundPlayer = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(AudioManager audioManager, ButtonClickSoundPlayer buttonClickSoundPlayer)
+        {
+            _audioManager = audioManager;
+            _buttonClickSoundPlayer = buttonClickSoundPlayer;
+        }
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -62,7 +85,7 @@ namespace CarTrickRush.UI.Title
 
         private void Start()
         {
-            ManagerLocator.AudioManager?.PlayBgm("TitleBGM");
+            _audioManager?.PlayBgm("TitleBGM");
 
             var eventSystem = EventSystem.current;
             if (eventSystem == null || _selectableButtons.Count == 0) { return; }
@@ -122,7 +145,7 @@ namespace CarTrickRush.UI.Title
         /// </summary>
         public void OnClickQuit()
         {
-            UIButtonClickSound.Play();
+            _buttonClickSoundPlayer.Play();
             #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #else

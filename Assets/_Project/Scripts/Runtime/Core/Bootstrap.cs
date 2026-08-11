@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using VContainer;
+
 using CarTrickRush.Data;
 using CarTrickRush.Managers;
 
@@ -31,23 +33,34 @@ namespace CarTrickRush.Core
         /// </summary>
         [SerializeField] private InputActionAsset _inputActionAsset = default;
 
+        private SceneLoadManager _sceneLoadManager = default;
+        private InputManager _inputManager = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(SceneLoadManager sceneLoadManager, InputManager inputManager)
+        {
+            _sceneLoadManager = sceneLoadManager;
+            _inputManager = inputManager;
+
+            if (_sceneTransitionCatalog != null)
+            {
+                _sceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
+            }
+
+            _inputManager.BindPlayerPauseAction(_inputActionAsset);
+        }
+
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
 
-        private void Awake()
-        {
-            if (_sceneTransitionCatalog != null && ManagerLocator.SceneLoadManager != null)
-            {
-                ManagerLocator.SceneLoadManager.ApplyBootstrapSceneTransitionCatalog(_sceneTransitionCatalog);
-            }
-
-            ManagerLocator.InputManager?.BindPlayerPauseAction(_inputActionAsset);
-        }
-
         private void Start()
         {
-            SceneLoadManager.LoadScene(_firstSceneName);
+            _sceneLoadManager.LoadScene(_firstSceneName);
         }
 
         #endregion

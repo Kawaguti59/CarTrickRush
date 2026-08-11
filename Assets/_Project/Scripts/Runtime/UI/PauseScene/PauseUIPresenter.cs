@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 using System.Collections.Generic;
 
-using CarTrickRush.Core;
+using VContainer;
+
 using CarTrickRush.Managers;
 using CarTrickRush.UI.Common;
 
@@ -43,6 +44,27 @@ namespace CarTrickRush.UI.Pause
         /// オーバーレイ表示前の timeScale.
         /// </summary>
         private float _timeScaleBeforePause = 1f;
+
+        /// <summary>
+        /// シーン読み込みマネージャー.
+        /// </summary>
+        private SceneLoadManager _sceneLoadManager = default;
+
+        /// <summary>
+        /// ボタンクリック SE プレイヤー.
+        /// </summary>
+        private ButtonClickSoundPlayer _buttonClickSoundPlayer = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(SceneLoadManager sceneLoadManager, ButtonClickSoundPlayer buttonClickSoundPlayer)
+        {
+            _sceneLoadManager = sceneLoadManager;
+            _buttonClickSoundPlayer = buttonClickSoundPlayer;
+        }
 
         #endregion
 
@@ -140,8 +162,8 @@ namespace CarTrickRush.UI.Pause
         {
             if (!SceneLoadManager.IsSceneLoaded("PauseScene")) { return; }
 
-            SceneLoadManager.UnloadScene("PauseScene");
-            UIButtonClickSound.Play();
+            _sceneLoadManager.UnloadScene("PauseScene");
+            _buttonClickSoundPlayer.Play();
         }
 
         #endregion

@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 using R3;
 
-using CarTrickRush.Core;
-
 namespace CarTrickRush.Managers
 {
     /// =========================================================================================
@@ -17,26 +15,33 @@ namespace CarTrickRush.Managers
         #region ------------------ Fields ------------------
 
         /// <summary>
-        /// インスタンス.
-        /// </summary>
-        private static InputManager _instance = default;
-
-        /// <summary>
-        /// CarTrickRushInputActions の Player マップ（バインド中のみ）.
+        /// CarTrickRushInputActions の Player マップ.
         /// </summary>
         private InputActionMap _playerMap = default;
 
         /// <summary>
-        /// Player/Pause（購読中のみ）.
+        /// Player/Pause.
         /// </summary>
         private InputAction _playerPauseAction = default;
 
         /// <summary>
-        /// Player の回転アクション（購読中のみ）.
+        /// Player/RotateRight.
         /// </summary>
         private InputAction _rotateRightAction = default;
+
+        /// <summary>
+        /// Player/RotateLeft.
+        /// </summary>
         private InputAction _rotateLeftAction = default;
+
+        /// <summary>
+        /// Player/RotateUp.
+        /// </summary>
         private InputAction _rotateUpAction = default;
+
+        /// <summary>
+        /// Player/RotateDown.
+        /// </summary>
         private InputAction _rotateDownAction = default;
 
         /// <summary>
@@ -69,11 +74,6 @@ namespace CarTrickRush.Managers
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// インスタンス.
-        /// </summary>
-        public static InputManager Instance => _instance;
-
-        /// <summary>
         /// 右回転を実行する通知.
         /// </summary>
         public Observable<Unit> RotateRightPerformed => _rotateRightPerformed;
@@ -101,19 +101,6 @@ namespace CarTrickRush.Managers
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
-
-        private void Awake()
-        {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-            ManagerLocator.Register(this);
-        }
 
         private void OnDestroy()
         {
@@ -237,7 +224,7 @@ namespace CarTrickRush.Managers
         {
             if (context.performed)
             {
-                InputManager.Instance.InvokeRotateRight();
+                InvokeRotateRight();
             }
         }
 
@@ -248,7 +235,7 @@ namespace CarTrickRush.Managers
         {
             if (context.performed)
             {
-                InputManager.Instance.InvokeRotateLeft();
+                InvokeRotateLeft();
             }
         }
 
@@ -259,7 +246,7 @@ namespace CarTrickRush.Managers
         {
             if (context.performed)
             {
-                InputManager.Instance.InvokeRotateUp();
+                InvokeRotateUp();
             }
         }
 
@@ -270,7 +257,7 @@ namespace CarTrickRush.Managers
         {
             if (context.performed)
             {
-                InputManager.Instance.InvokeRotateDown();
+                InvokeRotateDown();
             }
         }
 
@@ -281,7 +268,7 @@ namespace CarTrickRush.Managers
         {
             if (context.performed)
             {
-                InputManager.Instance.InvokePause();
+                InvokePause();
             }
         }
 

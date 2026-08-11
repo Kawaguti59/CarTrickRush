@@ -2,7 +2,8 @@ using UnityEngine;
 
 using R3;
 
-using CarTrickRush.Core;
+using VContainer;
+
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 
@@ -16,11 +17,6 @@ namespace CarTrickRush.UI
     public sealed class GameUIPresenter : MonoBehaviour
     {
         #region ------------------ Fields ------------------
-
-        /// <summary>
-        /// アクティブなインスタンス.
-        /// </summary>
-        private static GameUIPresenter _instance = default;
 
         /// <summary>
         /// スコア表示用のビュー.
@@ -57,19 +53,20 @@ namespace CarTrickRush.UI
         /// </summary>
         private CompositeDisposable _scoreSubscriptions = default;
 
+        /// <summary>
+        /// スコアマネージャー.
+        /// </summary>
+        private ScoreManager _scoreManager = default;
+
         #endregion
 
-        #region ------------------ Properties ------------------
+        #region ------------------ VContainer Methods ------------------
 
-        /// <summary>
-        /// ゲームUI仲介のインスタンス.
-        /// </summary>
-        public static GameUIPresenter Instance => _instance;
-        
-        /// <summary>
-        /// スコア管理クラス.
-        /// </summary>
-        private ScoreManager ScoreManager => ManagerLocator.ScoreManager;
+        [Inject]
+        void Construct(ScoreManager scoreManager)
+        {
+            _scoreManager = scoreManager;
+        }
 
         #endregion
 
@@ -92,19 +89,6 @@ namespace CarTrickRush.UI
         #endregion
 
         #region ------------------ MonoBehaviour Methods ------------------
-
-        private void Awake()
-        {
-            _instance = this;
-        }
-
-        private void OnDestroy()
-        {
-            if (_instance == this)
-            {
-                _instance = null;
-            }
-        }
 
         private void OnEnable()
         {
@@ -139,9 +123,9 @@ namespace CarTrickRush.UI
             _scoreSubscriptions?.Dispose();
             _scoreSubscriptions = new CompositeDisposable();
 
-            if (ScoreManager == null) { return; }
+            if (_scoreManager == null) { return; }
 
-            ScoreManager.Score.Subscribe(OnScoreChanged).AddTo(_scoreSubscriptions);
+            _scoreManager.Score.Subscribe(OnScoreChanged).AddTo(_scoreSubscriptions);
         }
 
         /// <summary>
@@ -166,9 +150,9 @@ namespace CarTrickRush.UI
         /// </summary>
         private void RefreshScoreView()
         {
-            if (ScoreManager == null) { return; }
+            if (_scoreManager == null) { return; }
 
-            _scoreView.SetScore(ScoreManager.CurrentScore);
+            _scoreView.SetScore(_scoreManager.CurrentScore);
         }
 
         /// <summary>

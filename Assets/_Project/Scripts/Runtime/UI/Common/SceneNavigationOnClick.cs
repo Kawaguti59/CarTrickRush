@@ -1,6 +1,7 @@
 using UnityEngine;
 
-using CarTrickRush.Core;
+using VContainer;
+
 using CarTrickRush.Managers;
 
 namespace CarTrickRush.UI.Common
@@ -32,7 +33,7 @@ namespace CarTrickRush.UI.Common
 
         /// <summary>
         /// 遷移先シーン名.
-        /// </summary>     
+        /// </summary>
         [SerializeField] private string _sceneName = default;
 
         /// <summary>
@@ -44,6 +45,27 @@ namespace CarTrickRush.UI.Common
         /// ルールフェードのセットID.
         /// </summary>
         [SerializeField] private int _transitionSetId = 0;
+
+        /// <summary>
+        /// シーン読み込みマネージャー.
+        /// </summary>
+        private SceneLoadManager _sceneLoadManager = default;
+
+        /// <summary>
+        /// ボタンクリック SE プレイヤー.
+        /// </summary>
+        private ButtonClickSoundPlayer _buttonClickSoundPlayer = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(SceneLoadManager sceneLoadManager, ButtonClickSoundPlayer buttonClickSoundPlayer)
+        {
+            _sceneLoadManager = sceneLoadManager;
+            _buttonClickSoundPlayer = buttonClickSoundPlayer;
+        }
 
         #endregion
 
@@ -66,15 +88,15 @@ namespace CarTrickRush.UI.Common
             {
                 // 単一シーン読み込み
                 case LoadMode.Single:
-                    if (SceneLoadManager.IsSingleLoadTransitionRunning) { return; }
-                    SceneLoadManager.LoadScene(_sceneName, _transitionSetId);
-                    UIButtonClickSound.Play();
+                    if (_sceneLoadManager.IsSingleLoadTransitionRunning) { return; }
+                    _sceneLoadManager.LoadScene(_sceneName, _transitionSetId);
+                    _buttonClickSoundPlayer.Play();
                     break;
                 // 加算読み込み
                 case LoadMode.Additive:
                     if (SceneLoadManager.IsSceneLoaded(_sceneName)) { return; }
-                    SceneLoadManager.LoadSceneAdditive(_sceneName);
-                    UIButtonClickSound.Play();
+                    _sceneLoadManager.LoadSceneAdditive(_sceneName);
+                    _buttonClickSoundPlayer.Play();
                     break;
                 default:
                     #if UNITY_EDITOR || DEVELOPMENT_BUILD

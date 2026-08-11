@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using VContainer;
+
 using CarTrickRush.Managers;
 
 namespace CarTrickRush.DebugMenu
@@ -37,6 +39,18 @@ namespace CarTrickRush.DebugMenu
         /// ボタン本体.
         /// </summary>
         [SerializeField] private Button _button = default;
+
+        private SceneLoadManager _sceneLoadManager = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(SceneLoadManager sceneLoadManager)
+        {
+            _sceneLoadManager = sceneLoadManager;
+        }
 
         #endregion
 
@@ -78,7 +92,7 @@ namespace CarTrickRush.DebugMenu
                 return;
             }
 
-            SceneLoadManager.LoadScene(_sceneName);
+            _sceneLoadManager.LoadScene(_sceneName);
         }
 
         #endregion

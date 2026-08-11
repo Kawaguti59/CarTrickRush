@@ -3,7 +3,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-using CarTrickRush.Core;
+using VContainer;
+
 using CarTrickRush.Definitions;
 using CarTrickRush.Managers;
 
@@ -42,6 +43,21 @@ namespace CarTrickRush.UI.Settings
         /// 左スティックの無効ゾーン（これ未満は無視）.
         /// </summary>
         [SerializeField] [Range(0f, 1f)] private float _gamepadStickDeadzone = 0.35f;
+
+        /// <summary>
+        /// 音量マネージャー.
+        /// </summary>
+        private AudioManager _audioManager = default;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(AudioManager audioManager)
+        {
+            _audioManager = audioManager;
+        }
 
         #endregion
 
@@ -100,7 +116,7 @@ namespace CarTrickRush.UI.Settings
         {
             if (_slider == null) { return; }
 
-            var audio = ManagerLocator.AudioManager;
+            var audio = _audioManager;
             if (audio == null) { return; }
 
             var stepped = Mathf.Round(value);
@@ -211,7 +227,7 @@ namespace CarTrickRush.UI.Settings
         {
             if (_slider == null) { return; }
 
-            var audio = ManagerLocator.AudioManager;
+            var audio = _audioManager;
             if (audio == null) { return; }
 
             var normalized = audio.GetVolume(_volumeKind);

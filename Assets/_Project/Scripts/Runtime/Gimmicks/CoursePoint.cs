@@ -1,7 +1,9 @@
 using UnityEngine;
 
-using CarTrickRush.Definitions;
+using VContainer;
+
 using CarTrickRush.Characters.Player;
+using CarTrickRush.Definitions;
 using CarTrickRush.GameScene;
 
 namespace CarTrickRush.Gimmicks
@@ -26,6 +28,8 @@ namespace CarTrickRush.Gimmicks
         /// </summary>
         private bool _isTriggered = default;
 
+        private MainProcess _mainProcess = default;
+
         #endregion
 
         #region ------------------ Properties ------------------
@@ -34,6 +38,16 @@ namespace CarTrickRush.Gimmicks
         /// ポイント種別.
         /// </summary>
         public CoursePointType PointType => _pointType;
+
+        #endregion
+
+        #region ------------------ VContainer Methods ------------------
+
+        [Inject]
+        void Construct(MainProcess mainProcess)
+        {
+            _mainProcess = mainProcess;
+        }
 
         #endregion
 
@@ -46,7 +60,7 @@ namespace CarTrickRush.Gimmicks
                 return;
             }
 
-            if (other.TryGetComponent<PlayerController>(out var playerController))
+            if (other.TryGetComponent<PlayerController>(out _))
             {
                 _isTriggered = true;
                 switch (_pointType)
@@ -54,12 +68,11 @@ namespace CarTrickRush.Gimmicks
                     case CoursePointType.Start:
                         break;
                     case CoursePointType.Goal:
-                        MainProcess.Instance?.OnGoalReached();
+                        _mainProcess?.OnGoalReached();
                         break;
                     default:
                         break;
                 }
-                return;
             }
         }
 

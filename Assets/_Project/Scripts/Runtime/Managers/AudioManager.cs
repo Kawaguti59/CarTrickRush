@@ -1,6 +1,5 @@
 using UnityEngine;
 
-using CarTrickRush.Core;
 using CarTrickRush.Data;
 using CarTrickRush.Definitions;
 
@@ -14,11 +13,6 @@ namespace CarTrickRush.Managers
     public sealed class AudioManager : MonoBehaviour
     {
         #region ------------------ Fields ------------------
-
-        /// <summary>
-        /// インスタンス.
-        /// </summary>
-        private static AudioManager _instance = default;
 
         /// <summary>
         /// BGM 用 AudioSource.
@@ -55,11 +49,6 @@ namespace CarTrickRush.Managers
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// インスタンス.
-        /// </summary>
-        public static AudioManager Instance => _instance;
-
-        /// <summary>
         /// マスター音量 (0〜1).
         /// </summary>
         public float MasterVolume => _masterVolume;
@@ -88,22 +77,10 @@ namespace CarTrickRush.Managers
 
         private void Awake()
         {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            _instance = this;
-            if (transform.parent == null)
-            {
-                DontDestroyOnLoad(gameObject);
-            }
             EnsureSources();
             ApplyMasterVolume();
             ApplyBGMVolume();
             ApplySEVolume();
-            ManagerLocator.Register(this);
         }
 
         #endregion

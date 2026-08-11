@@ -4,6 +4,7 @@ using VContainer;
 using VContainer.Unity;
 
 using CarTrickRush.Managers;
+using CarTrickRush.UI.Common;
 
 namespace CarTrickRush.Runtime.Core.VContainer
 {
@@ -38,22 +39,21 @@ namespace CarTrickRush.Runtime.Core.VContainer
 
             builder.RegisterComponentInHierarchy<AudioManager>();
 
-            RegisterManager<GameManager>(builder, managersRoot);
             RegisterManager<SceneLoadManager>(builder, managersRoot);
             RegisterManager<InputManager>(builder, managersRoot);
-            RegisterManager<TimeManager>(builder, managersRoot);
             RegisterManager<SaveManager>(builder, managersRoot);
             RegisterManager<ScoreManager>(builder, managersRoot);
+
+            builder.Register<ButtonClickSoundPlayer>(Lifetime.Singleton);
 
             builder.RegisterBuildCallback(resolver =>
             {
                 resolver.Resolve<AudioManager>();
-                resolver.Resolve<GameManager>();
                 resolver.Resolve<SceneLoadManager>();
                 resolver.Resolve<InputManager>();
-                resolver.Resolve<TimeManager>();
                 resolver.Resolve<SaveManager>();
                 resolver.Resolve<ScoreManager>();
+                resolver.Resolve<ButtonClickSoundPlayer>();
 
                 foreach (Transform child in transform)
                 {

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 using VContainer;
 using VContainer.Unity;
 
@@ -8,7 +10,8 @@ namespace CarTrickRush.Runtime.Core.VContainer
     /// 共通ライフタイムスコープ.
     /// </summary>
     /// =========================================================================================
-    public sealed class CommonLifetimeScope : LifetimeScope
+    [DefaultExecutionOrder(-100)]
+    public class CommonLifetimeScope : LifetimeScope
     {
         #region ------------------ Methods ------------------
 
@@ -18,6 +21,8 @@ namespace CarTrickRush.Runtime.Core.VContainer
         /// <param name="builder">コンテナビルダー.</param>
         protected override void Configure(IContainerBuilder builder)
         {
+            RegisterAdditionalComponents(builder);
+
             // 参照関係が構築された後に、
             // シーンに存在する全てのオブジェクトにInject(注入)する
             builder.RegisterBuildCallback(resolver =>
@@ -27,6 +32,14 @@ namespace CarTrickRush.Runtime.Core.VContainer
                     resolver.InjectGameObject(rootGameObject);
                 }
             });
+        }
+
+        /// <summary>
+        /// シーン固有のコンポーネントを登録します.
+        /// </summary>
+        /// <param name="builder">コンテナビルダー.</param>
+        protected virtual void RegisterAdditionalComponents(IContainerBuilder builder)
+        {
         }
 
         #endregion

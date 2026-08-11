@@ -9,7 +9,6 @@ using System.Threading;
 
 using Cysharp.Threading.Tasks;
 
-using CarTrickRush.Core;
 using CarTrickRush.Data;
 using CarTrickRush.UI.SceneTransition;
 
@@ -23,11 +22,6 @@ namespace CarTrickRush.Managers
     public sealed class SceneLoadManager : MonoBehaviour
     {
         #region ------------------ Fields ------------------
-
-        /// <summary>
-        /// インスタンス.
-        /// </summary>
-        private static SceneLoadManager _instance = default;
 
         /// <summary>
         /// ルールフェード用カタログ.
@@ -69,15 +63,9 @@ namespace CarTrickRush.Managers
         #region ------------------ Properties ------------------
 
         /// <summary>
-        /// インスタンス.
-        /// </summary>
-        private static SceneLoadManager Instance => _instance;
-
-        /// <summary>
         /// シングル遷移が進行中か.
         /// </summary>
-        public static bool IsSingleLoadTransitionRunning =>
-            Instance != null && Instance._singleLoadTransitionRunning;
+        public bool IsSingleLoadTransitionRunning => _singleLoadTransitionRunning;
 
         #endregion
 
@@ -85,15 +73,6 @@ namespace CarTrickRush.Managers
 
         private void Awake()
         {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-            ManagerLocator.Register(this);
             ResolveSceneTransitionCatalog();
         }
 
@@ -117,7 +96,7 @@ namespace CarTrickRush.Managers
         /// </summary>
         /// <param name="sceneName">遷移先シーン名.</param>
         /// <param name="transitionSetId">ルールフェードのセットID.</param>
-        public static void LoadScene(string sceneName, int transitionSetId = -1)
+        public void LoadScene(string sceneName, int transitionSetId = -1)
         {
             if (string.IsNullOrEmpty(sceneName))
             {
@@ -125,13 +104,7 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            if (Instance == null)
-            {
-                Debug.LogError("SceneLoadManager.LoadScene failed. Instance was not initialized.");
-                return;
-            }
-
-            if (Instance._singleLoadTransitionRunning)
+            if (_singleLoadTransitionRunning)
             {
                 Debug.LogWarning("SceneLoadManager.LoadScene: 別のシングル遷移が進行中のため無視しました.");
                 return;
@@ -139,19 +112,19 @@ namespace CarTrickRush.Managers
 
             if (transitionSetId < 0)
             {
-                Instance.ClearAdditiveOverlayStateForSingleLoad();
+                ClearAdditiveOverlayStateForSingleLoad();
                 SceneManager.LoadScene(sceneName);
                 return;
             }
 
-            Instance.ResolveSceneTransitionCatalog();
-            var catalog = Instance._sceneTransitionCatalog;
+            ResolveSceneTransitionCatalog();
+            var catalog = _sceneTransitionCatalog;
             if (catalog == null)
             {
                 Debug.LogWarning(
                     "SceneLoadManager.LoadScene: SceneTransitionCatalog が null のためフェードをスキップしました. " +
                     $"BootScene の Bootstrap / BootSceneDebug の BootstrapDebug にカタログをアサインするか、Resources 配下へ「{SceneTransitionCatalog.ResourcesAssetName}.asset」があるか確認してください.");
-                Instance.ClearAdditiveOverlayStateForSingleLoad();
+                ClearAdditiveOverlayStateForSingleLoad();
                 SceneManager.LoadScene(sceneName);
                 return;
             }
@@ -161,12 +134,12 @@ namespace CarTrickRush.Managers
                 Debug.LogWarning(
                     $"SceneLoadManager.LoadScene: transitionSetId={transitionSetId} がカタログに無いためフェードをスキップしました. " +
                     "カタログの Sets に同じ ID のエントリがあるか確認してください.");
-                Instance.ClearAdditiveOverlayStateForSingleLoad();
+                ClearAdditiveOverlayStateForSingleLoad();
                 SceneManager.LoadScene(sceneName);
                 return;
             }
 
-            Instance.LoadSceneWithRuleFadeAsync(sceneName, entry, Instance.destroyCancellationToken).Forget();
+            LoadSceneWithRuleFadeAsync(sceneName, entry, destroyCancellationToken).Forget();
         }
 
         /// <summary>
@@ -174,17 +147,11 @@ namespace CarTrickRush.Managers
         /// </summary>
         /// <param name="sceneName">読み込むシーン名.</param>
         /// <param name="blockUnderlyingInput">true のとき、元シーンの UI（EventSystem）とゲームプレイ入力を無効にする.</param>
-        public static void LoadSceneAdditive(string sceneName, bool blockUnderlyingInput = true)
+        public void LoadSceneAdditive(string sceneName, bool blockUnderlyingInput = true)
         {
             if (string.IsNullOrEmpty(sceneName))
             {
                 Debug.LogError("SceneLoadManager.LoadSceneAdditive failed. sceneName is null or empty.");
-                return;
-            }
-
-            if (Instance == null)
-            {
-                Debug.LogError("SceneLoadManager.LoadSceneAdditive failed. Instance was not initialized.");
                 return;
             }
 
@@ -193,14 +160,14 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            Instance.LoadSceneAdditiveAsync(sceneName, blockUnderlyingInput, Instance.destroyCancellationToken).Forget();
+            LoadSceneAdditiveAsync(sceneName, blockUnderlyingInput, destroyCancellationToken).Forget();
         }
 
         /// <summary>
         /// 指定した加算シーンをアンロードする.
         /// </summary>
         /// <param name="sceneName">アンロードするシーン名.</param>
-        public static void UnloadScene(string sceneName)
+        public void UnloadScene(string sceneName)
         {
             if (string.IsNullOrEmpty(sceneName))
             {
@@ -208,15 +175,9 @@ namespace CarTrickRush.Managers
                 return;
             }
 
-            if (Instance == null)
-            {
-                Debug.LogError("SceneLoadManager.UnloadScene failed. Instance was not initialized.");
-                return;
-            }
-
             if (!IsSceneLoaded(sceneName)) { return; }
 
-            Instance.UnloadSceneAsync(sceneName, Instance.destroyCancellationToken).Forget();
+            UnloadSceneAsync(sceneName, destroyCancellationToken).Forget();
         }
 
         /// <summary>
